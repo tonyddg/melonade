@@ -1,0 +1,54 @@
+name: melonade::gh_pages
+on:
+  push:
+    branches:
+      # 仓库主分支
+      - master
+  workflow_dispatch:
+    
+permissions:
+  pages: write
+  id-token: write
+  contents: read
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: 'pages'
+  cancel-in-progress: false
+
+jobs:
+  build-gh-pages:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      # 用于子模块的字体设置方法
+      - name: Checkout
+        uses: actions/checkout@v4
+      - run: git submodule update --init --recursive
+      # 用于部署页面时下载字体的字体设置方法
+      # - name: Download font assets
+      #   # use fonts in stable releases
+      #   run: |
+      #     mkdir -p assets/fonts/
+      #     curl -L https://github.com/Myriad-Dreamin/shiroa/releases/download/v0.1.2/font-assets.tar.gz | tar -xvz -C assets/fonts
+      # 修改下载的 Shiroa 版本控制部署使用的 Shiroa 版本
+      - name: Download & install shiroa
+        run: |
+          curl --proto '=https' --tlsv1.2 -LsSf https://github.com/Myriad-Dreamin/shiroa/releases/download/v0.3.1-rc2/shiroa-installer.sh | sh
+      # 页面编译命令
+      - name: Build Book
+        run: |
+          shiroa build --font-path ./assert/font/ --path-to-root /melonade/ -w . 
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Upload `/github-pages` sub directory
+          path: './dist'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
