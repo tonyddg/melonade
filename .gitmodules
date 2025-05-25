@@ -1,0 +1,3 @@
+[submodule "assert/font"]
+	path = assert/font
+	url = https://github.com/tonyddg/font_collection
