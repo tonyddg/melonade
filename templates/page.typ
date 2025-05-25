@@ -200,7 +200,7 @@
   )
 
   // table
-  set table(inset: 0.75em, stroke: gray,)
+  set table(inset: 0.5em, stroke: gray,)
 
   // Put your custom CSS here.
   context if shiroa-sys-target() == "html" {

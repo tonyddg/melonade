@@ -12,9 +12,14 @@
   delimiter: "|",      // The delimiter between words
   auto-spacing: true,  // Automatically add necessary space around words
 )
+#let fruby(head, bottom, size: 0.2em) = {
+  box(height: 1em + size) 
+  ruby(head, bottom)
+}
 
 #let p-index = "/jap/index.typ"
 #let p-verb = "/jap/verb.typ"
+#let p-teform = "/jap/teform.typ"
 
 ///////////
 
@@ -35,3 +40,4 @@
 == 笔记主要内容
 
 - #cross-link(p-verb)[动词变形]
+- #cross-link(p-teform)[て 形及其应用]
