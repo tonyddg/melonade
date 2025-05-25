@@ -10,6 +10,7 @@
 
     - #chapter("./jap/index.typ")[日语笔记]
       - #chapter("./jap/verb.typ")[动词变形]
+      - #chapter("./jap/teform.typ")[て 形及其应用]
   ]
 )
 
