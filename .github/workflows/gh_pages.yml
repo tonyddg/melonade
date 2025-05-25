@@ -3,7 +3,7 @@ on:
   push:
     branches:
       # 仓库主分支
-      - master
+      - main
   workflow_dispatch:
     
 permissions:
