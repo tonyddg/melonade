@@ -9,8 +9,14 @@
     #prefix-chapter("index.typ")[Melonade]
 
     - #chapter("./jap/index.typ")[日语笔记]
-      - #chapter("./jap/verb.typ")[动词变形]
-      - #chapter("./jap/teform.typ")[て 形及其应用]
+      - #chapter("./jap/transform.typ")[词语变形]
+      - #chapter("./jap/partial.typ")[介词与连接词]
+      - #chapter("./jap/sentence.typ")[句型]
+      - #chapter("./jap/word.typ")[词语与词组]
+
+    - #chapter(none)[杂项]
+      - #chapter("./random/shiroa.typ")[Shiroa 笔记]
+      - #chapter("./random/word.typ")[Word 使用]
   ]
 )
 

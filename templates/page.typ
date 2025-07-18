@@ -199,8 +199,13 @@
   radius: 2pt,
   )
 
-  // table
-  set table(inset: 0.5em, stroke: gray,)
+  // table & image
+  set table(inset: 0.5em, stroke: gray)
+  show figure: set block(breakable: true)
+  show figure.where(kind: table): set figure(supplement: [表])
+  show figure.where(kind: table): set figure.caption(position: top)
+
+  show figure.where(kind: image): set figure(supplement: [图])
 
   // Put your custom CSS here.
   context if shiroa-sys-target() == "html" {
