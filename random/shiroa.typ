@@ -53,6 +53,7 @@ Shiroa 为一个独立的，具有 CLI 的程序，不依赖于 Node.js 等，�
       - 将变量 `main-font` 的列表值前添加字符串 `Source Han Sans SC`
       - 将变量 `code-font` 的列表值前添加字符串 `Fira Code` 与 `Source Han Sans SC`
       - 如果需要基于子模块设置自定义字体类似此方法
+      - 克隆项目是如果要下载字体可使用 `git clone --recurse-submodules <url>`
 
 === 部署到 Github Page
 

@@ -14,6 +14,10 @@
       - #chapter("./jap/sentence.typ")[句型]
       - #chapter("./jap/word.typ")[词语与词组]
 
+    - #chapter(none)[编程]
+      - #chapter("./code/docker.typ")[Docker 笔记]
+      - #chapter("./code/pybullet.typ")[Pybullet 笔记]
+
     - #chapter(none)[杂项]
       - #chapter("./random/shiroa.typ")[Shiroa 笔记]
       - #chapter("./random/word.typ")[Word 使用]

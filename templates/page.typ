@@ -13,6 +13,9 @@
 #import templates: *
 #import "@preview/zebraw:0.5.2": zebraw-init, zebraw
 
+#import "@preview/codly:1.3.0": *
+#import "@preview/codly-languages:0.1.1": *
+
 // Metadata
 #let page-width = get-page-width()
 #let is-html-target = is-html-target()
@@ -165,6 +168,8 @@
   }
 
   // code block setting
+
+  show: codly-init.with()
   set raw(theme: theme-style.code-theme) if theme-style.code-theme.len() > 0
   show raw: set text(font: code-font)
   show raw.where(block: true): it => context if shiroa-sys-target() == "paged" {
