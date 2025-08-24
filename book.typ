@@ -9,6 +9,7 @@
     #prefix-chapter("index.typ")[Melonade]
 
     - #chapter("./jap/index.typ")[日语笔记]
+      - #chapter("./jap/standard.typ")[标日初级笔记]
       - #chapter("./jap/transform.typ")[词语变形]
       - #chapter("./jap/partial.typ")[介词与连接词]
       - #chapter("./jap/sentence.typ")[句型]
