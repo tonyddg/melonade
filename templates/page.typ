@@ -172,29 +172,29 @@
   show: codly-init.with()
   set raw(theme: theme-style.code-theme) if theme-style.code-theme.len() > 0
   show raw: set text(font: code-font)
-  show raw.where(block: true): it => context if shiroa-sys-target() == "paged" {
-    rect(
-      width: 100%,
-      inset: (x: 4pt, y: 5pt),
-      radius: 4pt,
-      fill: code-extra-colors.bg,
-      [
-        #set text(fill: code-extra-colors.fg) if code-extra-colors.fg != none
-        #set par(justify: false)
-        // #place(right, text(luma(110), it.lang))
-        #it
-      ],
-    )
-  } else {
-    set text(fill: code-extra-colors.fg) if code-extra-colors.fg != none
-    set par(justify: false)
-    zebraw(
-      block-width: 100%,
-      // line-width: 100%,
-      wrap: false,
-      it,
-    )
-  }
+  // show raw.where(block: true): it => context if shiroa-sys-target() == "paged" {
+  //   rect(
+  //     width: 100%,
+  //     inset: (x: 4pt, y: 5pt),
+  //     radius: 4pt,
+  //     fill: code-extra-colors.bg,
+  //     [
+  //       #set text(fill: code-extra-colors.fg) if code-extra-colors.fg != none
+  //       #set par(justify: false)
+  //       // #place(right, text(luma(110), it.lang))
+  //       #it
+  //     ],
+  //   )
+  // } else {
+  //   set text(fill: code-extra-colors.fg) if code-extra-colors.fg != none
+  //   set par(justify: false)
+  //   zebraw(
+  //     block-width: 100%,
+  //     // line-width: 100%,
+  //     wrap: false,
+  //     it,
+  //   )
+  // }
 
   // inline code block
   show raw.where(block: false): box.with(
