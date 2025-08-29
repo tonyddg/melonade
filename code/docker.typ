@@ -189,12 +189,26 @@ CMD ["./main"]
 
 === 镜像构建技巧
 
-为了保证镜像的体积尽量小，不包含无用的文件，以下是一些镜像构建技巧
+为了保证镜像的体积尽量小，不包含无用的文件
 - 使用清华源作为 apt 的软件源：#link(<dockerfile_example>)[参见]
 - 避免大量分段的 `RUN` 命令：#link(<image_layer>)[参见]
 - 完成镜像构建前删除软件列表缓存 `rm -rf /var/lib/apt/lists/*`（用于 `apt-get`）
 - `apt-get` 安装软件时避免无关的软件包安装与阻塞询问 `apt-get install -y --no-install-recommends`
 - `pip3` 安装模块时避免无用的缓存 `pip3 install --no-cache-dir`
+
+构建时编译可能会瞬间占用大量资源导致宿主机崩溃，需要对资源进行限制
+- 限制使用的 cpu 数量，通常使用环境变量限制，常用的有（此处均设置为 2）：
+  - MAX_JOBS=2
+  - CMAKE_BUILD_PARALLEL_LEVEL=2
+  - NINJA_NUM_CORES=2
+- 除了 CPU，还可以添加交换内存设置，即在 `docker build` 中添加 `--memory=4g --memory-swap=4g`（两个大小需要一样）
+
+当构建深度学习项目时
+- 各种下载源码编译的包建议使用 `python3 -m pip install -v .` 安装到 pip 中，而不是 `python3 setup.py install`
+- 构建时没有 GPU 环境，需要手动设置环境变量 `FORCE_CUDA=1` 与 `TORCH_CUDA_ARCH_LIST=${CUDA_ARCH}`，其中 `TORCH_CUDA_ARCH_LIST` 与使用的显卡有关，根据宿主机中运行 `print(torch.cuda.get_device_capability())` 获取（格式为 x.x 的字符串）
+
+杂项
+- 命令 `docker builder prune` 可用于清理构建镜像产生的临时文件（可以定期或构建失败后执行）
 
 == 数据管理
 
@@ -240,3 +254,40 @@ CMD ["./main"]
   - `up` 启动集群中的所有容器
   - `down` 停止集群中的所有容器
   - `log` 查看集群容器的输出
+
+=== Docker-Desktop 支持窗口显示
+
+在 Docker-Desktop 中，Docker 引擎并不是直接运行在 Windows 上，而是将某个 WSL 作为宿主机，在该宿主机上同样可以运行 docker 相关命令，但地址将基于 WSL（Windows 下的文件挂载在如 `/mnt/c` 的位置）
+
+要让容器支持显示窗口，需要将宿主 WSL 中相关的设备（文件）挂载到宿主 WSL 上，并且最好从宿主 WSL 中创建容器
+
+首先在宿主 WSL 中运行以下指令检查（不正常时查看#link("https://github.com/microsoft/wslg/wiki/Diagnosing-%22cannot-open-display%22-type-issues-with-WSLg")[文档]）
+```bash
+echo $DISPLAY $WAYLAND_DISPLAY $XDG_RUNTIME_DIR      # 三个变量应都有值
+ls -l /tmp/.X11-unix                                 # 有 X11 套接字
+ls -l /mnt/wslg | grep runtime-dir                   # 有 Wayland/Pulse 目录
+```
+
+在#hl(2)[宿主 WSL 中启动容器]，并使用以下命令行参数添加环境变量与挂载目录
+```bash
+docker run \
+-e DISPLAY=$DISPLAY \
+-v /tmp/.X11-unix:/tmp/.X11-unix \
+...
+```
+
+进入容器后还需要安装以下依赖包保证窗口正确显示
+```bash
+apt-get install -y --no-install-recommends \
+  libgl1 libegl1 libx11-6 libglib2.0-0 libgomp1
+```
+
+=== 机器学习项目中使用 Docker
+
+机器学习项目中使用 Docker 时，需要将 Windows 宿主机的 GPU 暴露给容器使用，容器才能使用 GPU 加速推理
+
+- 在 Windows 宿主机安装显卡驱动、cuda、cudnn 等
+- 在 docker 所在的宿主 WSL 中安装 cuda，根据 #link("https://zhuanlan.zhihu.com/p/555151725")，宿主 WSL 的 cuda 版本需要低于 Windows
+- 参考#link("https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html")[官方教程], 在宿主 WSL 中安装 NVIDIA Container Toolkit
+- 运行 `sudo nvidia-ctk runtime configure --runtime=docker` 启动配置
+- 使用 `docker run` 创建容器时, 还需要参数 `--gpus all` 引入 GPU 设备
