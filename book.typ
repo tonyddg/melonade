@@ -18,6 +18,7 @@
     - #chapter(none)[编程]
       - #chapter("./code/docker.typ")[Docker 笔记]
       - #chapter("./code/pybullet.typ")[Pybullet 笔记]
+      - #chapter("./code/camera.typ")[相机成像原理]
 
     - #chapter(none)[杂项]
       - #chapter("./random/shiroa.typ")[Shiroa 笔记]
