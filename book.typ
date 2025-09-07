@@ -18,7 +18,12 @@
     - #chapter(none)[编程]
       - #chapter("./code/docker.typ")[Docker 笔记]
       - #chapter("./code/pybullet.typ")[Pybullet 笔记]
+      - #chapter("./code/mujoco.typ")[mujoco 笔记]
       - #chapter("./code/camera.typ")[相机成像原理]
+
+    - #chapter(none)[神经网络]
+      - #chapter("./ml/ae.typ")[自编码器]
+      - #chapter("./ml/rnn_transformer.typ")[RNN 与 Transformer]
 
     - #chapter(none)[杂项]
       - #chapter("./random/shiroa.typ")[Shiroa 笔记]

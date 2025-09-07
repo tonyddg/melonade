@@ -4,8 +4,6 @@
 #import "/utility/widget.typ": *
 #import "@preview/cetz:0.4.1"
 
-#let bm(x) = math.upright(math.bold(x))
-
 #let fig1() = cetz.canvas({
   import cetz.draw: *
   let u(x) = x * 1.5cm
