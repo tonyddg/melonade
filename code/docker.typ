@@ -83,6 +83,8 @@ Dockerfile 中常用的指令有
 - `ENV <key1>=<value1> [<key2>=<value2>]` 设置容器环境变量
 - `EXPOSE <port1> [port2 ...]` 说明容器暴露的端口（在 `docker run -p <host_port>:<container_port>` 中主动开放才有效）
 - `CMD ['<命令>', '[参数1]', '[参数2 ...]']` 重置容器的启动命令
+- `SHELL ['<命令>', '[参数1]', '[参数2 ...]']` 设置 `RUN` 命令执行方式，即 `RUN` 命令的内容将接在 `SHELL` 指定的命令后
+  - 例如 `SHELL ["/bin/bash", "-c"]` 可将默认的 sh 修改为 bash 执行命令（`-c` 表示执行后续命令）
 
 例如以下命令将创建一个镜像，该镜像基于 Ubuntu22.04，首先安装 C++ 编译环境，然后将本地的 `main.cpp` 导入编译，运行镜像时执行编译结果
 
@@ -209,6 +211,69 @@ CMD ["./main"]
 
 杂项
 - 命令 `docker builder prune` 可用于清理构建镜像产生的临时文件（可以定期或构建失败后执行）
+
+=== 常用配置命令
+
+*apt 软件源配置*
+
+对于 Ubuntu24.04 前的版本，通过如下脚本在 Dockerfile 中配置清华源
+
+```Dockerfile
+# 清华源（使用 http）
+RUN sed -i 's|http://.*archive.ubuntu.com|http://mirrors.tuna.tsinghua.edu.cn|g' /etc/apt/sources.list && \
+    sed -i 's|http://.*security.ubuntu.com|http://mirrors.tuna.tsinghua.edu.cn|g' /etc/apt/sources.list && \
+    apt-get update && apt-get -y upgrade && \
+    # 更新 ca 证书
+    apt-get install -y --no-install-recommends apt-utils ca-certificates && \
+    update-ca-certificates && \
+```
+
+对于 Ubuntu24.04 后的版本
+
+```Dockerfile
+    # 需要提前安装 ca 证书相关包
+RUN apt-get update && apt-get install -y --no-install-recommends apt-utils ca-certificates && \
+    update-ca-certificates && \
+    # 清华源
+    cp /etc/apt/sources.list.d/ubuntu.sources /etc/apt/sources.list.d/ubuntu.sources.bak && \
+    # 写入清华镜像配置
+    printf 'Types: deb deb-src\nURIs: https://mirrors.tuna.tsinghua.edu.cn/ubuntu/\nSuites: noble noble-security noble-updates noble-proposed noble-backports\nComponents: main restricted universe multiverse\nSigned-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg\n' \
+  > /etc/apt/sources.list.d/ubuntu.sources && \
+    apt-get update && apt-get -y upgrade && \
+```
+
+*pypi 软件源配置*
+
+```Dockerfile
+    # 升级 Python（非必要）
+RUN python -m pip install --upgrade pip && \
+    # 设置全局 pip
+    pip config set global.index-url https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
+```
+
+*miniconda 安装*
+
+```Dockerfile
+    # 改用 bash 作为命令解释器
+SHELL ["/bin/bash", "-c"]
+
+    # 安装 miniconda（需要先安装 wget）
+RUN mkdir -p ~/miniconda3 && \
+    wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh && \
+    bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3 && \
+    rm ~/miniconda3/miniconda.sh && \
+    source ~/miniconda3/bin/activate && \
+    conda init --all && \
+    # CondaToSNonInteractiveError（同意协议，解决后续无法创建虚拟环境的问题）
+    conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main && \
+    conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r && \
+    # 创建虚拟环境（每个 run 命令使用 conda 前需要 source）
+    source ~/miniconda3/bin/activate && \
+    conda create -y -n <my_env> python=3.10 && \ 
+    conda activate <my_env> && \
+    # 写入 bashrc，自动打开虚拟环境
+    echo "conda activate <my_env>" >> ~/.bashrc && \
+```
 
 == 数据管理
 
