@@ -17,6 +17,12 @@
   ruby(head, bottom)
 }
 
+#let voc = yaml("/jap/vocabulary.yaml")
+#let aruby(kanji, i: 0) = {
+  let tup = voc.at(kanji).at(i)
+  fruby(tup.at(0), tup.at(1))
+}
+
 #let p-index = "/jap/index.typ"
 #let p-transform = "/jap/transform.typ"
 #let p-partial = "/jap/partial.typ"
