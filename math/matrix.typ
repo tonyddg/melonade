@@ -56,7 +56,7 @@ $
 arrow(y) = mat(arrow(x)_1,arrow(x)_2,dots,arrow(x)_n) mat(a_1;a_2;dots;a_n) = bm(X) arrow(a)
 $
 
-对于元素为向量的集合，可将系数 ${a_i}$ 视为向量 $arrow(a)$，基 $cal(B)={arrow(x)_1,arrow(x)_2,dots,arrow(x)_n}$ 视为*列向量沿行排列*得到的矩阵 $bm(X)$，可将向量 $arrow(a)$ 称为 $arrow(y)$ 在基 $bm(X)$ 下的坐标。
+对于元素为向量的集合，可简单地将系数 ${a_i}$ 视为向量 $arrow(a)$，基 $cal(B)={arrow(x)_1,arrow(x)_2,dots,arrow(x)_n}$ 视为*列向量沿行排列*得到的矩阵 $bm(X)$，可将向量 $arrow(a)$ 称为 $arrow(y)$ 在基 $bm(X)$ 下的坐标。
 
 因此对于线性方程组 $arrow(b)=bm(A)arrow(x)$
 - 方程组有解表明：向量 $arrow(b)$ 来自向量组 $bm(A)$ 构成的线性空间，即向量组 $[bm(A) arrow(b)]$ 线性相关
