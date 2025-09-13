@@ -149,9 +149,9 @@
 
     [#sym.tilde 天], [#aruby("一昨日")], [#aruby("昨日")], [#aruby("今日")], [#aruby("明日")], [#aruby("明後日")], [#aruby("毎日")],
 
-    [#sym.tilde 天早上], [#sym.tilde の#aruby("朝")], [#sym.tilde の#aruby("朝")], [#aruby("今朝")], [#sym.tilde の#aruby("朝")], [#sym.tilde の#aruby("朝")], [#sym.tilde #aruby("朝")],
+    [#sym.tilde 早上], [#sym.tilde の#aruby("朝")], [#sym.tilde の#aruby("朝")], [#aruby("今朝")], [#sym.tilde の#aruby("朝")], [#sym.tilde の#aruby("朝")], [#sym.tilde #aruby("朝")],
 
-    [#sym.tilde 天早上], [#sym.tilde の#aruby("晩")], [#aruby("昨夜")], [#aruby("今晩")], [#sym.tilde の#aruby("晩")], [#sym.tilde の#aruby("晩")], [#sym.tilde #aruby("晩")],
+    [#sym.tilde 晚上], [#sym.tilde の#aruby("晩")], [#aruby("昨夜")], [#aruby("今晩")], [#sym.tilde の#aruby("晩")], [#sym.tilde の#aruby("晩")], [#sym.tilde #aruby("晩")],
 
     [#sym.tilde 周], [#aruby("先々週")], [#aruby("先週")], [#aruby("今週")], [#aruby("来週")], [さ#aruby("来週")], [#sym.tilde #aruby("週")],
 
