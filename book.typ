@@ -24,6 +24,7 @@
     - #chapter(none)[神经网络]
       - #chapter("./ml/ae.typ")[自编码器]
       - #chapter("./ml/rnn_transformer.typ")[RNN 与 Transformer]
+      - #chapter("./ml/diffusion.typ")[Diffusion 笔记]
 
     - #chapter(none)[杂项]
       - #chapter("./random/shiroa.typ")[Shiroa 笔记]
