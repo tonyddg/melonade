@@ -9,7 +9,7 @@
 
 名词及形容词表示状态时，通过变形体现状态特点
 
-=== 形容词分类
+=== 形容词分类 <sec:adj_type>
 
 参考自 #link("https://res.wokanxing.info/jpgramma/adjectives.html")[形容词的属性]
 

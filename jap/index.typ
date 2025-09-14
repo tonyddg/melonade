@@ -22,6 +22,17 @@
   let tup = voc.at(kanji).at(i)
   fruby(tup.at(0), tup.at(1))
 }
+#let lruby(kanjis, i: 0) = {
+  let kanji_list = kanjis.split("|")
+  let cnt = 0
+  for k in kanji_list {
+    if type(i) == "list" {
+      aruby(k, i: i.at(cnt))
+    } else {
+      aruby(k, i: i)
+    }
+  }
+}
 
 #let p-index = "/jap/index.typ"
 #let p-transform = "/jap/transform.typ"
