@@ -160,7 +160,7 @@ $
 $
   mat(T(arrow(alpha)_1),dots,T(arrow(alpha)_m)) &= mat(arrow(beta)_1,dots,arrow(beta)_m) mat(x_(1,1),dots,x_(1,n);dots.v,,dots.v;x_(m,1),dots,x_(m,n))_(m,n)\ 
   mat(T(arrow(alpha)_1),dots,T(arrow(alpha)_m))_(m,n)&=bm(B)_(m,m)bm(X)_(m,n)\ 
-  T bm(A)&=bm(B)_(m,m)bm(X)_(m,n)
+  T bm(A)_(n,n)&=bm(B)_(m,m)bm(X)_(m,n)
 $
 
 根据线性变换后，原像与像线性组合不变的性质，如果已知原像 $arrow(a)$ 在基 ${arrow(alpha)_i}_n$ 的坐标 $arrow(x)_n$，就可以得到其经过线性变换的像 $arrow(b)$ 在基 ${arrow(beta)_i}_m$ 下的一组坐标 $arrow(y)_m$
@@ -225,7 +225,7 @@ $
 
 对于 $bold(V)^n$ 上的线性变换 $T$，还可以定义*不变子空间* $bold(W)={arrow(a)|arrow(a)=T arrow(b),arrow(b)in bold(W)}$，即不变空间中的元素经过线性变换后依然在不变空间内。显然，线性变换的核（变换结果 $arrow(0)$ 总在线性空间中）与值域（值域已经包含了所有线性变换结果）均为不变子空间。
 
-=== 最简线性变换矩阵与特征向量
+=== 线性变换的特征值
 
 对角矩阵是方阵中最简单的，而由特征值的性质可以知道，相似矩阵有着相同的特征值（与特征多项式）。因此对于定义在 $bold(V)^n$ 上的线性变换矩阵中，最简的矩阵即线性变换矩阵特征值构成的对角矩阵。
 
@@ -235,12 +235,12 @@ $
 
 在线性变换的角度中
 - 由于线性变换矩阵被表示为了最简单的对角矩阵 $bm(Lambda)$，此时变换的效果就可以简单地表示为拉伸向量在某个基 $bm(S)$ 下的坐标。
-- 由于原像 $arrow(xi)$ 经过线性变换后的像 $lambda_i arrow(xi)$ 成比例关系即相互平行，因此 $lambda_i$ 对应的所有特征向量 $bm(A) N(bm(X) - lambda_i bm(I))$（$bm(A)$ 为线性变换矩阵 $bm(X)$ 基偶中两个相同的基）构成一个不变子空间 $bold(W)$。
-- 由不同特征值的特征向量间线性无关的特性还可得出，#hl(2)[各个特征值 $lambda_i$ 对应的特征值构成的不变子空间 $bold(W)_i$ 的叫空间为 $arrow(0)$，和运算属于直和 $plus.circle$]
+- 由于原像 $arrow(xi)$ 经过线性变换后的像 $lambda_i arrow(xi)$ 成比例关系即相互平行，因此 $lambda_i$ 对应的所有特征向量 $bm(A) N(bm(X) - lambda_i bm(I))$（$bm(A)$ 为线性变换矩阵 $bm(X)$ 基偶中两个相同的基）构成一个不变子空间 $bold(W)$，记为 $bold(V)_(lambda_i)$。
+- 由不同特征值的特征向量间线性无关的特性还可得出，#hl(2)[各个特征值 $lambda_i$ 对应的特征值构成的不变子空间 $bold(W)_i$ 的叫空间为 $arrow(0)$，和运算属于直和 $plus.circle$]。
 
 === 特征值的计算与性质
 
-特征值以方阵为讨论对象，对于矩阵 $bm(A) in bold(V)^(n times n)$，存在某些方向的向量 $arrow(x)_i eq.not arrow(0)$ 在右乘 $bm(A)$ 后，得到的结果仍然平行于 $arrow(x)_i$，将具有这种特性的向量称为特征向量 $arrow(x)_i$，而称相乘结果 $bm(A)arrow(x)_i$ 与原向量 $arrow(x)_i$ 之比 $lambda_i$ 为特征值，即
+首先以方阵为讨论对象探究特征值，对于矩阵 $bm(A) in bold(V)^(n times n)$，存在某些方向的向量 $arrow(x)_i eq.not arrow(0)$ 在右乘 $bm(A)$ 后，得到的结果仍然平行于 $arrow(x)_i$，将具有这种特性的向量称为特征向量 $arrow(x)_i$，而称相乘结果 $bm(A)arrow(x)_i$ 与原向量 $arrow(x)_i$ 之比 $lambda_i$ 为特征值，即
 
 $
   bm(A)arrow(x)_i&=lambda_i arrow(x)_i\ 
@@ -248,20 +248,39 @@ $
 $
 
 由变形 $(bm(A)-lambda_i bm(I))arrow(x)_i&=arrow(0)$ 可知
-- 矩阵 $(bm(A)-lambda_i bm(I))$ 需要是不可逆的（向量组线性无关）才能保证以上方程有解，因此特征值满足 $det(bm(A)-lambda_i bm(I))=0$ 该方程可展开为一个 $n$ 次多项式，包含重根与复数根在内一定有 $n$ 个解，即矩阵 $bm(A)$ 有 $n$ 个特征值，但可能存在重复多次的特征值。
-- 如果已知特征值 $lambda_i$ 后，特征向量即零空间 $N(bm(A)-lambda_i bm(I))$ 中的一个向量，当 $dim N(bm(A)-lambda_i bm(I))>1$ 时，#hl(2)[一个特征值可以对应无数个特征向量]（一般使用 $N(bm(A)-lambda_i bm(I))$ 的一组基代表用于特征向量矩阵）。
-- 因此定义 $lambda_i$ 为特征多项式的 $n_i$ 重根中，称 $m_a (lambda_i)=n_i$ 为 $lambda_i$ 的*代数重数*；定义 $dim N(bm(A)-lambda_i bm(I))=k_i$ 中，称 $m_g (lambda_i)=k_i$ 为 $lambda_i$ 的*几何重数*。
-- 此处不加证明给出以下两个结论：
-  - 对于任意特征值 $lambda_i$ 代数重数与几何重数有大小关系：$1 lt.eq m_g (lambda_i) lt.eq m_a (lambda_i)$。这一关系表明线性变换可能存在受别的方向牵连的剪切，无法简单地将线性变换分解为几个独立方向的拉伸。
-  - 不同特征值的特征向量间线性无关
-  
+- 矩阵 $(bm(A)-lambda_i bm(I))$ 需要是不可逆的（向量组线性相关）才能保证以上方程有解，因此特征值满足 $det(bm(A)-lambda_i bm(I))=0$ 该方程可展开为一个 $n$ 次多项式，包含重根与复数根在内一定有 $n$ 个解，即矩阵 $bm(A)$ 有 $n$ 个特征值，但可能存在重复多次的特征值。
+- 如果已知特征值 $lambda_i$ 后，特征向量即零空间 $N(bm(A)-lambda_i bm(I))$ 中的任意一个向量，#hl(2)[一个特征值可以对应无数个特征向量]。并且还有可能出现 $dim N(bm(A)-lambda_i bm(I))>1$ 即一个特征值对应了多个线性无关的特征向量的情况，（一般使用 $N(bm(A)-lambda_i bm(I))$ 的一组基代表用于特征向量矩阵）。
+- 因此定义*代数重数* $m_a (lambda_i)$ 为 $lambda_i$ 作为特征多项式根的重数 $n_i$；定义*几何重数* $m_g (lambda_i)$ 为 $lambda_i$ 对应所有特征向量组成的子空间的维度 $dim N(bm(A)-lambda_i bm(I))=dim(bold(V)_(lambda_i))=k_i$。
+- #hl(2)[对于任意特征值 $lambda_i$ 的代数重数与几何重数有大小关系：$1 lt.eq m_g (lambda_i) lt.eq m_a (lambda_i)$]。这一关系表明线性变换可能存在受别的方向牵连的剪切变换，无法简单地将线性变换分解为几个独立方向的拉伸。
+
+由上节讨论可知，对于线性变换以上结论同样适用
+
+=== 线性变换的对角化
+
+此处不加证明地给出特征向量性质：#hl(2)[不同特征值对应的特征向量间线性无关]。
+
+因此如果一个 $bold(V)^T$ 的线性变换 $T$ 存在 $n$ 个线性无关的特征向量 ${arrow(s)_i}_n$，将这些特征向量排列为方阵 $bm(S)$，根据线性变换特征值的性质有：
+
+$
+  T bm(S)=mat(T arrow(s)_1,dots,T arrow(s)_n)=mat(lambda_1 arrow(s)_1,dots,lambda_n arrow(s)_n)=mat(arrow(s)_1,dots,arrow(s)_n)mat(lambda_1;,dots.down;,,lambda_n)=bm(S)bm(Lambda)
+$
+
+可以发现等式 $T bm(S)=bm(S)bm(Lambda)$ 中的 $bm(Lambda)$ 即基偶 ${bm(S),bm(S)}$ 下的线性变换矩阵，这也是最简的线性变换矩阵，称为线性变换 $T$ 的*对角化*。
+
+然而并不是每个线性变换都可以对角化的，仅当满足以下等价条件之一，线性变换才可以对角化
+- 线性变换 $T$ 有 n 个线性无关的特征向量
+- $dim bold(V)_(lambda_i)=n_i,1 lt.eq i lt.eq n$ 即所有特征值代数重数与几何重数相同（代数重数均为 1 一定成立）
+- $bold(V)_(lambda_1) plus.circle dots plus.circle bold(V)_(lambda_n) = bold(V)^n$
+
+=== 线性变换的特征值与对角化例子
+
 此处给出一个线性变换特征值计算例子：定义在多项式线性空间 $bold(P)_(2(t))$ 下的线性变换 $T$ 满足：
 
 $
   T[p(t)]=p(t)+(t+1)(d)/(d t)p(t)
 $
 
-首先取一组线性空间 $bold(P)_(2(t))$ 的基 ${alpha_i}={1,t,t^2}$，有相应线性变换结果 ${1,1+2t,2t+3t^2}$，取各个结果在 ${alpha_i (t)}$ 下的坐标可得线性变换矩阵 $bm(X)$ 与特征多项式：
+首先取一组线性空间 $bold(P)_(2(t))$ 的基 ${alpha_i}={1,t,t^2}$，有相应线性变换结果 ${1,1+2t,2t+3t^2}$，取各个结果在 ${alpha_i (t)}$ 下的坐标可得线性变换矩阵 $bm(X)$ 与线性变换的特征多项式：
 
 $
   bm(X)=mat(1, 1, 0; 0, 2, 2; 0, 0, 3),det(bm(X)-lambda bm(I))=(1-lambda)(2-lambda)(3-lambda)
@@ -277,5 +296,16 @@ $
 
 将以上三个线性空间表示为多项式线性组合的形式即线性变换 $T$ 的特征向量。因此特征值 $lambda_1=1$ 有特征向量 $k_1$；特征值 $lambda_1=2$ 有特征向量 $k_2(1+t)$；特征值 $lambda_3=3$ 有特征向量 $k_3(1+2t+t^2)$。其中 $k_1,k_2,k_3$ 可取任意实数。
 
-=== 矩阵的相似对角化
+== 方阵的相似化简
+
+=== 特征值性质补充
+
+此处再不加证明的给出以下特征值的性质：
+- 定义方阵 $bm(A)$ 对角线上的元素之和称为*迹* $tr(A)$，则 $bm(A)$ 的迹等于其特征值之和, 可用该性质寻找最后一个特征值。
+- 方阵 $bm(A)$ 的行列式等于其特征值之积，同时矩阵的行列式也等于其特征方程中的常数项乘以 $(-1)^n$
+- 方阵 $bm(A)$ 有特征值 $lambda_i$, 则矩阵数乘 $k bm(A)$ 有特征值 $k lambda_i$
+- 方阵 $bm(A)$ 有特征值 $lambda_i$, 则矩阵与单位矩阵运算 $bm(A)+k bm(I)$ 有特征值 $lambda_i+k$, 且对应特征值的特征向量相同, 简单证明如下（注意对于任意两个矩阵 $bm(A),bm(B)$, 其和与积的特征值不存在特殊性质）$ (bm(A)+k bm(I))arrow(x)=lambda_i arrow(x)+k arrow(x)=(lambda_i+k)arrow(x) $
+- 方阵 $bm(A)$ 以及其转置 $bm(A)^T$ 具有相同的特征值
+- 方阵 $bm(A)$ 的逆 $bm(A)^(-1)$ 的特征值为方阵 $bm(A)$ 特征值 $lambda_i$ 的倒数 $1/lambda_i$
+
 
