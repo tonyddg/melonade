@@ -302,13 +302,19 @@ $
 
 此处再不加证明的给出以下特征值的性质：
 - 定义方阵 $bm(A)$ 对角线上的元素之和称为*迹* $tr(A)$，则 $bm(A)$ 的迹等于其特征值之和, 可用该性质寻找最后一个特征值。
-- 方阵 $bm(A)$ 的行列式等于其特征值之积，同时矩阵的行列式也等于其特征方程中的常数项乘以 $(-1)^n$（可快速判断特征多项式是否正确、矩阵是否可逆）
+- 方阵 $bm(A)$ 的行列式等于其特征值之积，同时矩阵的行列式也等于其特征方程中的常数项乘以 $(-1)^n$（特征多项式来自 $det(lambda I - A)$ 可快速判断特征多项式是否正确、矩阵是否可逆）
 - 方阵 $bm(A)$ 有特征值 $lambda_i$, 则矩阵数乘 $k bm(A)$ 有特征值 $k lambda_i$
 - 方阵 $bm(A)$ 有特征值 $lambda_i$, 则矩阵与单位矩阵运算 $bm(A)+k bm(I)$ 有特征值 $lambda_i+k$, 且对应特征值的特征向量相同, 简单证明如下（注意对于任意两个矩阵 $bm(A),bm(B)$, 其和与积的特征值不存在特殊性质）$ (bm(A)+k bm(I))arrow(x)=lambda_i arrow(x)+k arrow(x)=(lambda_i+k)arrow(x) $
 - 方阵 $bm(A)$ 以及其转置 $bm(A)^T$ 具有相同的特征值
 - 方阵 $bm(A)$ 的逆 $bm(A)^(-1)$ 的特征值为方阵 $bm(A)$ 特征值 $lambda_i$ 的倒数 $1/lambda_i$
-- 当方阵 $bm(A)$ 的特征值全为 $0$ 时，一定存在整数 $k$ 使得 $bm(A)^k=bm(0)$，称 $bm(A)$ 为*幂零矩阵*
+- 当方阵 $bm(A)$ 的特征值全为 $0$ 时，一定存在整数 $k$ 使得 $bm(A)^k=bm(0)$，称 $bm(A)$ 为*幂零矩阵*，幂零矩阵一般有形如以下矩阵的结构 $ mat(0, 1;0,0)^2=bm(0),mat(0,1,0;,0,1;,,0)^3=bm(0) $
 - （Sylverster 定理）对于矩阵 $bm(A)in bold(V)^(m times n),bm(B)in bold(V)^(n times m),m gt.eq n$，方阵 $bm(A)bm(B),bm(B)bm(A)$ 分别有特征多项式 $f_(A B)(lambda),f_(B A)(lambda)$，两个多项式满足 $ f_(A B)(lambda)=lambda^(m-n) f_(B A)(lambda) $ 即方阵 $bm(A)bm(B)$ 与 $bm(B)bm(A)$ 有相同的特征值，不同部分全为 $0$。（如果 $bm(A),bm(B)$ 均为方阵则 $bm(A)bm(B),bm(B)bm(A)$ 特征值相同）
+
+解题中可能会出现对角上排列方阵 $bm(A)_i$ 的大矩阵 $bm(A)$，对于这类分块对角矩阵
+- 行列式等于对角线上各个方阵行列式之积
+- 特征值等于对角线上各个方阵的特征值
+- 相同结构的对角方阵矩阵相乘时，等于对应位置矩阵相乘
+- 对角线上排列幂零矩阵时，整个矩阵变为零所需的幂次取决于其中幂次最高的幂零矩阵
 
 === 矩阵多项式
 
@@ -317,10 +323,12 @@ $
 对于矩阵多项式有如下特性
 - 矩阵相乘不满足交换律，但是对于两个矩阵多项式相乘满足交换律 $p(bm(A))q(bm(A))=q(bm(A))p(bm(A))$
 - 对于矩阵 $bm(A)$ 的特征值 $lambda_i$，矩阵多项式 $p(bm(A))$ 的特征值满足 $p(lambda_i)$ 且特征向量相同
-- 如果 $p(bm(A))=bm(0)$ 称多项式 $p(t)$ 为矩阵 $bm(A)$ 的*零化多项式*，并且矩阵 $bm(A)$ 的特征多项式一定是零化多项式
-- 称矩阵 $bm(A)$ 的零化多项式中，次数最小的多项式为 $bm(A)$ 的*最小多项式* 记为 $m_(bm(A))(lambda)$，且最小多项式是唯一的。
-  - 对矩阵 $bm(A)$ 的所有特征值，一定有 $m_(bm(A))(lambda_i)=0$
-  - 仅当矩阵 $bm(A)$ 的所有特征值的代数重数均为一，才能保证最小多项式与特征多项式相同
+- 如果 $p(bm(A))=bm(0)$ 称多项式 $p(t)$ 为矩阵 $bm(A)$ 的*零化多项式*，并且矩阵 $bm(A)$ 的特征多项式一定是零化多项式（零化多项式有无穷多个）
+- 称矩阵 $bm(A)$ 的零化多项式中，首系数为 1（因式分解中则所有因式首系数为 1）且次数最小的多项式为 $bm(A)$ 的*最小多项式* 记为 $m_(bm(A))(lambda)$，且最小多项式是唯一的。
+  - 对矩阵 $bm(A)$ 的所有特征值，一定有 $m_(bm(A))(lambda_i)=0$，因此假设 $bm(A)$ 有经过因式分解的特征多项式 $product (lambda-lambda_i)^(m_i)$，则最小多项式有结构 $product (lambda-lambda_i)^(k_i)$，对应次数有关系 $m_i gt.eq k_i gt.eq 1$
+  - 仅当矩阵 $bm(A)$ 的所有特征值的代数重数均为一，才能保证最小多项式与令首系数为 1 的特征多项式相同
+
+#line(length: 100%)
 
 利用以上三个特性可以用于化简与求解复杂的矩阵多项式，例如：
 
@@ -353,3 +361,89 @@ $
   -bm(A)^2+4 bm(A) -5 bm(I) + 2 bm(A)^(-1)&=bm(0)\ 
   1/2(bm(A)^2-4 bm(A) +5 bm(I))&=bm(A)^(-1)
 $
+
+#line(length: 100%)
+
+关于矩阵最小多项式的计算有如下例题：
+
+$
+  "求" bm(A)=mat(2,1;0,2;,,1,1;,,-2,4) "的最小多项式"
+$
+
+首先利用对角分块矩阵性质，求出矩阵 $bm(A)$ 的特征多项式满足
+
+$
+  det(bm(A)-lambda bm(I))=det(mat(2,1;0,2)-lambda bm(I)) dot det(mat(1,1;-2,4)-lambda bm(I))=(lambda-3)(lambda-2)^3
+$
+
+所以最小多项式具有形式 $(lambda-3)(lambda-2)^k$，从 $k=1$ 增大验证多项式是否为最小多项式
+
+$
+  (lambda-3)(lambda-2)=mat(0,-1;0,0;,,0,0;,,0,0)eq.not bm(0); (lambda-3)(lambda-2)^2=bm(0)
+$
+
+所以矩阵 $bm(A)$ 的最小多项式为 $(lambda-3)(lambda-2)^2$
+
+计算时注意
+- 题目大多为分块矩阵，要充分利用其性质
+- 验证最小多项式时，除了待确定的 $bm(A)-2 bm(I)$，不要忘记以确定的一次项 $bm(A)-3 bm(I)$
+- 每次令 $k+1$ 时，注意不是乘以自身，而是乘以 $bm(A)-2 bm(I)$
+
+=== 最小多项式与对角化关系
+
+首先给出以下引理：对于矩阵 $bm(A)in bold(V)^(m times n),bm(B)in bold(V)^(n times s)$，两个矩阵乘积的秩满足（矩阵相乘秩不会增加）
+
+$
+  r(bm(A))+r(bm(B))-n lt.eq r(bm(A)bm(B)) lt.eq min[r(bm(A)),r(bm(B))]
+$
+
+根据以上引理可以证明，当矩阵的最小多项式没有重根时：
+- 该矩阵一定可以相似对角化
+- 该矩阵所有特征值的几何重数等于代数重数
+- 进一步可以退出，当矩阵有没有重根的零化多项式，则该矩阵可以相似对角化（不一定是最小多项式）
+
+== Jordan 标准型
+
+=== Jordan 块
+
+Jordan 块具有以下形式，其中 $lambda$ 为任意复数，$r$ 为 Jordan 块的阶数。将多个 Jordan 块排列为分块对角矩阵即 Jordan 矩阵。
+
+$
+  mat(lambda, 1,,;,lambda,dots.down,,;,,dots.down,1,;,,,lambda)_(r times r),mat(lambda)_(1 times 1)
+$
+
+在一个 Jordan 矩阵，通常将其中相同特征值的 Jordan 块整合为 Jordan 子矩阵，由此构成三级结构，例如
+
+$
+  mat(mat(delim: #none, 1,1;0,1);,mat(delim: #none, 2);,,mat(delim: #none, 2,1;0,2)) arrow mat(1,1;0,1), mat(2;,2,1;,,2) arrow mat(1,1;0,1), mat(2,1;,2), mat(2)
+$
+
+=== 矩阵的 Jordan 标准型分解
+
+根据 $r(bm(A)^2) lt.eq r(bm(A))$，以及 $r N(bm(A))=n-r C(bm(A))$，因此方程 $bm(A)^k arrow(x)=arrow(0)$ 比 $bm(A)arrow(x)=arrow(0)$ 解的维度可能更高。因此希望通过 $(bm(A)-lambda bm(I))^k arrow(x)=arrow(0)$ 扩展根数量，以弥补几何重数小于代数重数的问题。
+
+对于方阵 $bm(A)$ 的特征值 $lambda_i$，如果存在正整数 $k$ 满足
+
+$
+  (bm(A)-lambda_i bm(I))^(k-1)arrow(x)_(i k) eq.not arrow(0), (bm(A)-lambda_i bm(I))^(k)arrow(x)_(i k) eq.not arrow(0)
+$
+
+称向量 $arrow(x)_(i k)$ 为矩阵 $bm(A)$ 关于特征向量 $lambda_i$ 的 $k$ 级根向量
+
+关于根向量有如下定理：
+- 从特征向量可以推广，矩阵 $bm(A)$ 不同特征值间的各级根向量是线性无关的。
+- 将根向量级别最高的 $k$ 记为特征值 $lambda_i$ 的*指标* $r_i$，定义*根空间* $N_(lambda_i)=N[(bm(A)-lambda bm(I))^(r_i)]$，根空间维度 $dim N_(lambda_i)$ 一定等于代数重数 $m_A (lambda_i)$（指标一般小于等于代数重数）
+- 不同特征向量的根空间的和运算属于直和 $plus.circle$，所有根空间直和得到向量空间 $CC^(n)$
+
+高级根向量求解比较困难，通常有如下技巧（以二级根向量为例）
+
+$
+  (bm(A)-lambda_i bm(I))^2 arrow(x)=arrow(0) arrow (bm(A)-lambda_i bm(I))(bm(A)-lambda_i bm(I)) arrow(x)=arrow(0)\ 
+  "对于" arrow(y) "满足" (bm(A)-lambda_i bm(I))arrow(y)=arrow(0), "方程的解" arrow(x) "满足" (bm(A)-lambda_i bm(I))arrow(x)=arrow(y)
+$
+
+矩阵的 Jordan 标准型中的子矩阵有
+- 每个特征值对应一个 Jordan 子矩阵，其代数重数即其在 Jordan 标准型中子矩阵的大小
+- Jordan 子矩阵中，最大的 Jordan 块阶数与对应特征值的指标 $r_i$ 相同
+
+
