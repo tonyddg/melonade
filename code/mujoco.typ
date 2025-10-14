@@ -1,7 +1,7 @@
 #import "/book.typ": book-page, cross-link, templates
 #show: book-page.with(title: "Mujoco 笔记")
 
-#import "/utility/widget.typ": *
+#import "/utility/include.typ": *
 
 = Mujoco 笔记
 
@@ -504,7 +504,7 @@ Mujoco 不提供逆运动学相关求解算法，只能通过软约束连接机�
 场景中使用 Mocap 时，注意
 - Mocap 与控制器冲突，需要禁用或去掉所有相关的控制器
 - 为了保证关节稳定，需要在关节上添加摩擦系数，如 `frictionloss="50"`
-- 可以参考本笔记在 panda 基础上修改得到的，#link("https://github.com/tonyddg/melonade/blob/main/code/res/panda_mocap.xml")[适用于 Mocap 的场景]
+- 可以参考本笔记在 panda 基础上修改得到的，#link(github-raw-link("code/res/panda_mocap.xml"))[适用于 Mocap 的场景]
 
 在代码中控制 Mocap 时与 `ctrl` 类似，不能直接修改物体的位姿，而是使用 `MjData` 的属性 `MjData.mocap_pos` 与 `MjData.mocap_quat` 控制，其中
 - `MjData.mocap_pos` 与 `MjData.mocap_quat` 为二维 Numpy 数组，第一维为 `mocap` 物体的编号（按定义顺序确定）
