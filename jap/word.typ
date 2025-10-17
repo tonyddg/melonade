@@ -1,7 +1,7 @@
 #import "./index.typ": *
 #show: book-page.with(title: "词语与词组")
 
-#import "/utility/widget.typ": *
+#import "/utility/include.typ": *
 
 // = 词语与词组
 

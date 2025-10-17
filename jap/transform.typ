@@ -1,7 +1,7 @@
 #import "./index.typ": *
 #show: book-page.with(title: "词语变形")
 
-#import "/utility/widget.typ": *
+#import "/utility/include.typ": *
 
 = 词语变形
 

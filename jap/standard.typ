@@ -1,7 +1,7 @@
 #import "./index.typ": *
 #show: book-page.with(title: "标日初级笔记")
 
-#import "/utility/widget.typ": *
+#import "/utility/include.typ": *
 
 = 标日初级笔记
 

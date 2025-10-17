@@ -1,7 +1,7 @@
 #import "./index.typ": *
 #show: book-page.with(title: "句型")
 
-#import "/utility/widget.typ": *
+#import "/utility/include.typ": *
 
 = 句型
 
