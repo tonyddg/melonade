@@ -296,29 +296,40 @@ RUN mkdir -p ~/miniconda3 && \
 通过 #link(<docker_run>)[docker run] 命令的参数 `--mount` 设置目录挂载配置（挂载必须使用绝对路径）
 - 挂载数据卷 `--mount source=<数据卷名>,target=<容器挂载目录>`
 - 挂载宿主机目录 `--mount type=bind,source=<主机绝对路径>,target=<容器挂载目录>[,readonly]` 后续的 `readonly` 可以设挂载目录为只读
+  - Windows 中，主机路径使用 `/<磁盘名>/.../...` 的格式
 
-== 杂项
+== Docker Compose 容器编排
 
-=== Docker Compose
+启用 Docker 容器时，依然存在大量配置将导致命令臃肿，Docker Compose 则可以使用清晰的 yaml 文件表示这些配置，方便容器的创建。除此之外 Docker Compose 也可用于同时创建多个容器集群。
 
-启用 Docker 容器时，依然存在大量配置将导致命令臃肿，Docker Compose 则可以使用清晰的 yaml 文件表示这些配置，方便容器的创建。除此之外 Docker Compose 也可用于同时创建多个容器集群
+=== docker-compose 配置
 
-`docker-Compose.yml` 文件中，第一级用于分类创建集群所需的数据卷、容器等，第二级键则表示创建数据卷、容器的名称，键值则为其具体配置
+`docker-compose.yml` 文件中，第一级用于分类创建集群所需的数据卷、容器等，第二级键则表示创建数据卷、容器的名称（可以有多个），键值则为其具体配置
 
 此处仅介绍用于定义容器的键 `services`，其常用的配置键有
 - `image` 镜像名称（容器将基于给定镜像创建）
 - `build` 镜像构建上下文及 `Dockerfile` 所在目录（将首先创建镜像，然后在该镜像基础上创建容器）
 - `ports` 相当于 `-p` 选项，值为列表，列表中使用字符串 `<source>:<container>` 表示端口的映射
 - `volumes` 相当于 `--mount` 选项，值为列表，列表中使用字符串 `<source>:<container>[:ro]` 表示挂载，可同时表示数据卷与主机目录的挂载，`ro` 即只读
+  - `<source>` 中可以使用相对路径，路径起点为 `docker-compose.yml` 文件所在目录
+  - `<source>` 表示 Windows 宿主机目录时，使用 `/c/...` 等方式表示磁盘号
 - `environment` 相当于 `-e` 选项，值为字典，即环境变量的名称与值
 - `restart: unless-stopped` 实用配置，表示不断重启直到成功启动，用于依赖于其他容器的容器等待依然容器启动成功
 
-通过命令 `docker compose -f <compose_path> <action>` 启动与管理容器集群
-- `compose_path` 文件 `docker-Compose.yml` 的路径
-- `action` 对集群的操作，常用的有
-  - `up` 启动集群中的所有容器
-  - `down` 停止集群中的所有容器
-  - `log` 查看集群容器的输出
+关于更多配置参见#link("https://www.runoob.com/docker/docker-compose.html")[相关教程]
+
+=== docker-compose 命令
+
+通过命令 `docker-compose up [-f <compose_path>] [-d] [--build]` 启动容器集群
+- 选项 `-f` 从指定路径寻找 `docker-compose.yml`，默认从当前目录下寻找（通常 `docker-compose` 都会从当前目录下寻找，只有该子命令可以指定 `docker-compose.yml` 的路径）
+  - `compose_path` 文件 `docker-compose.yml` 的路径（可以是任意名称的 `yaml` 文件）
+- 选项 `-d` 从后台启动容器集群（类似 `docker run -d`）
+- 选项 `--build` 强制重新构建镜像
+
+通过命令 `docker-compose down` 关闭容器集群
+- 该命令通过当前目录下的 `yml` 文件识别需要关闭的集群
+
+== 杂项
 
 === Docker-Desktop 支持窗口显示
 
@@ -356,3 +367,18 @@ apt-get install -y --no-install-recommends \
 - 参考#link("https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html")[官方教程], 在宿主 WSL 中安装 NVIDIA Container Toolkit
 - 运行 `sudo nvidia-ctk runtime configure --runtime=docker` 启动配置
 - 使用 `docker run` 创建容器时, 还需要参数 `--gpus all` 引入 GPU 设备
+
+一个机器学习项目通常可使用以下配置启动 Docker 容器
+
+```bash
+docker run \
+  -it \
+  --gpus all \
+  --name <容器名> \
+  --mount type=bind,src=/mnt/e/dataset,dst=/dataset \
+  -e DISPLAY=$DISPLAY \
+  -v /tmp/.X11-unix:/tmp/.X11-unix \
+  -p8000:8000 \
+  --shm-size 4G \
+  <镜像名>
+```
