@@ -47,4 +47,29 @@
 
 }
 
-#let bm(x) = math.upright(math.bold(x))
+#import "@preview/showybox:2.0.4": showybox
+#let problem_box(
+  body, 
+  problem: [],
+  title: [], 
+  width: 95%,
+  theme_dark : rgb("#23373b"), 
+  theme_light: rgb("#fafafa"),
+) = (
+  figure(
+    showybox(
+        frame: (
+            title-color: theme_dark, 
+            body-color: theme_light, 
+            border-color: theme_dark,
+            thickness: 2pt,
+            radius: 10pt
+        ),
+        title-style: (
+            weight: "bold"
+        ),
+        title: title,
+        width: width,
+    )[#problem][#body]
+  )
+)
