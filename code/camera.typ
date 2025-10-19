@@ -1,7 +1,7 @@
 #import "/book.typ": book-page, cross-link, templates
 #show: book-page.with(title: "相机成像原理")
 
-#import "/utility/widget.typ": *
+#import "/utility/include.typ": *
 #import "@preview/cetz:0.4.1"
 
 #let fig1() = cetz.canvas({

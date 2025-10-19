@@ -15,11 +15,18 @@
       - #chapter("./jap/sentence.typ")[句型]
       - #chapter("./jap/word.typ")[词语与词组]
 
+    - #chapter(none)[数学]
+      - #chapter("./math/matrix.typ")[矩阵论]
+      - #chapter("./math/analyze.typ")[数值分析]
+      - #chapter("./math/statistic.typ")[数理统计]
+
     - #chapter(none)[编程]
       - #chapter("./code/docker.typ")[Docker 笔记]
       - #chapter("./code/pybullet.typ")[Pybullet 笔记]
       - #chapter("./code/mujoco.typ")[mujoco 笔记]
       - #chapter("./code/camera.typ")[相机成像原理]
+      - #chapter("./code/cmake.typ")[CMake 笔记]
+      - #chapter("./code/vscode.typ")[Vscode 笔记]
 
     - #chapter(none)[神经网络]
       - #chapter("./ml/ae.typ")[自编码器]

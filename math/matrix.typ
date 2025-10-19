@@ -1,7 +1,7 @@
 #import "/book.typ": book-page, cross-link
 #show: book-page.with(title: "矩阵论")
 
-#import "/utility/widget.typ": *
+#import "/utility/include.typ": *
 #set math.mat(delim: "[")
 #set math.vec(delim: "[")
 
@@ -119,13 +119,13 @@ $
 
 *和运算* $bold(V)_1 + bold(V)_2={arrow(x)_1+arrow(x)_2|arrow(x)_1 in bold(V)_1,arrow(x)_2 in bold(V)_2}$
 - 和空间相当于将两个线性空间的基混合，因此和空间的维度满足 $ dim{C(bm(A))+C(bm(B))}=dim{C([bm(A) space bm(B)])} $
-- 当 $dim bold(V)_1 + dim bold(V)_2 = dim(bold(V)_1 + bold(V)_2)$ 称为直和，记为 $dim bold(V)_1 plus.circle dim bold(V)_2$，此时 $dim(bold(V)_1 sect.big bold(V)_2)=0$
+- 当 $dim bold(V)_1 + dim bold(V)_2 = dim(bold(V)_1 + bold(V)_2)$ 称为直和，记为 $dim bold(V)_1 plus.circle dim bold(V)_2$，此时 $dim(bold(V)_1 inter.big bold(V)_2)=0$
 - 对于 $bb(R)^n$ 的子空间 $bold(V)_i$，定义补空间 $bold(V)^L_i$ 满足 $bold(V)^L_i plus.circle bold(V)_i = bb(R)^n$
 
-*交运算* $bold(V)_1 sect.big bold(V)_2={arrow(x)|arrow(x) in bold(V)_1 and arrow(x) in bold(V)_2}$
-- 交空间要求向量同时存在于两个子空间，即对于 $C(bm(A)) sect.big C(bm(B))$ 满足 $ arrow(p)=bm(A)arrow(x)=bm(B)arrow(y) arrow mat(bm(A),-bm(B))mat(arrow(x); arrow(y))=arrow(0) $
-- 可得，交空间的维度满足 $ dim{C(bm(A)) sect.big C(bm(B))}=dim{N([bm(A) space bm(B)])} $
-- 和空间维度反映两个子空间独立维度的个数，交空间反映两个子空间重叠维度的格式，因此 $ dim(bold(V)_1 + bold(V)_2)+dim(bold(V)_1 sect.big bold(V)_2)=dim(bold(V)_1)+dim(bold(V)_2) $
+*交运算* $bold(V)_1 inter.big bold(V)_2={arrow(x)|arrow(x) in bold(V)_1 and arrow(x) in bold(V)_2}$
+- 交空间要求向量同时存在于两个子空间，即对于 $C(bm(A)) inter.big C(bm(B))$ 满足 $ arrow(p)=bm(A)arrow(x)=bm(B)arrow(y) arrow mat(bm(A),-bm(B))mat(arrow(x); arrow(y))=arrow(0) $
+- 可得，交空间的维度满足 $ dim{C(bm(A)) inter.big C(bm(B))}=dim{N([bm(A) space bm(B)])} $
+- 和空间维度反映两个子空间独立维度的个数，交空间反映两个子空间重叠维度的格式，因此 $ dim(bold(V)_1 + bold(V)_2)+dim(bold(V)_1 inter.big bold(V)_2)=dim(bold(V)_1)+dim(bold(V)_2) $
 
 需要注意的是，子空间求并后不一定是线性空间，如子空间 $R(mat(1, 0)^T),R(mat(0, 1)^T)$ 的并集包含向量 $mat(1, 0)^T,mat(0, 1)^T$, 但不包含 $mat(1, 1)^T$，显然不对加法封闭
 
@@ -252,6 +252,7 @@ $
 - 如果已知特征值 $lambda_i$ 后，特征向量即零空间 $N(bm(A)-lambda_i bm(I))$ 中的任意一个向量，#hl(2)[一个特征值可以对应无数个特征向量]。并且还有可能出现 $dim N(bm(A)-lambda_i bm(I))>1$ 即一个特征值对应了多个线性无关的特征向量的情况，（一般使用 $N(bm(A)-lambda_i bm(I))$ 的一组基代表用于特征向量矩阵）。
 - 因此定义*代数重数* $m_a (lambda_i)$ 为 $lambda_i$ 作为特征多项式根的重数 $n_i$；定义*几何重数* $m_g (lambda_i)$ 为 $lambda_i$ 对应所有特征向量组成的子空间的维度 $dim N(bm(A)-lambda_i bm(I))=dim(bold(V)_(lambda_i))=k_i$。
 - #hl(2)[对于任意特征值 $lambda_i$ 的代数重数与几何重数有大小关系：$1 lt.eq m_g (lambda_i) lt.eq m_a (lambda_i)$]。这一关系表明线性变换可能存在受别的方向牵连的剪切变换，无法简单地将线性变换分解为几个独立方向的拉伸。
+- 对称矩阵一定可对角化
 
 由上节讨论可知，对于线性变换以上结论同样适用
 
@@ -276,13 +277,18 @@ $
 - $dim bold(V)_(lambda_i)=n_i,1 lt.eq i lt.eq n$ 即所有特征值代数重数与几何重数相同（代数重数均为 1 一定成立）
 - $bold(V)_(lambda_1) plus.circle dots plus.circle bold(V)_(lambda_n) = bold(V)^n$
 
-=== 线性变换的特征值与对角化例子
-
-此处给出一个线性变换特征值计算例子：定义在多项式线性空间 $bold(P)_(2(t))$ 下的线性变换 $T$ 满足：
-
-$
-  T[p(t)]=p(t)+(t+1)(d)/(d t)p(t)
-$
+#problem_box(
+  title: [线性变换的特征值与对角化例题],
+  problem: [
+    定义在多项式线性空间 $bold(P)_(2(t))$ 下的线性变换 $T$ 满足：
+    
+    $
+      T[p(t)]=p(t)+(t+1)(d)/(d t)p(t) 
+    $
+      
+    求该变换的特征值与对角化
+  ]
+)[
 
 首先取一组线性空间 $bold(P)_(2(t))$ 的基 ${alpha_i}={1,t,t^2}$，有相应线性变换结果 ${1,1+2t,2t+3t^2}$，取各个结果在 ${alpha_i (t)}$ 下的坐标可得线性变换矩阵 $bm(X)$ 与线性变换的特征多项式：
 
@@ -299,6 +305,8 @@ $
 由于代数重数为 $1$，因此几何重数也为 $1$，只需任找出一个 $bm(A)arrow(x)=arrow(0)$ 的解即可作为对应特征向量在基 ${alpha_i (t)}$ 的坐标。可得三个特征向量的坐标所在线性空间为 $"span"{mat(1,0,0)^T},"span"{mat(1,1,0)^T},"span"{mat(1,2,1)^T}$。
 
 将以上三个线性空间表示为多项式线性组合的形式即线性变换 $T$ 的特征向量。因此特征值 $lambda_1=1$ 有特征向量 $k_1$；特征值 $lambda_1=2$ 有特征向量 $k_2(1+t)$；特征值 $lambda_3=3$ 有特征向量 $k_3(1+2t+t^2)$。其中 $k_1,k_2,k_3$ 可取任意实数。
+
+]
 
 == 方阵的相似化简
 
@@ -332,18 +340,29 @@ $
   - 对矩阵 $bm(A)$ 的所有特征值，一定有 $m_(bm(A))(lambda_i)=0$，因此假设 $bm(A)$ 有经过因式分解的特征多项式 $product (lambda-lambda_i)^(m_i)$，则最小多项式有结构 $product (lambda-lambda_i)^(k_i)$，对应次数有关系 $m_i gt.eq k_i gt.eq 1$
   - 仅当矩阵 $bm(A)$ 的所有特征值的代数重数均为一，才能保证最小多项式与令首系数为 1 的特征多项式相同
 
-#line(length: 100%)
-
-利用以上三个特性可以用于化简与求解复杂的矩阵多项式，例如：
-
-$
-  "已知" bm(A)=mat(1,1,-1;1,1,1;0,-1,2) "求" g(bm(A))=2bm(A)^5-3bm(A)^4-bm(A)^3+2bm(A)-bm(I)
-$
+#problem_box(
+  title: [零化多项式例题],
+  problem: [
+    已知
+    
+    $
+      bm(A)=mat(1,1,-1;1,1,1;0,-1,2) 
+    $
+      
+    求以下多项式与矩阵的逆
+    
+    $ 
+      g(bm(A))=2bm(A)^5-3bm(A)^4-bm(A)^3+2bm(A)-bm(I)
+    $
+  ]
+)[
 
 首先求出 $bm(A)$ 的特征多项式与特征值
 
 $
-  f(lambda)=det(bm(A)-lambda bm(I))=(1-lambda)[(1-lambda)(2-lambda)+1]-(1-lambda)=(1-lambda)^2(2-lambda)=-lambda^3+4lambda^2-5lambda+2
+  f(lambda)&=det(bm(A)-lambda bm(I))\ 
+  &=(1-lambda)[(1-lambda)(2-lambda)+1]-(1-lambda)\
+  &=(1-lambda)^2(2-lambda)=-lambda^3+4lambda^2-5lambda+2
 $
 
 对 $g(bm(A))$ 依据特征多项式 $f(lambda)$ 做多项式除法可得
@@ -355,7 +374,8 @@ $
 故 
 
 $
-  g(bm(A))=15bm(A)^2-33bm(A)+17bm(I)=15 mat(2,3,-2;2,1,2;-1,-3,3)-33 mat(1,1,-1;1,1,1;0,-1,2)+17 mat(1,,;,1,;,,1)=mat(14,12,3;-3,-1,-3;-15,-12,-4)
+  g(bm(A))&=15bm(A)^2-33bm(A)+17bm(I)\ 
+  &=15 mat(2,3,-2;2,1,2;-1,-3,3)-33 mat(1,1,-1;1,1,1;0,-1,2)+17 mat(1,,;,1,;,,1)=mat(14,12,3;-3,-1,-3;-15,-12,-4)
 $
 
 利用*零化多项式*两侧乘以 $bm(A)^(-1)$ 还可以求矩阵 $bm(A)$ 的逆有
@@ -365,14 +385,17 @@ $
   -bm(A)^2+4 bm(A) -5 bm(I) + 2 bm(A)^(-1)&=bm(0)\ 
   1/2(bm(A)^2-4 bm(A) +5 bm(I))&=bm(A)^(-1)
 $
+]
 
-#line(length: 100%)
-
-关于矩阵最小多项式的计算有如下例题：
-
-$
-  "求" bm(A)=mat(2,1;0,2;,,1,1;,,-2,4) "的最小多项式"
-$
+#problem_box(
+  title: [最小多项式例题],
+  problem: [
+    求矩阵 $bm(A)$ 的最小多项式：
+    $
+      bm(A)=mat(2,1;0,2;,,1,1;,,-2,4)
+    $    
+  ]
+)[
 
 首先利用对角分块矩阵性质，求出矩阵 $bm(A)$ 的特征多项式满足
 
@@ -392,6 +415,8 @@ $
 - 题目大多为分块矩阵，要充分利用其性质
 - 验证最小多项式时，除了待确定的 $bm(A)-2 bm(I)$，不要忘记以确定的一次项 $bm(A)-3 bm(I)$
 - 每次令 $k+1$ 时，注意不是乘以自身，而是乘以 $bm(A)-2 bm(I)$
+
+]
 
 === 最小多项式与对角化关系
 
@@ -471,7 +496,7 @@ $
 - 对于一个几何重数为 $2$，代数重数为 $2$ 的特征值，其 Jordan 子矩阵即对角矩阵 $lambda_i bm(I)_2$
 - 对于一个几何重数为 $2$，代数重数为 $3$ 的特征值
   - 由 $1+2=3$ 可知，该特征值将对应一个一阶 Jordan 块加一个二阶 Jordan 块的情况，且有两个一级根向量，一个二级根向量
-  - 二阶 Jordan 块对应一个二级根向量 $arrow(x)$，与满足 $(bm(A)-lambda_i bm(I))arrow(x)=arrow(y)$ 的一级根向量 $arrow(y)$
+  - 二阶 Jordan 块对应一个二级根向量 $arrow(x)$，#hl(2)[与满足 $(bm(A)-lambda_i bm(I))arrow(x)=arrow(y)$ 的一级根向量 $arrow(y)$]（矩阵 $bm(P)$ 中，二级根向量的与导出该向量的特征向量严格对应）
   - 一阶 Jordan 块对应一个与 $arrow(y)$ 线性无关的一级根向量
 
 类似相似对角化，将 Jordan 块对应的根向量排列得到矩阵 $bm(P)$，则存在关系 
@@ -480,13 +505,15 @@ $
   bm(A)=bm(P)bm(J)bm(P)^(-1)
 $
 
-#line(length: 100%)
-
-此处给出一个 Jordan 多项式求解实例：
-
-$
-  "求矩阵" bm(A)=mat(4,3,0,1;0,2,0,0;1,3,2,1;0,0,0,2) "的 Jordan 标准型及一组根向量" bm(P)
-$
+#problem_box(
+  title: [Jordan 标准型求解],
+  problem: [
+    求矩阵 $bm(A)$ Jordan 标准型及一组根向量 $bm(P)$：
+    $
+      bm(A)=mat(4,3,0,1;0,2,0,0;1,3,2,1;0,0,0,2)
+    $    
+  ]
+)[
 
 首先求 $bm(A)$ 的特征多项式 $det(lambda bm(I)-bm(A))=(lambda-2)^3(lambda-4)$
 
@@ -500,7 +527,7 @@ $
   ) arrow 
   mat(augment:#(vline: 4),
     1,3,0,1,y_3;0,0,0,0,y_2;0,-3,0,-1,y_1-2y_3;0,0,0,0,y_4
-  ) arrow   
+  ) arrow  \  
   mat(augment:#(vline: 4),
     1,0,0,0,y_1-y_3;0,1,0,1/3,1/3(2y_3-y_1);0,0,0,0,y_2;0,0,0,0,y_4
   ) arrow
@@ -545,6 +572,8 @@ $
   bm(J)=mat(2;,2,1;,,2;,,,4); bm(P)=mat(0,0,-1,2;-1,0,2/3,0;0,1,0,1;3,0,0,0)
 $
 
+]
+
 === Jordan 标准型的矩阵多项式
 
 得到矩阵的 Jordan 标准型类似同样可以简化矩阵多项式。类似对角化，对任意方阵 $bm(A)$ 均可得到其 Jordan 标准型 $bm(J)$，对角线上有 Jordan 块 $bm(J)_i$，给定任意矩阵多项式 $p(bm(A))$ 满足（其中 $bm(P)$ 由对应各级根向量排列得到） 
@@ -562,7 +591,7 @@ $
 对于单个 $s$ 阶、特征值为 $lambda$ 的 Jordan 块 $bm(J)_s$，其指数函数 $exp(bm(J)_s t)$ 可利用泰勒展开得到，具有以下形式（注意矩阵上三角区域各条对角线上的值相同）：
 
 $
-  exp(bm(J)_s t)=exp(lambda)mat(
+  exp(bm(J)_s t)=exp(lambda t)mat(
     1,t,t/2,dots,(t^(s-1))/(s-1)!;
     0,1,dots.down,dots.down,dots.v;
     0,0,dots.down,dots.down,t/2;
@@ -591,13 +620,17 @@ $
 - 利用 Jordan 标准型或相似对角化获取 $exp(bm(A)t)$
 - 分离不同 $exp(n t)$ 对应的分量
 
-#line(length: 100%)
+#problem_box(
+  title: [基于 Jordan 标准型求解常微分方程例题],
+  problem: [
+    求以下常微分方程
+    $
+      (d arrow(x))/(d t)=mat(1,2;4,3)arrow(x)(t)+mat(exp(t);exp(-t)),arrow(c)=arrow(x)(0)=mat(1;2)
+    $  
+  ]
+)[
 
-以下通过一个例题说明如何求解这类问题
 
-$
-  (d arrow(x))/(d t)=mat(1,2;4,3)arrow(x)(t)+mat(exp(t);exp(-t)),arrow(c)=arrow(x)(0)=mat(1;2)
-$
 
 对矩阵 $bm(A)$ 进行相似对角化可得到
 
@@ -608,7 +641,7 @@ $
 由此计算 $exp(bm(A)t)$ 的表达式满足
 
 $
-  exp(bm(A) t)=bm(S)(mat(exp(5t);,0)+mat(0;,exp(-t)))bm(S)^(-1)=mat(1/3,1/3;2/3,2/3)exp(5t)+mat(2/3,-1/3;-2/3,1/3)exp(-t)
+  exp(bm(A) t)&=bm(S)(mat(exp(5t);,0)+mat(0;,exp(-t)))bm(S)^(-1)\ &=mat(1/3,1/3;2/3,2/3)exp(5t)+mat(2/3,-1/3;-2/3,1/3)exp(-t)
 $
 
 对于方程的通解部分有
@@ -620,7 +653,7 @@ $
 对于方程的特解部分
 
 $
-  &integral_0^t [bm(A)(t-s)]f(s)d s\ =&integral_0^t (mat(1/3,1/3;2/3,2/3)exp(5t)exp(-5s)+mat(2/3,-1/3;-2/3,1/3)exp(-t)exp(s))mat(1;-1)exp(s)d s\ 
+  &integral_0^t exp[bm(A)(t-s)]f(s)d s\ =&integral_0^t (mat(1/3,1/3;2/3,2/3)exp(5t)exp(-5s)+mat(2/3,-1/3;-2/3,1/3)exp(-t)exp(s))mat(1;-1)exp(s)d s\ 
   =&mat(1;-1)exp(-t)integral_0^t exp(2s) d s=mat(1;-1)exp(-t)1/2(exp(2t)-1)\ 
   =&mat(1/2;-1/2)exp(t)+mat(1/2;-1/2)exp(-t)
 $
@@ -630,3 +663,380 @@ $
 $
   arrow(x)=mat(1;2)exp(5t)+mat(1/2;-1/2)exp(t)+mat(1/2;-1/2)exp(-t)
 $
+
+]
+
+== 矩阵分解
+
+矩阵分解即将矩阵分解为几个特定结构矩阵的乘积
+
+=== 满秩分解
+
+对于矩阵 $bm(A) in bold(F)^(m times n)$ 可以分解为列满秩与行满秩矩阵 $bm(B)in bold(F)^(m times r),bm(C)in bold(F)^(r times n)$ 的乘积。非零矩阵的满秩分解一定存在但不唯一。
+
+线性空间角度下，满秩分解中
+- $bm(B)$ 本质为 $bm(A)$ 的一组基（一般即使用主元列）
+- $bm(C)$ 本质为 $bm(A)$ 各列在基 $bm(B)$ 下的坐标
+
+因此获取满秩分解的一般方法即
+- 对矩阵 $bm(A)$ 做行初等变换，得到主元列上除了主元为 $1$，其余为 $0$ 的简化行阶梯矩阵 $bm(R)$
+- 矩阵 $bm(R)$ 中各主元列对应 $bm(A)$ 中的主元列，主元列中元素 $1$ 所在行对应该列在矩阵 $bm(B)$ 的位置
+- 矩阵 $bm(R)$ 中的前 $r$ 行即矩阵 $bm(C)$
+
+#problem_box(
+  title: [满秩分解例题],
+  problem: [
+    求矩阵 $bm(A)$ 的满秩分解：
+    $
+      bm(A)=mat(0,0,1;2,1,1;2i,i,1)
+    $    
+  ]
+)[
+
+首先对矩阵 $bm(A)$ 做行初等变换可得到
+
+$
+  bm(A)=mat(0,0,1;2,1,1;2i,i,1) arrow mat(1,1/2,0;0,0,1;0,0,0) arrow bm(C)=mat(1,1/2,0;0,0,1)
+$
+
+第一主元列为 $bm(A)$ 的第一列，第二主元列为 $bm(A)$ 的第二列，组合得到
+
+$
+  bm(B)=mat(0,1;2,1;2i,1),bm(A)=bm(B)bm(C)
+$
+
+]
+
+// ，找出所有主元列构成 $bm(B)$
+// - 将 $bm(A)$ 的各列表示为 $bm(B)$ 的坐标
+
+// 基于对增广矩阵 $mat(bm(A),bm(I))$ 做行变换的方法如下：
+
+// $
+//   mat(bm(A),bm(I)) arrow mat(mat(delim: #none, bm(C);bm(0)),bm(P)) arrow bm(A)=bm(P)^(-1)mat(bm(C);bm(0))=mat(bm(B),bm(B)_2)mat(bm(C);bm(0))=bm(B)bm(C)
+// $
+
+// 行变换时，如果没有列交换可得到最简形式时：
+
+// $
+//   mat(bm(A),bm(I)) arrow mat(mat(delim: #none, bm(I)_r,bm(S);bm(0),bm(0)),bm(P)) arrow bm(B)=bm(A)[:,0:r],bm(C)=mat(bm(I)_r,bm(S))
+// $
+
+
+// 通过行列变换一定可以将矩阵分解为以下等价标准型 
+
+// $
+//   bm(A)_(m times n)=bm(P)_(m times m)mat(bm(I)_r,bm(0);bm(0),bm(0))_(m times n)bm(Q)_(n times n)
+// $
+
+=== Schur 分解
+
+Schur 分解即对于复数域上的方阵矩阵 $bm(A)in CC^(n times n)$，可以分解为酉矩阵与上三角矩阵 $bm(U)in CC^(n times n),bm(R)in RR^(n times n)$（也称为 UR 分解）：
+- 酉矩阵 $bm(U)$ 即复数域下的标准正交矩阵有 $bm(I)=bm(U)bm(U)^(H)$
+- 上三角矩阵 $bm(R)$ 还要求上对角线元素为大于等于 $0$
+- 因此 Schur 分解本质为求矩阵的一组正交基
+
+对于列满秩矩阵 $bm(A)in RR^(n times r)$ 也可类似分解为标准正交向量组与上三角矩阵 $bm(Q)in RR^(n times r),bm(R)in RR^(r times r)$，此时也称为 QR 分解
+
+Schur 分解源自 Schmidt 正交化，通过 Schmidt 正交化一定可以得到一组正交基 $bm(B)$，标准化后即分解所需的 $bm(U)$ 或 $bm(Q)$，因此 Schur 分解的本质即寻找矩阵 $bm(A)$ 的一组标准正交基。
+
+// 介绍 Schmidt 正交化前先说明投影矩阵，对于一组相互独立的向量 $bm(A)$ 张成的向量空间，将其中与向量 $arrow(b)$ 距离最近的向量 $arrow(p)$ 称为 $arrow(b)$ 在向量空间 $R(bm(A))$ 的投影，二者的差称为误差向量 $arrow(e)=arrow(b)-arrow(p)$。三维空间中，如果 $bm(A)$ 包含了两个独立列向量则表示为一个过原点的平面，$arrow(e)$ 即点 $arrow(b)$ 到平面 $bm(A)$ 的垂线，$arrow(e)$ 与 $arrow(p)$ 正交。
+
+// 定义投影矩阵 $bm(P)$，用于求向量的投影，满足 $arrow(p)=bm(P)arrow(b)$。对于向量 $arrow(a)$ 与向量组 $bm(A)$，基于误差向量 $arrow(e)$ 的性质，其投影矩阵分别满足：
+
+// $
+//   bm(P)=(arrow(a)arrow(a)^T)/(arrow(a)^T arrow(a)) space bm(P)=bm(A)(bm(A)^T bm(A))^(-1)bm(A)^T
+// $
+
+Schmidt 正交化的基本流程即：对于一组相互独立的向量 $bm(A)=mat(arrow(a)_i)$
+- 首先对向量组各个向量逐个正交化得到 $arrow(h)_(i+1)$，只要保证向量 $arrow(h)_(i+1)$ 与 $arrow(h)_1 dots arrow(h)_i$ 正交，就可以保证向量组 $bm(H)=mat(arrow(h)_i)$ 的向量相互正交
+- 将每个正交向量分别标准化，得到标准正交矩阵 $bm(Q)$
+
+Schmidt 正交化的关键为找出相互正交的向量组 $bm(H)$，可利用误差向量 $arrow(e)$ 与构成投影矩阵 $bm(P)$ 的向量组正交的特点求取：
+- 对于 $arrow(a)_1$，只有一个向量，可直接取 $arrow(h)_1=arrow(a)_1$
+- 对于 $arrow(a)_(i+1)$，取 $arrow(a)_(i+1)$ 投影在 $mat(H)_i$ 的误差向量 $arrow(e)$，即可作为满足要求的 $arrow(h)_(i+1)$ 有 $
+  arrow(h)_(i+1)=arrow(a)_(i+1)-bm(H)_i (bm(H)_i^(T)bm(H)_i)^(-1)bm(H)_i^(T) arrow(a)_(i+1)=arrow(a)_(i+1)-sum_(j=1)^i (arrow(h)_j arrow(h)_j^T)/(arrow(h)_j^T arrow(h)_j)arrow(a)_(i+1)
+$ 该步利用了$bm(H)_i$ 虽然不是标准正交矩阵，但由于其由相互正交的矩阵构成，有 $bm(H)_i^T bm(H)_i$ 为对角矩阵，以及将矩阵乘法 $bm(H)_i bm(H)^T_i=sum arrow(h)_j arrow(h)_j^T$ 的分解
+- 标准化矩阵 $bm(H)$ 的各列得到所需的标准正交矩阵 $bm(Q)$
+- 计算 $arrow(h)_i$ 时，可以将向量的分母提出、记录矩阵 $arrow(h)_i arrow(h)_i^T$ 以减小计算量
+
+对于上三角矩阵即对分解过程的记录，满足
+
+$
+  bm(R)=mat(
+    abs(arrow(h)_1),arrow(q)_1^T arrow(a)_2,arrow(q)_1^T arrow(a)_3,dots, arrow(q)_1^T arrow(a)_n;
+    ,abs(arrow(h)_2),dots.down,dots.down,dots.v;
+    ,,dots.down,dots.down,arrow(q)_(n-2)^T arrow(a)_n;
+    ,,,abs(arrow(h)_(n-1)),arrow(q)_(n-1)^T arrow(a)_n;
+    ,,,,abs(arrow(h)_(n))
+  )
+$
+
+观察矩阵 $bm(R)$ 各列可知，在矩阵 $bm(Q)bm(R)$ 相乘时有 
+
+$
+  arrow(a)_i=sum_(k=1)^(i-1)arrow(q)_k arrow(q)_k^T arrow(a)_i+arrow(q)_i abs(arrow(h)_(i))
+$
+
+以上连加式中，$arrow(q)_k arrow(q)_k^T$ 即标准正交基各列向量的投影矩阵，通过 $arrow(a)_i$ 在各个基向量上的投影相加得到 $arrow(a)_i$
+
+// 上三角矩阵则满足
+
+// $
+//   bm(R)=mat(
+
+//   )
+// $
+
+// 结合满秩分解与 UR 分h解
+
+=== 奇异值分解
+
+对于任意复数域矩阵 $bm(A) in CC^(m times n)$，可以分解为两个酉矩阵 $bm(U)in CC^(m times m),bm(V)in CC^(n times n)$ 与对角矩阵 $bm(Sigma)in RR^(m times n)$，满足 
+
+$
+  bm(A)=bm(U)bm(Sigma)bm(V)^H
+$
+
+其中矩阵 $bm(Sigma)$ 称为奇异值矩阵，具有结构，其中 $sigma_i>0$ 称为奇异值 $
+  bm(Sigma)=mat(bm(S)_r,bm(0);bm(0),bm(0)),bm(S)_r=mat(sigma_1;,dots.down;,,sigma_r)
+$ 
+
+根据奇异值分解特性可知
+
+$
+  bm(A)bm(A)^H=bm(U)bm(Sigma)bm(Sigma)^H bm(U)^H\ 
+  bm(A)^H bm(A)=bm(V)bm(Sigma)^H bm(Sigma) bm(V)^H\ 
+$
+
+因此奇异值分解计算即：
+- 首先求奇异值，对矩阵 $bm(A)^H bm(A)$ 进行相似对角化，奇异值即 $sigma_i=sqrt(lambda_i),lambda_i eq.not 0$
+- 矩阵 $bm(A)^H bm(A)$ 作为对称矩阵一定可以对角化且特征向量正交，因此矩阵 $bm(V)$ 即矩阵 $bm(A)^H bm(A)$ 的#hl(2)[标准化的特征向量]
+- 从列向量角度看奇异值分解有 $
+  bm(A)bm(V)=bm(U)bm(Sigma) arrow bm(A)arrow(v)_i=sigma_i arrow(u)_i
+$ 由此可得到对应的 $bm(U)$ 各列，由以上公式也可知 $arrow(v)_i,lambda_i,sigma_i,arrow(u)_i$ 一一对应
+- 由于奇异值 $sigma>0$，很多时候奇异值数量 $r<m,n$，无法找出 $arrow(u)_i,i>r$，需要手动找出与已有 $arrow(u)_i$ 正交的单位向量（三维情况可使用交叉积）
+
+可以利用 $bm(A)^T bm(A)$ 先求 $bm(V)$ 再求 $bm(U)$ 或 $bm(A) bm(A)^T$ 先求 $bm(U)$，一般选择 $bm(A)bm(A)^T,bm(A)^T bm(A)$ 中较大的一个计算更方便，具体见以下例题
+
+#problem_box(
+  title: [奇异值分解例题一],
+  problem: [
+    求矩阵 $bm(A)$ 的奇异值分解：
+    $
+      bm(A)=mat(1,1;1,1;1,-1)
+    $    
+  ]
+)[
+
+首先求方阵 $bm(A)bm(A)^T=bm(U)bm(Sigma)bm(Sigma)^T bm(U)^T$ 的特征值 $lambda_i$ 与#hl(2)[标准化的特征向量] $arrow(u)_i$ 有
+
+$
+  lambda_1=4,sigma_1=sqrt(lambda_1)=2,arrow(u)_1=mat(sqrt(2)/2;sqrt(2)/2;0);\ lambda_2=2,sigma_2=sqrt(lambda_2)=sqrt(2),arrow(u)_2=mat(0;0;1);\ lambda_3=0,arrow(u)_3=mat(sqrt(2)/2;-sqrt(2)/2;0);
+$
+
+由此可确定 $bm(Sigma),bm(U)$ 满足
+
+$
+  bm(Sigma)=mat(2,0;0,sqrt(2);0,0); space bm(U)=mat(sqrt(2)/2,0,sqrt(2)/2;sqrt(2)/2,0,-sqrt(2)/2;0,1,0)
+$
+
+根据 $bm(A)^T bm(U)=bm(V)bm(Sigma)^T arrow bm(A)arrow(u)_i=sigma_i arrow(v)_i$ 
+
+$
+  arrow(v)_1=mat(sqrt(2)/2;sqrt(2)/2),arrow(v)_2=mat(sqrt(2)/2;-sqrt(2)/2) arrow bm(V)=mat(sqrt(2)/2,sqrt(2)/2;sqrt(2)/2,-sqrt(2)/2)
+$
+
+]
+
+#problem_box(
+  title: [奇异值分解例题二],
+  problem: [
+    求矩阵 $bm(A)$ 的奇异值分解：
+    $
+      bm(A)=mat(1,0;0,1;1,1)
+    $    
+  ]
+)[
+
+首先求方阵 $bm(A)^T bm(A)=bm(V)bm(Sigma)^T bm(Sigma) bm(V)^T$ 的特征值 $lambda_i$ 与#hl(2)[标准化的特征向量] $arrow(u)_i$ 有
+
+$
+  lambda_1=3,sigma_1=sqrt(lambda_1)=sqrt(3),arrow(v)_1=mat(sqrt(2)/2;sqrt(2)/2);space lambda_2=1,sigma_2=sqrt(lambda_2)=1,arrow(u)_2=mat(sqrt(2)/2;-sqrt(2)/2)
+$
+
+由此可确定 $bm(Sigma),bm(V)$ 满足
+
+$
+  bm(Sigma)=mat(sqrt(3),0;0,1;0,0); space bm(V)=mat(sqrt(2)/2,sqrt(2)/2;sqrt(2)/2,-sqrt(2)/2)
+$
+
+根据 $bm(A) bm(V)=bm(U)bm(Sigma) arrow bm(A)arrow(v)_i=sigma_i arrow(u)_i$，$arrow(u)$ 额外列向量由正交性求出
+
+$
+  arrow(u)_1=mat(sqrt(6)/6;sqrt(6)/6;-sqrt(6)/3),arrow(u)_2=mat(sqrt(2)/2;-sqrt(2)/2;0),arrow(u)_3=arrow(u)_1 times arrow(u)_2 = mat(sqrt(3)/3;sqrt(3)/3;-sqrt(3)/3)\ arrow bm(U)=mat(sqrt(6)/6,sqrt(2)/2,sqrt(3)/3;sqrt(6)/6,-sqrt(2)/2,sqrt(3)/3;-sqrt(6)/3,0,-sqrt(3)/3)
+$
+]
+
+
+// $
+//   bm(A)bm(A)^T=mat(2,2,0;2,2,0;0,0,2)=bm(U)bm(Sigma)bm(Sigma)^T bm(U)^T
+// $
+
+== 广义逆
+
+广义逆即对于一般矩阵 $bm(A)in RR^(m times n)$，找到具有部分逆矩阵性质的特殊的矩阵 $bm(B)in RR^(n times m)$ 称为广义逆（广义逆的形状一定与矩阵 $bm(A)$ 的转置相同）
+
+=== 左逆与右逆
+
+矩阵 $bm(A)$ 与其逆矩阵相乘时可得到单位矩阵 $bm(I)$。逆矩阵对相乘位置没有规定，可以限制乘法中矩阵仅在 $bm(A)$ 的左侧或右侧时得到单位矩阵 $bm(I)$。由此定义左逆 $bm(A)^(-1)_(L)$ 与右逆 $bm(A)^(-1)_(R)$ 满足：
+
+$
+  bm(A)^(-1)_(L)bm(A)=bm(I); space bm(A)bm(A)^(-1)_(R)=bm(I)
+$
+
+从直观角度说明，矩阵的秩 $r$ 反应其独立的行 / 列向量数，仅当行满秩（列满秩）时才能保证存在得到单位矩阵 $bm(I)$ 各行（列）的线性组合，即存在右（左）逆。此时得到的单位矩阵一定是 $bm(I)in RR^(r times r)$。
+
+因此仅需要通过初等变换确定矩阵 $bm(A)in RR^(m times n)$ 为行或列满秩时，根据矩阵乘法法则，其存在的左右逆应在 $m,n$ 中较大的一侧
+- 如 $bm(A)in RR^(r times n)$ 行满秩，存在右逆 $bm(A)_(R)^(-1)in RR^(n times r)$
+- 如 $bm(A)in RR^(n times r)$ 列满秩，存在左逆 $bm(A)_(L)^(-1)in RR^(r times n)$
+
+#hl(2)[一般右逆与左逆存在时并不唯一（矩阵可逆时存在唯一且相同的左逆与右逆，即逆矩阵）]，依据以下运算
+
+$
+  (bm(A)^T bm(A))^(-1)(bm(A)^T bm(A))=bm(I); space (bm(A) bm(A)^T)(bm(A) bm(A)^T)^(-1)=bm(I)
+$
+
+可以得出右逆与左逆其中一个表达式：
+- 右逆满足：$bm(A)^(-1)_(R)=bm(A)^T (bm(A) bm(A)^T)^(-1)$，且右逆存在等价于 $bm(A) bm(A)^T$ 可逆
+- 左逆满足：$bm(A)^(-1)_(L)=(bm(A)^T bm(A))^(-1)bm(A)^T$，且左逆存在等价于 $bm(A)^T bm(A)$ 可逆
+
+在线性方程组 $bm(A)arrow(x)=arrow(b)$ 求解应用中
+- 当矩阵 $bm(A)in RR^(r times n)$ 行满秩时，表明其主元列数与列向量维数相同，列空间满足 $R(bm(A))=RR^(r)$，方程一定有解，且#hl(2)[其中一个解] $arrow(x)_r$ 满足：$
+  bm(A)bm(A)^(-1)_(R)&=bm(I)_r\ 
+  bm(A)(bm(A)^(-1)_(R) arrow(b))&= arrow(b) arrow arrow(x)_r=bm(A)^(-1)_(R) arrow(b)
+$
+- 当矩阵 $bm(A)in RR^(n times r)$ 列满秩时，表明其主元列相互独立但数量小于等于列向量维数，方程#hl(2)[不一定有解]，但有解时仅有唯一解，且#hl(2)[唯一解] $arrow(x)_l$ 满足（由于等式不一定成立，不能简单的两边同乘矩阵）：$
+  bm(I)_r=&bm(A)^(-1)_(L)bm(A)\ 
+  arrow(x)_l=&bm(A)^(-1)_(L)(bm(A) arrow(x)_l) arrow arrow(x)_l=bm(A)^(-1)_(L) arrow(b)
+$
+
+=== 减号广义逆
+
+根据逆矩阵性质 $bm(A)bm(A)^(-1)bm(A)=bm(A)$，定义减号广义逆 $bm(A)^(-)$ 满足 $bm(A)bm(A)^(-)bm(A)=bm(A)$。对于任意矩阵，#hl(2)[减号广义逆总是存在且不唯一（矩阵可逆时唯一，即逆矩阵）]，此处略过减号广义逆的求解方法。
+
+在线性方程组 $bm(A)arrow(x)=arrow(b)$ 求解应用中，当线性方程组有解时，其解可以通过减号广义逆表示，其中 $bm(A)in RR^(m times n)$，$arrow(z)$ 为任意 $RR^(n)$ 向量：
+
+$
+  arrow(x)=bm(A)^(-)arrow(b)+(bm(I)_n-bm(A)^(-)bm(A))arrow(z)
+$
+
+通过两侧乘以 $bm(A)$ 可以简单验证以上公式
+
+$
+  bm(A)arrow(x)&=bm(A)bm(A)^(-)arrow(b)+(bm(A)-bm(A)bm(A)^(-)bm(A))arrow(z)\ 
+  bm(A)arrow(x)&=bm(A)bm(A)^(-)arrow(b)\ 
+  bm(A)arrow(x)&=bm(A)bm(A)^(-)(bm(A)arrow(x))
+$
+
+=== 加号广义逆
+
+减号广义逆定义较为宽泛，通过引入以下四个约束，可得到一类特殊的减号广义逆，称为*加号广义逆*，记为 $bm(G)$ 或 $bm(A)^(+)$，任意矩阵都有存在且唯一的加号广义逆。
+
+$
+  bm(A)bm(G)bm(A)=bm(A); space bm(G)bm(A)bm(G)=bm(G); space (bm(A)bm(G))^H=bm(A)bm(G); space (bm(G)bm(A))^H=bm(G)bm(A)
+$
+
+首先观察具有任意形状，且仅对角线上有非零元素的奇异值矩阵 $bm(Sigma)in RR^(m times n)$ 的加号逆 $bm(Sigma)^(+)$ 满足
+- $bm(Sigma)^(+)$ 具有与 $bm(Sigma)^T$ 相同的形状
+- $bm(Sigma)^(+)$ 对角线上的元素为 $bm(Sigma)$ 中对应元素的倒数 $1/sigma_i$
+- $bm(Sigma)^(+)bm(Sigma)=mat(bm(I)_r,bm(0);bm(0),bm(0))_(n),bm(Sigma)bm(Sigma)^(+)=mat(bm(I)_r,bm(0);bm(0),bm(0))_(m)$，且 $bm(Sigma)^(+)$ 满足加号逆的所有要求
+
+由此可得到如下的加号广义逆一般求法
+- 首先对矩阵做奇异值分解得到 $bm(A)=bm(U)bm(Sigma)bm(V)^T$
+- 矩阵的加号逆满足 $bm(A)^(+)=bm(V)bm(Sigma)^(+)bm(U)^T$ 
+
+为了介绍特殊求法，以下给出广义逆的特殊性质
+- 与矩阵求逆类似，多次加号逆以及与转置运算组合满足 $(bm(A)^(+))^(+)=bm(A), space (bm(A)^T)^(+)=(bm(A)^(+))^T$
+- 与矩阵求逆不同，对于 $bm(A)=bm(B)bm(C)$ 等式 $bm(A)^(+)=bm(C)^(+)bm(B)^(+)$ 一般不成立，特别的当 $bm(B),bm(C)$ 为 $bm(A)$ 的满秩分解（$bm(B),bm(C)$ 分别列行满秩）时成立
+- 当矩阵 $bm(A)$ 的左逆存在时，其加号逆满足 $bm(A)^(+)=bm(A)^T (bm(A) bm(A)^T)^(-1)$，右逆存在时类似有 $bm(A)^(+)=bm(A)^T (bm(A) bm(A)^T)^(-1)$，即左右逆的一般求法。
+
+因此当矩阵 $bm(A)$ 为方阵且秩较低（如 $r=1$）可利用满秩反解获取加号逆有
+
+$
+  bm(A)^+&=bm(C)^(+)bm(B)^(+)\ 
+  &=bm(C)^(T) (bm(C)bm(C)^T)^(-1)(bm(B)^T bm(B))^(-1)bm(B)^(T)
+$
+
+#problem_box(
+  title: [加号逆求解例题],
+  problem: [
+    求矩阵 $bm(A)$ 的加号逆：
+    $
+      bm(A)=mat(0,0,1;2,1,1;2i,i,1)
+    $    
+  ]
+)[
+  首先做初等变换检查矩阵是否行、列满秩确定使用哪种方式求加号逆
+
+  $
+    bm(A)=mat(0,0,1;2,1,1;2i,i,1) arrow mat(1,1/2,0;0,0,1;0,0,0)
+  $
+
+  矩阵不满秩但秩不为 1，由于涉及复数可以先尝试求 $bm(A)bm(A)^(H)$ 的特征多项式确定是否通过奇异值分解求解加号逆
+
+  $
+    det(lambda bm(I)-bm(A)bm(A)^(H))=lambda(lambda^2-13 lambda -20)
+  $
+
+  矩阵没有简单的特征值，应当使用满秩分解方法求解加号逆，分解结果根据初等变换得到
+
+  $
+    bm(A)=bm(B)bm(C)=mat(0,1;2,1;2i,1)mat(1,1/2,0;0,0,1)
+  $
+
+  根据 $bm(B),bm(C)$ 分别列、行满秩，其右逆、左逆分别与对应加号逆相等有
+
+  $
+    bm(C)^+=bm(C)^(-1)_R= bm(C)^H (bm(C)bm(C)^H)^(-1)=1/5 mat(4,0;2,0;0,5)\ 
+    bm(B)^+=bm(B)^(-1)_L=(bm(B)^H bm(B))bm(B)^H=1/(16) mat(-2+2i,4+2i,-2-4i;8,4-4i,4+4i)
+  $
+
+  最后依据 $bm(A)^+=(bm(B)bm(C))^+=bm(C)^+bm(B)^+$ 有
+
+  $
+    bm(A)^+=bm(C)^+bm(B)^+=1/80 mat(-8+8i,16+8i,-8-16i;-4+4i,8+4i,-4-8i;40,20-20i,20+20i)
+  $
+
+  此处计算没有太多技巧，但要注意
+  - 尽量将矩阵元素的分母提出减小计算量
+  - 记住复数域下必须使用共轭转置，而不是简单转置
+  - $bm(A)bm(A)^(H), (bm(A)bm(A)^(H))^(-1)$ 为厄米特矩阵（共轭转置下对称），可据此省略下三角区域的计算
+]
+
+
+== 列空间投影
+
+对于向量 $arrow(a)$ 或一组独立基组成的矩阵 $bm(A)$，其投影矩阵 $bm(P)$ 分别满足
+
+$
+  bm(P)=(arrow(a)arrow(a)^T)/(arrow(a)^T arrow(a)); space bm(P)=bm(A)(bm(A)^T bm(A))^(-1) bm(A)^(T)
+$
+
+易得投影矩阵 $bm(P)$ 是幂等矩阵 $bm(P)^2=bm(P)$ 与对称矩阵 $bm(P)^T=bm(P)$
+
+而由加号逆构造的矩阵 $bm(A)bm(A)^+$ 同样满足以上两个条件，也属于投影矩阵
+
+根据 $bm(A)^+$ 的构造方法可知，矩阵 $bm(A)bm(A)^+$ 的实质为
+
+$
+  bm(A)bm(A)^+&=bm(U)bm(Sigma)bm(V)^T bm(V) bm(Sigma)^+ bm(U)^T\ 
+  &= bm(U)mat(bm(I)_r,bm(0);bm(0),bm(0)) bm(U)^T
+$
+
+因此投影变换 $bm(A)bm(A)^+ arrow(x)$ 的过程为
+- 乘以 $bm(U)^T=bm(U)^(-1)$，得到向量 $arrow(x)$ 在基 $bm(U)$ 上的坐标
+- 由奇异值分解性质 $bm(A)arrow(v)_i=sigma_i arrow(u)_i$ 可知，矩阵 $mat(bm(I)_r,bm(0);bm(0),bm(0))$ 保留了 $bm(U)$ 在子空间 $R(bm(A))$ 中的基并将其他分量置零
+- 最后乘以 $bm(U)$ 将坐标还原为向量
+- 综上，以上过程即去除向量 $arrow(x)$ 在子空间 $R(bm(A))$ 外的部分，得到 $arrow(x)$ 在子空间 $R(bm(A))$ 的投影
+- 相比直接计算 $bm(P)$，该方法不需要保证 $bm(A)$ 各列独立

@@ -1,7 +1,7 @@
 #import "/book.typ": book-page, cross-link, templates
 #show: book-page.with(title: "FastAPI 笔记")
 
-#import "/utility/widget.typ": *
+#import "/utility/include.typ": *
 
 = FastAPI 笔记
 

@@ -1,7 +1,7 @@
 #import "./index.typ": *
 #show: book-page.with(title: "介词与连接词")
 
-#import "/utility/widget.typ": *
+#import "/utility/include.typ": *
 
 = 介词与连接词
 

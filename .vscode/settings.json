@@ -3,6 +3,7 @@
         "MJCF",
         "Mujoco",
         "Pybullet",
-        "Pydantic"
+        "Pydantic",
+        "VCPKG"
     ]
 }

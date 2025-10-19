@@ -1,7 +1,7 @@
 #import "../book.typ": *
 #show: book-page.with(title: "Word 使用")
 
-#import "/utility/widget.typ": *
+#import "/utility/include.typ": *
 
 = Word 使用
 
