@@ -5,6 +5,8 @@
 
 = Docker 笔记
 
+参考教程 #link("https://summer25.net9.org/backend/docker/note/")，以下笔记主要在 Windows WSL 下的 Docker Desktop 测试，对于 Linux 建议使用 Docker Engine，两者使用基本相同。
+
 == Docker 基础
 
 === 基本概念
@@ -32,10 +34,13 @@
 - `options` 命令选项，常用的选项有
   - `-d/--detach` 在后台运行容器（使用命令 `docker attach <container>` 可接入容器查看输出）
   - `-e/--env` 指定容器的环境变量（部分容器通过该方式获取应用配置，可以多次使用该选项）
+  - `--net=<net_type>` 容器的网络模式，常用可选模式有
+    - `bridge` 默认模式，安全但需要通过端口映射才能与外部通信（用于生产环境）
+    - `host` 与宿主机共享网络环境，无需端口映射（可用于深度学习模型）
   - `-p <source>:<container>` 将容器端口映射到宿主机（用于通过网络访问容器内的应用，可以多次使用该选项）
   - `--rm` 命令退出或容器停止后删除临时创建的容器（默认保存）
   - `--name <name>` 创建一个指定名称的容器（默认随机分配）
-  // - `-it` 创建并进入容器的伪终端与容器交互 (快捷键 #bl(0)[Ctrl]#bl(0)[P]+#bl(0)[Ctrl]#bl(0)[Q] 断开)
+  - `-it` 创建并进入容器的伪终端与容器交互，具体参见#link(<sec:virtual_terminate>)[虚拟终端与容器交互]
 
 执行该命令时
 - 本地搜索镜像，如果不存在将从网络上下载
@@ -54,7 +59,7 @@
 - `docker cp [options] <src> <dest>` 从容器向宿主机复制文件 (或相反)
   - 容器内路径通过 `<容器名>:<路径>` 表示
 
-=== 通过虚拟终端与容器交互
+=== 通过虚拟终端与容器交互 <sec:virtual_terminate>
 
 对于作为应用使用的镜像，通常执行 `docker run` 后即可启动任务，但对于作为虚拟机使用的镜像需要有一个终端作为接口才能与之交互
 
@@ -66,6 +71,9 @@
   - 终端命令如 `exit` 则将关闭终端，#hl(2)[其他附加到容器的终端都将关闭，同时容器也会退出]
 - 命令 `docker attach <container>` 可以重新接入容器查看容器终端输出或与容器虚拟终端交互
 - 命令 `docker start/stop <container>` 启动与停止环境
+- 命令 `docker exec -it <container> <cmd>` 创建虚拟终端再令容器执行指定命令并将输出发送到终端
+  - 执行命令 `bash` 基本等同于 `docker attach`
+  - 可使用 `bash -c "cd <目录> && <命令>"` 的方式打开特定文件夹执行命令，`bash -c` 的含义即用 bash 执行 `-c` 参数字符串给出的命令
 
 == 自定义镜像
 
@@ -208,6 +216,7 @@ CMD ["./main"]
 当构建深度学习项目时
 - 各种下载源码编译的包建议使用 `python3 -m pip install -v .` 安装到 pip 中，而不是 `python3 setup.py install`
 - 构建时没有 GPU 环境，需要手动设置环境变量 `FORCE_CUDA=1` 与 `TORCH_CUDA_ARCH_LIST=${CUDA_ARCH}`，其中 `TORCH_CUDA_ARCH_LIST` 与使用的显卡有关，根据宿主机中运行 `print(torch.cuda.get_device_capability())` 获取（格式为 x.x 的字符串）
+- 通常 Pytorch 包已经包含了指定的 cuda 与 cudnn，因此不需要环境本身安装 cuda 与 cudnn（仅部分利用 cuda 从源码编译的项目需要安装）
 
 杂项
 - 命令 `docker builder prune` 可用于清理构建镜像产生的临时文件（可以定期或构建失败后执行）
@@ -249,6 +258,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends apt-utils ca-ce
 RUN python -m pip install --upgrade pip && \
     # 设置全局 pip
     pip config set global.index-url https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
+```
+
+*uv pip 软件源配置*
+
+使用 uv 时应通过以下方式配置，而不是普通的 pip
+
+```Dockerfile
+RUN mkdir -p ~/.config/uv && \
+    touch -p ~/.config/uv/uv.toml && \
+    echo <<'EOF' > ~/.config/uv/uv.toml
+[[index]]
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple/"
+default = true
+EOF
 ```
 
 *miniconda 安装*
@@ -352,19 +375,20 @@ docker run \
 ...
 ```
 
-进入容器后还需要安装以下依赖包保证窗口正确显示
-```bash
-apt-get install -y --no-install-recommends \
-  libgl1 libegl1 libx11-6 libglib2.0-0 libgomp1
-```
+进入容器后还需要安装特定依赖包保证窗口正确显示，建议依据错误信息确定需要安装哪些包。
+
+对于 Linux 下的 Docker Engine 类似
+- 挂载目录与添加环境变量与 WSL 中启动容器相同
+- Linux 可能还需要 `xhost +SI:localuser:<容器用户>` 赋予窗口权限，容器用户一般即 `root`
 
 === 机器学习项目中使用 Docker
 
-机器学习项目中使用 Docker 时，需要将 Windows 宿主机的 GPU 暴露给容器使用，容器才能使用 GPU 加速推理
+机器学习项目中使用 Docker 时需要将宿主机的 GPU 暴露给容器使用，容器才能使用 GPU 加速推理。#hl(2)[无论 Windows 还是 Linux 都需要以下操作，且 Windows 中 Docker 的宿主机为 WSL]。
 
-- 在 Windows 宿主机安装显卡驱动、cuda、cudnn 等
-- 在 docker 所在的宿主 WSL 中安装 cuda，根据 #link("https://zhuanlan.zhihu.com/p/555151725")，宿主 WSL 的 cuda 版本需要低于 Windows
-- 参考#link("https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html")[官方教程], 在宿主 WSL 中安装 NVIDIA Container Toolkit
+此处有一个坑需要注意，在 Linux 中，Docker-Desktop 不支持 NVIDIA Container，因此只能使用 Docker Engine。
+
+- 在宿主机安装显卡驱动、cuda、cudnn 等
+- 参考#link("https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html")[官方教程], 在宿主机中安装 NVIDIA Container Toolkit
 - 运行 `sudo nvidia-ctk runtime configure --runtime=docker` 启动配置
 - 使用 `docker run` 创建容器时, 还需要参数 `--gpus all` 引入 GPU 设备
 
@@ -378,7 +402,65 @@ docker run \
   --mount type=bind,src=/mnt/e/dataset,dst=/dataset \
   -e DISPLAY=$DISPLAY \
   -v /tmp/.X11-unix:/tmp/.X11-unix \
-  -p8000:8000 \
+  -net=host \
   --shm-size 4G \
   <镜像名>
 ```
+
+=== Docker 代理配置 <sec:docker_proxies>
+
+由于 Docker 网络防护，使用网络代理前检查能否正常访问 #link("https://hub.docker.com/")，如果无法访问则需要换一个代理
+
+以下配置假设设用 Clash 代理，有代理地址 `http://127.0.0.1:7890`，对于部分校园网 github 可以直接访问不需要代理的情况。
+
+对于 Windows 下的 Docker Desktop，在 Docker Desktop 的 #bl(0)[Settings] #sym.arrow #bl(0)[Resources] #sym.arrow #bl(0)[Proxies] 中设置代理即可。
+
+对于 Linux 需要在 `/etc/docker/daemon.json` 中加入如下代理配置，用于 `docker pull`
+
+```json
+{
+  "proxies": {
+    "http-proxy":  "http://127.0.0.1:7890",
+    "https-proxy": "http://127.0.0.1:7890",
+    "no-proxy": "localhost,127.0.0.1,.github.com,.githubusercontent.com"
+  },
+}
+```
+
+然后通过指令重启 Docker 服务并检查配置是否成功导入
+
+```bash
+systemctl daemon-reload
+systemctl restart docker
+
+docker info | grep Proxy
+```
+
+即使设置了代理，容器内部可能依然无法通过代理连接网络
+- 对于 `docker build` 即镜像构建阶段，可在开启代理（设置了 `HTTP_PROXY` 等环境变量）的终端中执行
+- 对于 `docker run` 即容器内的网络链接，可开启 Clash 的 TUN 模式或使用 `--net=host` 运行容器
+- 更加多的说明可参考 `https://www.assen.top/blog/2024-10-12-docker-proxy`
+
+=== Docker Engine 安装 <sec:docker-engine-install>
+
+对于 Linux 系统，推荐使用 Docker Engine 而不是 Docker Desktop
+
+关于 Docker Engine 的基本安装参见#link("https://docs.docker.com/engine/install/ubuntu/")[官网教程]
+
+安装后，使用如下设置使 Docker 开机时启动
+
+```sh
+sudo systemctl enable docker.service
+sudo systemctl enable containerd.service
+```
+
+使用 Docker 前还需要命令 `docker login` 登录 Docker 账号，如果登录失败尝试进行如下操作
+- 保证代理开启且正确设置，可参考此处#link(<sec:docker_proxies>)[笔记]，完成 `/etc/docker/daemon.json` 部分的设置
+- 打开设置文件 `/etc/docker/daemon.json`，删除键 `credsStore`
+- 参考#link("https://docs.docker.com/desktop/setup/sign-in")[步骤]到 ` pass init <your_generated_gpg-id_public_key>` 创建密钥
+- 重新运行命令 `docker login`（登录账号一般为邮箱）
+
+在 Linux 中，最后还需要将当前用户添加到 Docker 用户组，否则只能在管理员权限下运行 Docker
+- 运行命令创建用户组并添加当前用户 `sudo groupadd docker && sudo usermod -aG docker $USER`
+- 重新启动电脑，令修改生效
+- 运行 `docker run hello-world` 进行测试，如果成功表明 Docker Engine 安装成功
