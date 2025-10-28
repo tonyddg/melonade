@@ -1,7 +1,7 @@
 #import "/book.typ": book-page, cross-link, templates
 #show: book-page.with(title: "Diffusion Model 笔记")
 
-#import "/utility/widget.typ": *
+#import "/utility/include.typ": *
 #set image(height: 15em, width: 80%, fit: "contain")
 
 = Diffusion Model 笔记

@@ -1,7 +1,7 @@
 #import "/book.typ": book-page, cross-link, templates
 #show: book-page.with(title: "自编码器")
 
-#import "/utility/widget.typ": *
+#import "/utility/include.typ": *
 
 = 自编码器
 

@@ -1,7 +1,7 @@
 #import "/book.typ": book-page, cross-link
 #show: book-page.with(title: "数理统计")
 
-#import "/utility/widget.typ": *
+#import "/utility/include.typ": *
 
 = 数理统计
 

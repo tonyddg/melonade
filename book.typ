@@ -27,6 +27,7 @@
       - #chapter("./code/camera.typ")[相机成像原理]
       - #chapter("./code/cmake.typ")[CMake 笔记]
       - #chapter("./code/vscode.typ")[Vscode 笔记]
+      - #chapter("./code/fastapi.typ")[FastAPI 笔记]
 
     - #chapter(none)[神经网络]
       - #chapter("./ml/ae.typ")[自编码器]

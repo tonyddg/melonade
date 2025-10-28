@@ -1,7 +1,7 @@
 #import "/book.typ": book-page, cross-link, templates
 #show: book-page.with(title: "FastAPI 笔记")
 
-#import "/utility/widget.typ": *
+#import "/utility/include.typ": *
 
 = FastAPI 笔记
 
@@ -100,7 +100,7 @@ Pydantic 中提供了 `Field(...)` 函数用于约束字段的取值，通过向
   - `gt, lt, ge, le` 限制数字范围
   - `decimal_places` 限制浮点数小数范围
 - 字符串约束：
-  - `min_length, max_length` 限制字符串长度
+  - `min_length, max_length` 限制字符串、列表或元组的长度
   - `pattern` 需要匹配的正则表达式
 - 其他应用参见#link("https://docs.pydantic.dev/latest/concepts/fields/")[官方文档]
 

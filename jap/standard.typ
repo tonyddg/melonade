@@ -1,7 +1,7 @@
 #import "./index.typ": *
 #show: book-page.with(title: "标日初级笔记")
 
-#import "/utility/widget.typ": *
+#import "/utility/include.typ": *
 
 = 标日初级笔记
 
@@ -173,7 +173,7 @@
   [それ 代指他人的话], [代词 それ 还能表示上文中提及的事情], [#aruby("毎日") #aruby("夜")#fruby[じゅう|いち|じ][十|一|時]まで #aruby("働")きます #sym.arrow それは #aruby("大変")ですね\ （那你可真不容易啊）]
 )
 
-==== 修饰动词的助词 <sec:partical_with_verb>
+==== 基本助词 <sec:partical_with_verb>
 
 日语中有如下的助词用于修饰动词，通过在这些助词前加上名词，用于修饰后面的动词，增加动词的内涵。
 
@@ -372,6 +372,8 @@
 相对时间与后续具体时间组合时
 - #aruby("毎") #sym.tilde 直接与后面的时间相连，如：#aruby("毎日")#fruby[しち|じ][七|時]
 - 其他与后续具体时刻相连时可以加 の，也可不加，如：#aruby("来週")の#aruby("日曜日")
+
+除了以上大致时间，还有以下词可用于表示一天中的特定时间：#aruby("昼")（中午），#aruby("夜")（晚上），#aruby("夕方")（傍晚）
 
 == 其他
 

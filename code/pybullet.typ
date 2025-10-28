@@ -1,7 +1,7 @@
 #import "/book.typ": book-page, cross-link, templates
 #show: book-page.with(title: "Pybullet 笔记")
 
-#import "/utility/widget.typ": *
+#import "/utility/include.typ": *
 
 = Pybullet 笔记
 

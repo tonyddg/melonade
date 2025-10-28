@@ -1,7 +1,7 @@
 #import "/book.typ": book-page, cross-link, templates
 #show: book-page.with(title: "Flow base 生成模型")
 
-#import "/utility/widget.typ": *
+#import "/utility/include.typ": *
 #set math.mat(delim: "[")
 
 = Flow base 生成模型
