@@ -251,11 +251,11 @@
 - 用于 の 代替类似关系从句的用法
 - 用于复杂词语的构造，例如：#fruby[た][食]べ#fruby[もの][物]
 
-相比于 て 形，动词词根主要用于#link(<transform_teneigo>)[丁宁语]
+相比于 て 形，动词词根主要用于#link(<sec:transform_teneigo>)[丁宁语]
 
 == 附加动作含义
 
-=== 丁宁语 <transform_teneigo>
+=== 丁宁语 <sec:transform_teneigo>
 
 日语的基本语法均为普通体，为了转换为表示尊敬的丁宁语，还需要在普通体的基础上进一步变形
 
