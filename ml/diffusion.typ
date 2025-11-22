@@ -79,3 +79,79 @@ Stable Diffusion 中，三个部分的神经网络均是独立训练的，从而
 Diffusion Model 以下衡量标准模型生成图像的准确性
 - FID：使用预训练 CNN 分别提取真实图片与预测图片的特征向量，衡量两个特征分布的接近程度（越小越好）
 - CLIP：使用 CLIP 模型衡量文字与图片的接近程度（越大越好）
+
+
+// == Flow Match 生成模型
+
+// 对于样本空间下服从高斯分布的随机变量 $X_0$ 与服从真实分布的随机变量 $X_1$，生成模型的本质为一个映射 $Phi(X_0)$ 用于将随机变量 $X_0$ 映射为 $X_1$。
+
+// 早期的生成模型范式如 GAN 的思路是直接让神经网络拟合这个变换 $Phi(X_0)$，神经网络训练困难。
+
+// $
+//   X_1=Phi(X_0)
+// $
+
+// 现在的生成模型范式转向增量生成，即多次映射样本，每个时刻都使样本分布向真实分布靠近。称这个采样过程为时间连续的马尔可夫过程（Continuous-time Markov Process），过程中的一系列随机变量 $X_t$ 由 $[0,1]$ 的连续时间 $t$ 索引。
+
+// 此时，神经网络学习的是从时间 $t$ 变换到 $t+h$ 的映射 $Phi_(t+h|t)(X_t)$。
+
+// $
+//   X_(t+h)=Phi_(t+h|t)(X_t)
+// $
+
+// 其中典型代表即基于 Flow 与 Diffusion 两种模型
+
+// #figure(
+
+//   image("./res/diffusion_flow_match.png", height: 15em, width: auto), 
+
+//   caption: [Flow 与 Diffusion 模型对比],
+// )
+
+// 不同于 Diffusion 模型直接预测噪音，将得到样本的过程建模为去噪的过程，Flow 模型预测一个
+
+// 生成过程中，首先采样得到的随机样本，让这个样本沿速度（Velocity）移动一段时间多次以得到生成样本。模型即通过回归方式训练，使其能获取正确的速度。
+
+== Flow Match 生成模型
+
+参考文献
+- #link("https://www.bilibili.com/video/BV1cRwJeREgk")[数学角度理论]
+- #link("https://zhuanlan.zhihu.com/p/28731517852")[偏直观角度与简单实现代码]
+
+现在的生成模型范式转向增量生成，即多次映射样本，每个时刻都使样本分布向真实分布靠近。称这个采样过程为时间连续的马尔可夫过程（Continuous-time Markov Process），过程中的一系列随机变量 $X_t$ 由 $[0,1]$ 的连续时间 $t$ 索引。其中的代表即 Diffusion 与 Flow Matching。
+
+不同于 Diffusion 模型直接预测噪音，Flow Match 模型预测如何当前样本移动到理想样本的方向矢量，也称为速度（Velocity）。
+
+#figure(
+
+  image("./res/diffusion_flow_match.png", height: 15em, width: auto), 
+
+  caption: [Flow 与 Diffusion 模型对比],
+)
+
+在数学角度上 Diffusion 模型与 Flow Match 有很大不同。但在训练角度上 Flow Match 与 Diffusion 模型都是以时间 $t$ 与当前样本 $x_t$ 作为输入，主要区别在于
++ 随机采样样本与数据集样本得到样本对 $x_0,x_1$，而不是从 $x_1$ 生成样本。
++ Flow Match 认为随机样本 $x_0$ 经过时间 $T=1$ 沿由网络预测的速度场运动到 $x_1$。
++ 假设样本以匀速运动，因此其在各个时刻的移动速度均为 $v(x_1,x_0)=x_1 - x_0$，且移动路径上的所有中间点即 $x_t=(x_1-x_0)t+x_0$ 的速度均相同。
++ 因此采样样本对 $x_0,x_1$ 后，从 $t in (0,1)$ 随机采样出一系列中间点 $x_t$ 并将样本差 $x_0,x_1$ 作为这些点的速度 $v(x_1,x_0)$ 即得到模型回归拟合所需的样本 $u^(theta)_t (x_t)=v(x_1,x_0)$。
+
+#figure(
+
+  image("./res/diffusion_flow_match_2.png", height: 15em, width: auto), 
+
+  caption: [数学角度的 Flow Match 模型],
+)
+
+在数学角度下 Flow Match 模型初始的随机样本 $x_0$ 沿速度场的运动可表示为微分方程（即样本在当前位置的速度为样本向量 $x_t$ 关于时间的微分）
+
+$
+  d/(d t)x_t=u^(theta)_t (x_t)
+$
+
+因此预测时也与 Diffusion 模型类似逐步完成，但 Flow Match 以欧拉积分的角度实现推理
++ 设定欧拉积分中的微分步长 $d t$，在微分步长内认为速度场的速度为匀速，有 $x_(t+d t)=x_t + u^(theta)_t (x_t) d t$
++ 随机采样样本 $x_0$ 从 $t=0 arrow 1$ 进行欧拉积分，得到生成样本 $x_1$
+
+实际使用中
++ 模型 $u^(theta)_t (x_t)$ 回归拟合速度时不一定适用简单的 L2 损失函数，而是其他损失函数
++ 样本对 $x_0,x_1$ 的选取不一定是完全随机的，可能有一定规律
