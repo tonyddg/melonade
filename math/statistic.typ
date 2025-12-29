@@ -113,7 +113,7 @@ $
   [], [$Chi^2$ 分布], [$t$ 分布], [$F$ 分布],
   [记号], [$ X tilde Chi^2(n) $], [$ X tilde t(n) $], [$ X tilde F(n_1,n_2) $],
   [正态\ 分布\ 关系], [$Chi^2(n)=sum_(i=1)^n X_i^2,\ X_i tilde N(0,1)$], [$t(n)=X/(sqrt(Y slash n)),\ X tilde N(0,1), Y tilde Chi^2(n)$], [$F(n_1,n_2)=(X slash n_1)/(Y slash n_2), \ X tilde Chi^2(n_1), Y tilde Chi^2(n_2)$],
-  [期望], [$ E(X) = n $], [], [],
+  [期望], [$ E(X) = n $], [$ E(x) = 0 $], [],
   [方差], [$ D(X) = 2n $], [], [],
   [密度\ 函数\ 形状], [$n>1$ 时为 $x>0$ 上\ 以 $n$ 为峰的曲线], [关于原点对称], [总是大于 0 的单峰分布],
   [特性], [$Chi_1+Chi_2 = Chi^2(n_1+n_2)$], [当 $n$ 充分大（$n>30$）时与标准正态分布接近], [$1/X = F(n_2,n_1),\ X tilde F(n_1,n_2)$],
@@ -223,11 +223,47 @@ $
   $
 ]
 
+其中可依据 Rao-Cramer 不等式确定无偏估计量中方差的下界，即参数 $theta$ 最有效的估计量 $hat(theta)$ 方差的下界
+
+$ D(hat(theta))gt.eq 1/(n E{[(partial)/(partial theta) ln p(X; theta)]^2}) $
+
 估计量第三个评价标准为*一致性*：即当样本容量 $n$ 趋于无穷大时，统计量依概率收敛到被估计参数。直接证明较难，可利用以下结论
 - 样本的 k 阶矩是总体 k 阶矩的一致估计量（矩估计得到的估计量一定是一致估计量）
 - 当估计量是无偏估计量 $G$ ，当 $lim_(n arrow infinity) D(G)=0$ 则 $G$ 是一致估计量
 
+#problem_box(
+  title: [样本估计有效性例题],
+  problem: [
+    假设总体 $X tilde N(mu, sigma^2)$，证明 $G=1/n sum_(i=1)^n (X_i-mu)^2$ 是 $sigma^2$ 的最有效估计而 $S^2=1/(n-1) sum_(i=1)^n (X_i-overline(X))^2$ 不是。
+  ]
+)[
+  首先证明 $G$ 是总体方差的无偏估计（样本分布与总体相同）
+
+  $ E(G)&=1/n sum_(i=1)^n E[(X_i-mu)^2]=E[(X-mu)^2]\ &=D(X-mu)+[E(X-mu)]^2=D(X)+[E(X)-mu]^2\ &=D(X)=sigma^2 $
+
+  然后求出 $G$ 的方差（利用方差统计量与卡方分布关系以及卡方分布的均值 / 方差）
+
+  $ n/(sigma^2) G= G'=sum_(i=1)^n ((X_i-mu)/sqrt(sigma^2))^2 tilde X^2(n)\ n^2/sigma^4 D(G)=D(n/(sigma^2) G)=D(G')=2n arrow D(G)=(2sigma^4)/n $
+
+  对于 $S^2$ 使用类似方式可证明 $D(S^2)=(2sigma^4)/(n-1)>D(G)$，有效性低于 $G$
+
+  使用 Rao-Cramer 不等式求方差 $sigma^2=theta$ 参数估计的方差下界 $ ln p(X; theta)=-1/2 ln(2pi theta)-(X-mu)^2/(2 theta)\ (partial)/(partial theta) ln p(X; theta)=-1/(2theta)+(X-mu)^2/(2theta^2)=((X-mu)^2-theta)/(2theta^2) $
+
+  利用卡方分布有 $((X-mu)/sqrt(sigma^2))^2 tilde X^2(1)$, 令 $Y=(X-mu)^2$
+  
+  $ E(Y) =sigma^2=theta,D(Y) =2sigma^4=2theta^2\ E(Y^2)=D(Y)+(E(Y))^2=3theta^2 $
+
+  $ E{[(partial)/(partial theta) ln p(X; theta)]^2}=E[((Y-theta)/(2theta^2))^2]&=E[(Y^2+theta^2-2Y theta)/(4theta^4)]=1/(2 theta^2) $
+
+  带入 Rao-Cramer 不等式有
+
+  $ D(hat(theta))gt.eq 1/(n E{[(partial)/(partial theta) ln p(X; theta)]^2})=(2sigma^4)/n=D(G) $
+
+]
+
 == 基于区间估计的参数估计 <sec:range_estimate>
+
+（仅考察单个正态总体）
 
 参数估计中除了点估计还有区间估计，其要求估计参数所在区间以及置信度（参数在区间内的概率）
 
@@ -311,6 +347,8 @@ $
 
 == 假设检验
 
+（仅考察单个正态总体）
+
 当总体分布未知或某些参数未知时，提出关于总体分布或未知参数的假设，称为*原假设*记为 $H_0$，而与假设相矛盾的假设称为*备择假设* $H_1$。然后根据样本所提供的信息，推断原假设是否合理，并作出接受或拒绝所提出原假设的决定。
 
 === 假设检验的原理
@@ -387,7 +425,7 @@ $ overline(X) tilde N(mu,sigma^2/n) $
 
 == 回归分析
 
-（不考查）
+（不考察）
 
 === 相关分析
 
