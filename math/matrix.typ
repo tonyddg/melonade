@@ -125,7 +125,9 @@ $
 *交运算* $bold(V)_1 inter.big bold(V)_2={arrow(x)|arrow(x) in bold(V)_1 and arrow(x) in bold(V)_2}$
 - 交空间要求向量同时存在于两个子空间，即对于 $C(bm(A)) inter.big C(bm(B))$ 满足 $ arrow(p)=bm(A)arrow(x)=bm(B)arrow(y) arrow mat(bm(A),-bm(B))mat(arrow(x); arrow(y))=arrow(0) $
 - 可得，交空间的维度满足 $ dim{C(bm(A)) inter.big C(bm(B))}=dim{N([bm(A) space bm(B)])} $
-- 和空间维度反映两个子空间独立维度的个数，交空间反映两个子空间重叠维度的格式，因此 $ dim(bold(V)_1 + bold(V)_2)+dim(bold(V)_1 inter.big bold(V)_2)=dim(bold(V)_1)+dim(bold(V)_2) $
+- #hl(2)[注意交空间中的向量为 $arrow(p)$]，因此还要取以上零空间基的上半部分 $arrow(x)$ 乘以 $bm(A)$ 才能得到交空间的基
+
+和空间维度反映两个子空间独立维度的个数，交空间反映两个子空间重叠维度的个数，因此 $ dim(bold(V)_1 + bold(V)_2)+dim(bold(V)_1 inter.big bold(V)_2)=dim(bold(V)_1)+dim(bold(V)_2) $
 
 需要注意的是，子空间求并后不一定是线性空间，如子空间 $R(mat(1, 0)^T),R(mat(0, 1)^T)$ 的并集包含向量 $mat(1, 0)^T,mat(0, 1)^T$, 但不包含 $mat(1, 1)^T$，显然不对加法封闭
 

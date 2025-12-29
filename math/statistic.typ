@@ -343,11 +343,12 @@ $
 方差未知时，关于正态总体均值的假设检验称为 *$T$ 检验*（方差已知称为 $U$ 检验，公式类似，此处略）
 - 利用假设均值 $mu_0$ 可以构造如下检验统计量，假设成立时统计量将符合 $t(n-1)$ 分布 #h(1fr) $ T =(overline(X)-mu_0)/(sqrt(S^2 slash n)) tilde t(n-1) $
 - 对于 $mu=mu_0$ 的假设（均值无显著差异），统计量 $T$ 的观测值在两端概率极低，可构造双边拒绝域 $ W ={abs(T)gt.eq t_(alpha slash 2)(n-1)} $
-- 对于 $mu lt.eq mu_0$ 的假设，统计量 $T$ 出现在左端依然满足假设条件，因此只能取右端构造单边拒绝域（注意单边拒绝域中，不要再对显著性水平 $alpha$ 除以 2） $ W={T gt.eq t_(alpha)(n-1)} $
+- 对于 $mu lt.eq mu_0$ 的假设，当总体均值越大则样本均值 $overline(X)$ 越大统计量 $T$ 也越大，因此取分布的右端构造单边拒绝域（注意单边拒绝域中，不要再对显著性水平 $alpha$ 除以 2） $ W={T gt.eq t_(alpha)(n-1)} $
 
 均值未知时，关于正态总体方差的假设检验称为 *$Chi^2$ 检验*
 - 利用假设方差 $sigma_0^2$ 可以构造如下检验统计量，假设成立时统计量将符合 $Chi^2(n-1)$ 分布 #h(1fr) $ cases(Chi^2 =((n-1)S^2)/(sigma_0^2) tilde Chi^2(n-1)\,&"总体均值未知" ,Chi^2 =((n-1)sum_(i=1)^n (X_i-mu)^2)/(sigma_0^2) tilde Chi^2(n)\,&"总体均值已知") $
 - 对于 $sigma^2=sigma^2_0$ 的假设（方差无显著差异），可构造双边拒绝域 $ W ={Chi^2 gt.eq chi^2_(alpha slash 2)(n-1)} union {Chi^2 lt.eq chi^2_(1-alpha slash 2)(n-1)} $
+- 对于 $sigma^2 lt.eq sigma^2_0$ 的假设，当总体方差越大则样本方差 $S^2$ 越大统计量 $Chi^2$ 也越大，因此取分布的右端构造单边拒绝域（注意单边拒绝域中，不要再对显著性水平 $alpha$ 除以 2） $ W={Chi^2 gt.eq Chi^2_(alpha)(n-1)} $
 
 比较两个正态总体均值 $mu_1,mu_2$ 时，总体方差未知且 $sigma_1 eq.not sigma_2$，使用样本方差近似总体方差
 - 利用两个样本均值之差可构造如下检验统计量，假设（$mu_1-mu_2=Delta mu$）成立时统计量将符合标准正态分布 #h(1fr) $ U=(overline(X)_1-overline(X)_2-Delta mu)/(sqrt(sigma_1^2/n_1+sigma_2^2/n_2)) tilde N(0,1) $
