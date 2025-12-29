@@ -56,21 +56,21 @@ $
 
 其中 $xi_x in (x_0,x_n)$，可根据 $f^((n+1))(xi_x)$ 在 $(x_0,x_n)$ 上的最大与最小值确定 $R(x)$（需要给出判断点 $x$）的范围，即插值误差范围
 
-#problem_box(
-  title: [基于 Lagrange 插值的证明题],
-  problem: [
-    证明以下两个等式
+// #problem_box(
+//   title: [基于 Lagrange 插值的证明题],
+//   problem: [
+//     证明以下两个等式
 
-    $
-      (1)& sum_(i=0)^n x_i^(k) l_i (x)=x^k,k=0,1,dots,n\ 
-      (2)& sum_(i=0)^n (x_i-x)^(k) l_i (x)=0,k=0,1,dots,n
-    $
-  ]
-)[
-  (1) 等式左侧即原函数 $f(x)=x^k$ 的拉格朗日插值多项式，又因为 $n+1$ 个节点的拉格朗日多项式能精确反应次数小于等于 $n$ 的多项式，因此等式两边相等。
+//     $
+//       (1)& sum_(i=0)^n x_i^(k) l_i (x)=x^k,k=0,1,dots,n\ 
+//       (2)& sum_(i=0)^n (x_i-x)^(k) l_i (x)=0,k=0,1,dots,n
+//     $
+//   ]
+// )[
+//   (1) 等式左侧即原函数 $f(x)=x^k$ 的拉格朗日插值多项式，又因为 $n+1$ 个节点的拉格朗日多项式能精确反应次数小于等于 $n$ 的多项式，因此等式两边相等。
 
-  (2) 令
-]
+//   (2) 令
+// ]
 
 === Newton
 
@@ -108,6 +108,8 @@ $
 - 箭头表示分子中相减的两个差商（左上减去左侧），分母即差商中最小与最大元素相减
 
 牛顿多项式的系数 $c_i$ 即差商 $f[x_0,dots,x_i]$，也即以上推导表格的对角线（包括零阶差商 $f(x_0)$）
+
+$ product_(i=1)^(n)(x-x_i) $
 
 === Hermite
 
@@ -740,13 +742,13 @@ $
 
 Eular 法中将区间 $[a,b]$ 按间隔 $h$ 离散为 $x_k=a+h k$，并用差商近似导数 $(d y)/(d x)=f(x, y)$，从而得到数值解 $y_k$ 的迭代公式
 
-使用前向差商法时，将差分近似为点 $x_k$ 的导数有，称为显式欧拉法
+使用前向差商法时，将差分近似为点 $x_k$ 的导数有，称为显式欧拉法，具有一阶精度
 
 $
   (d y)/(d x) lr(bar.v, size: #2em)_(x_(k)) approx  (y(x_(k+1))-y(x_k))/(h) arrow y(x_(k+1)) approx y_(k+1) = h f(x_k, y_k)+y_k
 $
 
-使用后向差商法时，将差分近似为点 $x_(k+1)$ 的导数有，该方法 $y_(k+1)$ 出现在迭代式右侧，虽然更稳定但迭代完还要逆向求解，称为隐式欧拉法
+使用后向差商法时，将差分近似为点 $x_(k+1)$ 的导数有，该方法 $y_(k+1)$ 出现在迭代式右侧，虽然更稳定但迭代完还要逆向求解，称为隐式欧拉法，具有二阶精度
 
 $
   (d y)/(d x) lr(bar.v, size: #2em)_(x_(k+1)) approx (y(x_(k+1))-y(x_k))/(h) arrow y(x_(k+1)) approx y_(k+1) =  h f(x_(k+1), y_(k+1))+y_k
@@ -775,6 +777,7 @@ $
 - 原始迭代公式中 $f(x_(k+1),y_(k+1))$ 可直接视为 $y'(x_k+h)$，再对其泰勒展开 $y'(x_k+h)=y'(x_k)+y''(x_k)h+O(h^2)$
 - 真实值泰勒展开中 $y'(x_k)$ 满足 $ y'(x)=f(x,y) $
 - 真实值泰勒展开中 $y''(x_k)$ 满足 $ y''(x) = f(x,y)/(d x)=(f_x (x,y)d x+f_y (x, y) d y)/(d x)=f_x (x,y)+f_y (x,y)f(x,y) $
+- 真实值泰勒展开中 $y'''(x_k)$ 满足 $ y'''(x) = f_(x x)+2f_(x y) + f_(y y)f^2 + f_x f_y + f_y^2 f $
 - 记号 $O(h)$ 即 $h arrow 0$ 的等价无穷小，认为 $h O(h^k)=O(h^(k+1))$
 
 原始迭代公式不直接取 $x_(n+1)=x_n+h$ 而是中间某一点如 $f(x_n+a h,y_n+ b h)$ 需要二维泰勒展开
@@ -890,7 +893,7 @@ $
   $
     abs(1+h lambda+(h^2 lambda^2)/4)&lt 1\ 
     ((h lambda)/2+1)^2 &lt 1\
-    -4/lambda lt h &lt 0 
+    0 lt h &lt -4/lambda 
   $
 
   因此严格收敛时间隔满足 $h in (0, -4/lambda)$
@@ -996,7 +999,7 @@ $
 
 === 线性方程的误差分析
 
-此处误差考虑的是给定系数 $bm(A)$ 而线性方程组的常数项存在误差 $delta arrow(b)$，有 $arrow(b)'=arrow(b)+delta arrow(b)$。无论用什么方法求解，其对解 $arrow(x)$ 的误差 $delta arrow(x)$ 满足
+此处误差考虑的是给定系数 $bm(A)$ 而线性方程组的常数项存在误差 $delta arrow(b)$，有 $arrow(b)'=arrow(b)+delta arrow(b)$。无论用什么方法求解，其对解 $arrow(x)$ 的误差 $delta arrow(x)$ 满足（不考虑 $bm(A)$ 的扰动）
 
 $
   norm(delta arrow(x))_p/norm(arrow(x))_p lt.eq norm(bm(A))_p norm(bm(A)^(-1))_p norm(delta arrow(b))_p/norm(arrow(b))_p
@@ -1035,7 +1038,7 @@ $
   (1) 
 
   $
-    bm(A)=mat(1,2,-2;1,1,1;2,2,1); bm(A)^(-1)=mat(-1,-6,4;1,5,-3;0,2,-1); "cond"_1(bm(A))=norm(bm(A))_1 norm(bm(A)^(-1))_1=5 dot 13=6
+    bm(A)=mat(1,2,-2;1,1,1;2,2,1); bm(A)^(-1)=mat(-1,-6,4;1,5,-3;0,2,-1); "cond"_1(bm(A))=norm(bm(A))_1 norm(bm(A)^(-1))_1=5 dot 13=65
   $
 
   (2)
@@ -1048,7 +1051,7 @@ $
 
   $
     bm(B)_J=-bm(D)^(-1)(bm(L)+bm(U))=mat(0,-2,2;-1,0,-1;-2,-2,0), arrow(f)_J=bm(D)^(-1)arrow(b)=mat(1;1;1)\ 
-    bm(B)_G=-(bm(D)+bm(L))^(-1)(bm(U))=mat(0,-2,2;0,2,-3;0,0,2), arrow(f)_G=bm(bm(D)+bm(L))^(-1)arrow(b)=mat(1;0;-1)\ 
+    bm(B)_G=-(bm(D)+bm(L))^(-1)bm(U)=mat(0,-2,2;0,2,-3;0,0,2), arrow(f)_G=bm(bm(D)+bm(L))^(-1)arrow(b)=mat(1;0;-1)\ 
   $
 
   (4) 可以发现 $bm(B)_J$ 的 $p=1,p=infinity$ 均大于 $1$，要具体求谱半径
