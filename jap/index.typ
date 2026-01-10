@@ -26,11 +26,12 @@
   let kanji_list = kanjis.split("|")
   let cnt = 0
   for k in kanji_list {
-    if type(i) == "list" {
+    if type(i) == array {
       aruby(k, i: i.at(cnt))
     } else {
       aruby(k, i: i)
     }
+    cnt = cnt + 1
   }
 }
 
