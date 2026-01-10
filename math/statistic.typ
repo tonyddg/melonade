@@ -11,7 +11,7 @@
 
 === 离散型随机变量典型分布
 
-离散型随机变量通常使用分布列 $P(X=k)$ 描述
+离散型随机变量通常使用*分布列* $P(X=k)$ 描述
 
 #table(
   columns: (auto,) + (1fr,) * 3,
@@ -21,12 +21,12 @@
   [概率\ 分布\ 列], [$ P(X=k)=C^k_n p^k (1-p)^(n-k) \ k=0,1,dots,n $], [$ P(X=k)=(e^(-lambda)lambda^k)/(k!)\ k=0,1,dots,infinity $], [$P(X=k)=p(1-p)^(k-1)$],
   [期望], [$ E(X) = n p $], [$ E(X) = lambda $], [$ E(X)=1/p $],
   [方差], [$ D(X) = n p (1-p) $], [$ D(X) = lambda $], [$ D(X)=(1-p)/p^2 $],
-  [说明], [重复 n 次单次为正面概率为 p 的实验，正面出现 k 次的概率。], [一段时间内，小概率事件发生 $k$ 次的概率。（记忆：提出 $e^(-lambda)$，分布列即 $e^(lambda)$ 泰勒展开）], [重复做实验 $A$, 第 $k$ 次成功的概率]
+  [说明], [重复 n 次单次为正面概率为 p 的实验，正面出现 k 次的概率。], [一段时间内，小概率事件发生 $k$ 次的概率。\ （记忆：提出 $e^(-lambda)$，分布列即 $e^(lambda)$ 在 $x=0$ 处的泰勒展开）], [重复做实验 $A$, 第 $k$ 次成功的概率]
 )
 
 === 连续性随机变量典型分布
 
-连续性随机变量通常使用概率密度函数 $f(x)$ 或其积分得到的概率分布函数 $F(x)$ 描述，满足关系 
+连续性随机变量通常使用*概率密度函数* $f(x)$ 或其积分得到的*概率分布函数* $F(x)$ 描述，满足关系 
 
 $
 F(x)=P(X lt.eq x)=integral_(-infinity)^x f(x) d x
@@ -37,7 +37,7 @@ $
   align: center + horizon,
   [], [均匀分布], [正态分布], [指数分布],
   [记号], [$ X tilde U(a,b) $], [$ X tilde N(mu, sigma^2) $], [$ X tilde E(lambda) $],
-  [概率\ 密度\ 函数], [$ f(x)=cases(1/(b-a)\,a lt.eq x lt.eq b, 0\, "其余") $], [$ f(x)=\ 1/(sqrt(2 pi sigma^2))exp[-((x-mu)^2)/(2 sigma^2)] $], [$ f(x)=cases(lambda e^(-lambda)\, 0 lt.eq x,0\, "其余") $],
+  [概率\ 密度\ 函数], [$ f(x)=cases(1/(b-a)\,a lt.eq x lt.eq b, 0\, "其余") $], [$ f(x)=\ 1/(sqrt(2 pi sigma^2))exp[-((x-mu)^2)/(2 sigma^2)] $], [$ f(x)=cases(lambda e^(-lambda x)\, x gt.eq 0,0\, "其余") $],
   [期望], [$ E(X) = (a+b)/2 $], [$ E(X) = mu $], [$ E(X)=1/lambda $],
   [方差], [$ D(X) = ((b-a)^2)/12 $], [$ D(X) = sigma^2 $], [$ E(X)=1/lambda^2 $],
   [说明], [密度为常数的连续分布], [有标准化方法\ $Y=(X-E(X))/(sqrt(D(X))) tilde N(0,1)$], [刻画物体一段时间后损坏的概率]
@@ -134,6 +134,61 @@ $
 对于正态总体的其他统计量，可以尝试对统计量进行变形以得到以上三大分布。由于样本一般不是标准正态分布，为了转化为以上三大分布还需要标准化，有以下常用技巧
 - 正态分布标准化（注意参数为方差，但标准化除以的是方差的平方根） $ (X-mu)/sigma = N(0,1),X tilde N(mu,sigma^2) arrow sigma Y+mu = N(mu, sigma^2),Y tilde N(0,1) $
 - 正态分布闭合性质，对于独立的两个正态分布线性 $X_1 tilde N(mu_1,sigma_1^2),X_2 tilde N(mu_2,sigma_2^2)$ 的线性组合（可依据一般独立随机变量线性组合后均值与方差特性记忆） $ a_1 X_1+ a_2 X_2 tilde N(a_1 mu_1+a_2 mu_2,a_1^2 sigma_1^2+a_2^2 sigma_2^2) $
+
+#problem_box(
+  title: [抽样分布例题 1],
+  problem: [
+    假设 $X_1,X_2$ 是来自总体 $X tilde N(0,sigma^2)$ 的独立样本，求 $(X_1+X_2)^2/(X_1-X_2)^2$ 服从的分布
+  ]
+)[
+  题目统计量出先平方与分式，可以向 $F$ 分布靠拢。首先可以考察随机变量 $X_1+X_2$ 与 $X_1+X_2$ 的相关性。以下给出一个关于以上形式随机变量的结论的证明：
+
+  对于独立随机变量 $X,Y$，构造随机变量 $U=X+Y,V=X-Y$ 独立时，有两者协方差 $"Conv"(U,V)=0$
+
+  $
+    "Conv"(U,V)&=E(U V)-E(U)E(V)\ 
+    &=E(X^2-Y^2)-E(X+Y)E(X-Y)\ 
+    &=E(X^2)-E(Y^2)-[E(X)+E(Y)][E(X)-E(Y)]\ 
+    &=D(X)+E^2(X)-[D(Y)+E^2(Y)]-[E^2(X)-E^2(Y)]\ 
+    &=D(X)-D(Y)
+  $
+
+  因此对于 $U,V$ 当两者方差相同时，两个随机变量相互独立
+
+  $because X_1,X_2 tilde N(0,sigma^2) therefore X_1+X_2,X_1-X_2 tilde N(0,2 sigma^2) arrow $，随机变量 $X_1+X_2, X_1-X_2$ 独立，且 $((X_1+X_2)^2)/(2 sigma^2),((X_1-X_2)^2)/(2 sigma^2) tilde Chi^2(1)$ 因此 
+
+  $ (X_1+X_2)^2/(X_1-X_2)^2=((X_1+X_2)slash(2 sigma))^2/((X_1-X_2)slash(2 sigma))^2 tilde F(1,1) $
+
+]
+
+
+#problem_box(
+  title: [抽样分布例题 2],
+  problem: [
+    若 $X_1,X_2,dots,X_(n+1)$ 来自总体 $X tilde N(mu, sigma^2)$ 的独立样本，设 $overline(X)_(n)=1/n sum^(n)_(i=1)X_i$ 与 $S_n^2=1/(n-1) sum^(n)_(i=1)(X_i-overline(X)_(n))^2$，求常数 $c$ 使统计量 $G=c (X_(n+1)-overline(X)_n)/(sqrt(S^2_n))$ 满足某种统计分布。
+  ]
+)[
+  由于 $G$ 为一次正态随机变量除以根号正态随机变量平方和的平方根，因此可能是 $t$ 分布
+
+  分子部分标准化为正态分布有
+  
+  $
+  E(X_(n+1)-overline(X)_n)=E(X)-E(X)=0\ D(X_(n+1)-overline(X)_n)=D(X_(n+1))+D(overline(X)_n)=sigma^2+sigma^2/n=(n+1)/n sigma^2\ 
+  therefore X_(n+1)-overline(X)_n tilde N(0,(n+1)/n sigma^2) arrow (X_(n+1)-overline(X)_n)/(sqrt((n+1)/n sigma^2)) tilde N(0,1)
+  $
+
+  分母部分标准化为卡方分布有
+
+  $
+     (n-1)/(sigma^2)S_n^2 tilde Chi^2(n-1)
+  $
+
+  因此 
+
+  $
+    ((X_(n+1)-overline(X)_n)slash sqrt((n+1)/n sigma^2))/(sqrt((n-1)/(sigma^2)S_n^2 slash (n-1))) tilde t(n-1) arrow c=sqrt(n/(n+1))
+  $
+]
 
 == 基于点估计的参数估计
 

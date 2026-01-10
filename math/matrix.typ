@@ -119,17 +119,42 @@ $
 
 *和运算* $bold(V)_1 + bold(V)_2={arrow(x)_1+arrow(x)_2|arrow(x)_1 in bold(V)_1,arrow(x)_2 in bold(V)_2}$
 - 和空间相当于将两个线性空间的基混合，因此和空间的维度满足 $ dim{C(bm(A))+C(bm(B))}=dim{C([bm(A) space bm(B)])} $
-- 当 $dim bold(V)_1 + dim bold(V)_2 = dim(bold(V)_1 + bold(V)_2)$ 称为直和，记为 $dim bold(V)_1 plus.circle dim bold(V)_2$，此时 $dim(bold(V)_1 inter.big bold(V)_2)=0$
+- 当 $dim bold(V)_1 + dim bold(V)_2 = dim(bold(V)_1 + bold(V)_2)$ 称为直和，记为 $ bold(V)_1 plus.circle bold(V)_2$，此时 $dim(bold(V)_1 inter bold(V)_2)=0$
 - 对于 $bb(R)^n$ 的子空间 $bold(V)_i$，定义补空间 $bold(V)^L_i$ 满足 $bold(V)^L_i plus.circle bold(V)_i = bb(R)^n$
 
-*交运算* $bold(V)_1 inter.big bold(V)_2={arrow(x)|arrow(x) in bold(V)_1 and arrow(x) in bold(V)_2}$
-- 交空间要求向量同时存在于两个子空间，即对于 $C(bm(A)) inter.big C(bm(B))$ 满足 $ arrow(p)=bm(A)arrow(x)=bm(B)arrow(y) arrow mat(bm(A),-bm(B))mat(arrow(x); arrow(y))=arrow(0) $
-- 可得，交空间的维度满足 $ dim{C(bm(A)) inter.big C(bm(B))}=dim{N([bm(A) space bm(B)])} $
+*交运算* $bold(V)_1 inter bold(V)_2={arrow(x)|arrow(x) in bold(V)_1 and arrow(x) in bold(V)_2}$
+- 交空间要求向量同时存在于两个子空间，即对于 $C(bm(A)) inter C(bm(B))$ 满足 $ arrow(p)=bm(A)arrow(x)=bm(B)arrow(y) arrow mat(bm(A),bm(B))mat(arrow(x); -arrow(y))=arrow(0), space bm(A)arrow(x) in bold(V)_1 inter bold(V)_2 $
+- 可得，交空间的维度满足 $ dim{C(bm(A)) inter C(bm(B))}=dim{N([bm(A) space bm(B)])} $
 - #hl(2)[注意交空间中的向量为 $arrow(p)$]，因此还要取以上零空间基的上半部分 $arrow(x)$ 乘以 $bm(A)$ 才能得到交空间的基
 
-和空间维度反映两个子空间独立维度的个数，交空间反映两个子空间重叠维度的个数，因此 $ dim(bold(V)_1 + bold(V)_2)+dim(bold(V)_1 inter.big bold(V)_2)=dim(bold(V)_1)+dim(bold(V)_2) $
+和空间维度反映两个子空间独立维度的个数，交空间反映两个子空间重叠维度的个数，因此 $ dim(bold(V)_1 + bold(V)_2)+dim(bold(V)_1 inter bold(V)_2)=dim(bold(V)_1)+dim(bold(V)_2) $
 
 需要注意的是，子空间求并后不一定是线性空间，如子空间 $R(mat(1, 0)^T),R(mat(0, 1)^T)$ 的并集包含向量 $mat(1, 0)^T,mat(0, 1)^T$, 但不包含 $mat(1, 1)^T$，显然不对加法封闭
+
+#problem_box(
+  title: [线性子空间运算例题],
+  problem: [
+    有向量 $arrow(x)_1=mat(1;2;1;0),arrow(x)_2=mat(-1;1;1;1),arrow(x)_3=mat(2;-1;0;1),arrow(x)_4=mat(-1;-1;3;7)$ 分别张成子空间 $W_1="span"{arrow(x)_1,arrow(x)_2}$ 与 $W_2="span"{arrow(x)_3,arrow(x)_4}$，求 $W_1+W_2$ 与 $W_1 inter W_2$
+  ]
+)[
+
+构造矩阵 $bm(A)=mat(arrow(x)_1,arrow(x)_2,arrow(x)_3,arrow(x)_4)$ 将其消元为简化行阶梯矩阵
+
+$ bm(A)=mat(1,-1,2,-1;2,1,-1,-1;1,1,0,3;0,1,1,7) arrow mat(1,0,0,-3/2;0,1,0,9/2;0,0,1,5/2;0,0,0,0)=bm(R) $
+
+因此
+- 矩阵 $bm(A)$ 的前三列为主元列，有 $dim[C(bm(A))]=3$，主元列构成一组基 ${arrow(x)_1,arrow(x)_2,arrow(x)_3}$。
+- 依据 $bm(R)$ 可得矩阵 $bm(A)$ 得零空间有一组基 ${mat(-3,9,5,-2)^T}$，有 $dim[N(bm(A))]=3$
+
+由于 $W_1+W_2=C(bm(A))$，因此 $W_1+W_2$ 的维数为 $3$，有一组基 ${arrow(x)_1,arrow(x)_2,arrow(x)_3}$。
+
+对于 $W_1 inter W_2$，零空间 $N(bm(A))$ 中向量的前两行对应 $W_1$，因此 $W_1 inter W_2$ 中的向量满足
+
+$ mat(arrow(x)_1,arrow(x)_2) (k mat(-3;9))=k mat(-12,3,6,9)^T $
+
+因此 $W_1 inter W_2$ 的维数为 $1$，有一组基 ${mat(-12,3,6,9)^T}$
+
+]
 
 == 线性变换
 
@@ -238,9 +263,9 @@ $
 在线性变换的角度中
 - 由于线性变换矩阵被表示为了最简单的对角矩阵 $bm(Lambda)$，此时变换的效果就可以简单地表示为拉伸向量在某个基 $bm(S)$ 下的坐标。
 - 由于原像 $arrow(xi)$ 经过线性变换后的像 $lambda_i arrow(xi)$ 成比例关系即相互平行，因此 $lambda_i$ 对应的所有特征向量 $bm(A) N(bm(X) - lambda_i bm(I))$（$bm(A)$ 为线性变换矩阵 $bm(X)$ 基偶中两个相同的基）构成一个不变子空间 $bold(W)$，记为 $bold(V)_(lambda_i)$。
-- 由不同特征值的特征向量间线性无关的特性还可得出，#hl(2)[各个特征值 $lambda_i$ 对应的特征值构成的不变子空间 $bold(W)_i$ 的叫空间为 $arrow(0)$，和运算属于直和 $plus.circle$]。
+- 由不同特征值的特征向量间线性无关的特性还可得出，#hl(2)[各个特征值 $lambda_i$ 对应的特征值构成的不变子空间 $bold(V)_(lambda_i)$ 的交空间为 $arrow(0)$，和运算属于直和 $plus.circle$]。
 
-=== 特征值的计算与性质
+=== 特征值的计算与性质 <sec:eigenvalue_property>
 
 首先以方阵为讨论对象探究特征值，对于矩阵 $bm(A) in bold(V)^(n times n)$，存在某些方向的向量 $arrow(x)_i eq.not arrow(0)$ 在右乘 $bm(A)$ 后，得到的结果仍然平行于 $arrow(x)_i$，将具有这种特性的向量称为特征向量 $arrow(x)_i$，而称相乘结果 $bm(A)arrow(x)_i$ 与原向量 $arrow(x)_i$ 之比 $lambda_i$ 为特征值，即
 
@@ -252,7 +277,7 @@ $
 由变形 $(bm(A)-lambda_i bm(I))arrow(x)_i&=arrow(0)$ 可知
 - 矩阵 $(bm(A)-lambda_i bm(I))$ 需要是不可逆的（向量组线性相关）才能保证以上方程有解，因此特征值满足 $det(bm(A)-lambda_i bm(I))=0$ 该方程可展开为一个 $n$ 次多项式，包含重根与复数根在内一定有 $n$ 个解，即矩阵 $bm(A)$ 有 $n$ 个特征值，但可能存在重复多次的特征值。
 - 如果已知特征值 $lambda_i$ 后，特征向量即零空间 $N(bm(A)-lambda_i bm(I))$ 中的任意一个向量，#hl(2)[一个特征值可以对应无数个特征向量]。并且还有可能出现 $dim N(bm(A)-lambda_i bm(I))>1$ 即一个特征值对应了多个线性无关的特征向量的情况，（一般使用 $N(bm(A)-lambda_i bm(I))$ 的一组基代表用于特征向量矩阵）。
-- 因此定义*代数重数* $m_a (lambda_i)$ 为 $lambda_i$ 作为特征多项式根的重数 $n_i$；定义*几何重数* $m_g (lambda_i)$ 为 $lambda_i$ 对应所有特征向量组成的子空间的维度 $dim N(bm(A)-lambda_i bm(I))=dim(bold(V)_(lambda_i))=k_i$。
+- 因此定义*代数重数* $m_a (lambda_i)$ 为 $lambda_i$ 作为特征多项式根的重数 $n_i$；定义*几何重数* $m_g (lambda_i)$ 为 $lambda_i$ 对应所有特征向量组成的子空间的维度 $dim N(bm(A)-lambda_i bm(I))=n-"rank"(bm(A)-lambda_i bm(I))$。
 - #hl(2)[对于任意特征值 $lambda_i$ 的代数重数与几何重数有大小关系：$1 lt.eq m_g (lambda_i) lt.eq m_a (lambda_i)$]。这一关系表明线性变换可能存在受别的方向牵连的剪切变换，无法简单地将线性变换分解为几个独立方向的拉伸。
 - 对称矩阵一定可对角化
 
@@ -317,11 +342,12 @@ $
 此处再不加证明的给出以下特征值的性质：
 - 定义方阵 $bm(A)$ 对角线上的元素之和称为*迹* $tr(A)$，则 $bm(A)$ 的迹等于其特征值之和, 可用该性质寻找最后一个特征值。
 - 方阵 $bm(A)$ 的行列式等于其特征值之积，同时矩阵的行列式也等于其特征方程中的常数项乘以 $(-1)^n$（特征多项式来自 $det(lambda I - A)$ 可快速判断特征多项式是否正确、矩阵是否可逆）
-- 方阵 $bm(A)$ 有特征值 $lambda_i$, 则矩阵数乘 $k bm(A)$ 有特征值 $k lambda_i$（#hl(2)[可用于验证特征值计算的正确性]）
+- 基于特征值与特征向量原始定义 $bm(A)arrow(x)_i=lambda_i arrow(x)_i$，#hl(2)[可用于验证特征值计算的正确性]
+- 方阵 $bm(A)$ 有特征值 $lambda_i$, 则矩阵数乘 $k bm(A)$ 有特征值 $k lambda_i$
 - 方阵 $bm(A)$ 有特征值 $lambda_i$, 则矩阵与单位矩阵运算 $bm(A)+k bm(I)$ 有特征值 $lambda_i+k$, 且对应特征值的特征向量相同, 简单证明如下（注意对于任意两个矩阵 $bm(A),bm(B)$, 其和与积的特征值不存在特殊性质）$ (bm(A)+k bm(I))arrow(x)=lambda_i arrow(x)+k arrow(x)=(lambda_i+k)arrow(x) $
 - 方阵 $bm(A)$ 以及其转置 $bm(A)^T$ 具有相同的特征值
 - 方阵 $bm(A)$ 的逆 $bm(A)^(-1)$ 的特征值为方阵 $bm(A)$ 特征值 $lambda_i$ 的倒数 $1/lambda_i$
-- 当方阵 $bm(A)$ 的特征值全为 $0$ 时，一定存在整数 $k$ 使得 $bm(A)^k=bm(0)$，称 $bm(A)$ 为*幂零矩阵*，幂零矩阵一般有形如以下矩阵的结构 $ mat(0, 1;0,0)^2=bm(0),mat(0,1,0;,0,1;,,0)^3=bm(0) $
+- 当方阵 $bm(A)$ 的特征值全为 $0$ 时，一定存在整数 $k$ 使得 $bm(A)^k=bm(0)$，称 $bm(A)$ 为*幂零矩阵*，幂零矩阵一般有形如以下矩阵的结构（#hl(2)[认为零矩阵 $bm(0)$ 也是幂零矩阵，也是幂零矩阵可对角化的唯一形式]） $ mat(0, 1;0,0)^2=bm(0),mat(0,1,0;,0,1;,,0)^3=bm(0) $
 - （Sylverster 定理）对于矩阵 $bm(A)in bold(V)^(m times n),bm(B)in bold(V)^(n times m),m gt.eq n$，方阵 $bm(A)bm(B),bm(B)bm(A)$ 分别有特征多项式 $f_(A B)(lambda),f_(B A)(lambda)$，两个多项式满足 $ f_(A B)(lambda)=lambda^(m-n) f_(B A)(lambda) $ 即方阵 $bm(A)bm(B)$ 与 $bm(B)bm(A)$ 有相同的特征值，不同部分全为 $0$。（如果 $bm(A),bm(B)$ 均为方阵则 $bm(A)bm(B),bm(B)bm(A)$ 特征值相同）
 
 解题中可能会出现对角上排列方阵 $bm(A)_i$ 的大矩阵 $bm(A)$，对于这类分块对角矩阵
@@ -338,10 +364,80 @@ $
 - 矩阵相乘不满足交换律，但是对于两个矩阵多项式相乘满足交换律 $p(bm(A))q(bm(A))=q(bm(A))p(bm(A))$
 - 对于矩阵 $bm(A)$ 的特征值 $lambda_i$，矩阵多项式 $p(bm(A))$ 的特征值满足 $p(lambda_i)$ 且特征向量相同
 - 如果 $p(bm(A))=bm(0)$ 称多项式 $p(t)$ 为矩阵 $bm(A)$ 的*零化多项式*，并且矩阵 $bm(A)$ 的特征多项式一定是零化多项式（零化多项式有无穷多个）
-- 称矩阵 $bm(A)$ 的零化多项式中，首系数为 1（因式分解中则所有因式首系数为 1）且次数最小的多项式为 $bm(A)$ 的*最小多项式* 记为 $m_(bm(A))(lambda)$，且最小多项式是唯一的。
+- 称矩阵 $bm(A)$ 的零化多项式中，#hl(2)[首系数为 1（因式分解中则所有因式首系数为 1）且次数最小的多项式]为 $bm(A)$ 的*最小多项式* 记为 $m_(bm(A))(lambda)$，且最小多项式是唯一的。
   - 对矩阵 $bm(A)$ 的所有特征值，一定有 $m_(bm(A))(lambda_i)=0$，因此假设 $bm(A)$ 有经过因式分解的特征多项式 $product (lambda-lambda_i)^(m_i)$，则最小多项式有结构 $product (lambda-lambda_i)^(k_i)$，对应次数有关系 $m_i gt.eq k_i gt.eq 1$
-  - 仅当矩阵 $bm(A)$ 的所有特征值的代数重数均为一，才能保证最小多项式与令首系数为 1 的特征多项式相同
+  - #hl(2)[仅当矩阵 $bm(A)$ 的所有特征值的代数重数均为一，才能保证最小多项式与令首系数为 1 的特征多项式相同]
   - 分块对角矩阵的最小多项式等于对角线上各个矩阵最小多项式的公倍式
+  - 最小多项式中，特征值 $lambda_i$ 所在的因式的次数称为指标 $r_i$，即特征值对应 #link(<sec:jordan_standard>)[Jordan 子矩阵]中最大 Jordan 块的大小，部分情况下可依据#link(<sec:eigenvalue_property>)[几何重数与代数重数]推断得到
+
+=== 最小多项式与对角化关系
+
+首先给出以下引理：对于矩阵 $bm(A)in bold(V)^(m times n),bm(B)in bold(V)^(n times s)$，两个矩阵乘积的秩满足（矩阵相乘秩不会增加）
+
+$
+  r(bm(A))+r(bm(B))-n lt.eq r(bm(A)bm(B)) lt.eq min[r(bm(A)),r(bm(B))]
+$
+
+根据以上引理可以证明，当矩阵的最小多项式没有重根时：
+- 该矩阵一定可以相似对角化
+- 该矩阵所有特征值的几何重数等于代数重数
+- 进一步可以推出，当矩阵有没有重根的零化多项式，则该矩阵可以相似对角化（不一定是最小多项式）
+
+最小多项式因式次数指标 $r_i>1$ 时特征值经具有用于补充特征子空间的 $r_i$ 级#link(<sec:root_space>)[根空间]的性质也证明了这一点
+
+#problem_box(
+  title: [最小多项式例题 1],
+  problem: [
+    求矩阵 $bm(A)$ 的最小多项式：
+    $
+      bm(A)=mat(2,1;0,2;,,1,1;,,-2,4)
+    $    
+  ]
+)[
+
+利用其性质对角分块矩阵性质，可以先分别求对角线上两个分块矩阵的最小多项式有
+
+$
+  bm(A)_1 = mat(2,1;0,2), det(bm(A)_1-lambda bm(I)) = (lambda-2)^2\ 
+  bm(A)_2 = mat(1,1;-2,4), det(bm(A)_2-lambda bm(I)) = (lambda-3)(lambda-2)
+$
+
+对于 $bm(A)_1$ 属于阶数为 $2$ 的 Jordan 块，因此最小多项式即 $m_(A_1)(bm(A)_1)=(bm(A)_1-2 bm(I))^2$
+
+对于 $bm(A)_2$ 特征多项式最高次均为 $1$，因此最小多项式即 $m_(A_2)(bm(A)_2)=(bm(A)_2-3)(bm(A)_2-2)$
+
+取公倍式作为整个矩阵的最小多项式可得待求矩阵的最小多项式为
+
+$ m_(bm(A))(bm(A)) = (bm(A)-3)(bm(A)-2)^2 $
+
+]
+
+#problem_box(
+  title: [最小多项式例题2],
+  problem: [
+    求矩阵 $bm(A)$ 的最小多项式：
+    $
+      bm(A)=mat(3,1,1,1;-4,-1,-1,1;0,0,2,1;0,0,-1,0)=mat(bm(A)_0,bm(A)_1;bm(0),bm(A)_2)
+    $    
+  ]
+)[
+
+首先利用上三角分块矩阵性质，求出矩阵 $bm(A)$ 的特征多项式满足
+
+$ det(bm(A)-lambda bm(I))=det(bm(A)_0-lambda bm(I)) dot det(bm(A)_2-lambda bm(I))=(lambda-1)^4 $
+
+$(bm(A)-lambda bm(I))^n$ 没有方便的计算方法，但可以从 Jordan 标准型入手，求出 $bm(A)$ 的 Jordan 标准型，依据最大 Jordan 块对应零化多项式最高阶数（特征值的指标）求解
+
+为了得到 Jordan 块还要依据 $bm(A)-bm(I)$ 的秩（特征空间维度）分析几何重数 $m_g (lambda_1)$
+
+$
+  bm(A)-bm(I)=mat(2,1,1,1;-4,-2,-1,1;0,0,1,1;0,0,-1,-1) arrow mat(2,1,1,1;,,1,3;,,,-2;,) \ therefore "rank"(bm(A)-bm(I))=3, m_g (lambda_1)=4-"rank"(bm(A)-bm(I))=1
+$
+
+因此特征值 $lambda_1$ 的代数重数为 $4$，几何重数为 $1$，由 #link(<sec:jordan_standard>)[Jordan 子矩阵]性质可知 Jordan 子矩阵大小为 $4$ 有 $1$ 个 Jordan 块，只能是单个 $4$ 阶 Jordan 块的情况，即指标 $r_1=4$，有特征多项式 $ m_(bm(A))(bm(A))=(bm(A)- bm(I))^(r_1)=(bm(A)- bm(I))^4 $
+
+]
+
 
 #problem_box(
   title: [零化多项式例题],
@@ -390,69 +486,6 @@ $
 $
 ]
 
-#problem_box(
-  title: [最小多项式例题],
-  problem: [
-    求矩阵 $bm(A)$ 的最小多项式：
-    $
-      bm(A)=mat(2,1;0,2;,,1,1;,,-2,4)
-    $    
-  ]
-)[
-
-首先利用对角分块矩阵性质，求出矩阵 $bm(A)$ 的特征多项式满足
-
-$
-  det(bm(A)-lambda bm(I))=det(mat(2,1;0,2)-lambda bm(I)) dot det(mat(1,1;-2,4)-lambda bm(I))=(lambda-3)(lambda-2)^3
-$
-
-所以最小多项式具有形式 $(lambda-3)(lambda-2)^k$，从 $k=1$ 增大验证多项式是否为最小多项式
-
-$
-  (lambda-3)(lambda-2)=mat(0,-1;0,0;,,0,0;,,0,0)eq.not bm(0); (lambda-3)(lambda-2)^2=bm(0)
-$
-
-所以矩阵 $bm(A)$ 的最小多项式为 $(lambda-3)(lambda-2)^2$
-
-计算时注意
-- 题目大多为分块矩阵，要充分利用其性质
-- 验证最小多项式时，除了待确定的 $bm(A)-2 bm(I)$，不要忘记以确定的一次项 $bm(A)-3 bm(I)$
-- 每次令 $k+1$ 时，注意不是乘以自身，而是乘以 $bm(A)-2 bm(I)$
-- 可以分别求每块的最小多项式，取公倍式作为整个矩阵的最小多项式（左上角块有最小多项式 $(lambda-2)^2$，右下角块有 $(lambda-3)(lambda-2)$，可得到相同结果）
-
-]
-
-#problem_box(
-  title: [最小多项式例题2],
-  problem: [
-    求矩阵 $bm(A)$ 的最小多项式：
-    $
-      bm(A)=mat(3,1,1,1;-4,-1,-1,1;0,0,2,1;0,0,-1,0)=mat(bm(A)_0,bm(A)_1;bm(0),bm(A)_2)
-    $    
-  ]
-)[
-
-首先利用上三角分块矩阵性质，求出矩阵 $bm(A)$ 的特征多项式满足
-
-$ det(bm(A)-lambda bm(I))=det(bm(A)_0-lambda bm(I)) dot det(bm(A)_2-lambda bm(I))=(lambda-1)^4 $
-
-$(bm(A)-lambda bm(I))^n$ 没有方便的计算方法，但可以从 Jordan 标准型入手，求出 $bm(A)$ 的 Jordan 标准型，依据最大 Jordan 块对应零化多项式最高阶数（特征值的指标）求解
-
-]
-
-=== 最小多项式与对角化关系
-
-首先给出以下引理：对于矩阵 $bm(A)in bold(V)^(m times n),bm(B)in bold(V)^(n times s)$，两个矩阵乘积的秩满足（矩阵相乘秩不会增加）
-
-$
-  r(bm(A))+r(bm(B))-n lt.eq r(bm(A)bm(B)) lt.eq min[r(bm(A)),r(bm(B))]
-$
-
-根据以上引理可以证明，当矩阵的最小多项式没有重根时：
-- 该矩阵一定可以相似对角化
-- 该矩阵所有特征值的几何重数等于代数重数
-- 进一步可以推出，当矩阵有没有重根的零化多项式，则该矩阵可以相似对角化（不一定是最小多项式）
-
 == Jordan 标准型
 
 === Jordan 块
@@ -469,7 +502,7 @@ $
   mat(mat(delim: #none, 1,1;0,1);,mat(delim: #none, 2);,,mat(delim: #none, 2,1;0,2)) arrow mat(1,1;0,1), mat(2;,2,1;,,2) arrow mat(1,1;0,1), mat(2,1;,2), mat(2)
 $
 
-=== 根空间与根向量
+=== 根空间与根向量 <sec:root_space>
 
 根据 $r(bm(A)^2) lt.eq r(bm(A))$，以及 $r N(bm(A))=n-r C(bm(A))$，因此方程 $bm(A)^k arrow(x)=arrow(0)$ 比 $bm(A)arrow(x)=arrow(0)$ 解的维度可能更高。因此希望通过 $(bm(A)-lambda bm(I))^k arrow(x)=arrow(0)$ 扩展根数量，以弥补几何重数小于代数重数的问题。
 
@@ -482,11 +515,11 @@ $
 称向量 $arrow(x)_(i k)$ 为矩阵 $bm(A)$ 关于特征向量 $lambda_i$ 的 $k$ 级根向量
 
 关于根向量有如下定理：
-- 从特征向量可以推广，矩阵 $bm(A)$ 不同特征值的各级根向量均是线性无关的。
+- 从特征向量可以推广，矩阵 $bm(A)$ 不同特征值的各级根向量均是线性无关的。不同特征向量的根空间的和运算属于直和 $plus.circle$，所有根空间直和得到向量空间 $CC^(n)$。
 - 对于特征值的代数重数 $m_a (lambda_i)$，定义*根空间* $bold(N)_(lambda_i)=N[(bm(A)-lambda_i bm(I))^(m_a (lambda_i))]$，根空间维度 $dim bold(N)_(lambda_i)$ 一定等于代数重数 $m_a (lambda_i)$，且一定包含了各级根向量
 - 将根向量级别最高的 $k$ 记为特征值 $lambda_i$ 的*指标* $r_i$，由于指标小于等于代数重数因此根向量级数不会超过代数重数 $m_a (lambda_i)$，并且空间 $N[(bm(A)-lambda_i bm(I))^(r_i)]$ 与根空间 $bold(N)_(lambda_i)$ 一定相同
 - #hl(2)[矩阵 $bm(A)$ 的最小多项式中，因式 $(bm(A)-lambda_i bm(I))^(r_i)$ 的次数同时也是该特征值的指标]
-- 不同特征向量的根空间的和运算属于直和 $plus.circle$，所有根空间直和得到向量空间 $CC^(n)$
+- 一级根向量即特征向量，一级根空间即特征子空间
 
 高级根向量求解比较困难，通常有如下技巧（以二级根向量为例）
 
@@ -501,11 +534,11 @@ $
   arrow(y)=c_1 arrow(a)_1 + dots + c_n arrow(a)_n
 $
 
-然后利用高斯消元法，对增广矩阵 $mat(bm(A)-lambda_i bm(I), arrow(y))$ 消元，利用方程有解时增广矩阵的秩与 $bm(A)-lambda_i bm(I)$ 相同（对应 $0$ 行元素为 $0$）确定待定坐标并求出二级根向量 $arrow(x)$，以及导出这一向量的一级根向量 $arrow(y)$
+然后利用高斯消元法，对增广矩阵 $mat(bm(A)-lambda_i bm(I), arrow(y))$ 消元，利用#hl(2)[方程有解时增广矩阵的秩与 $bm(A)-lambda_i bm(I)$ 相同（对应 $0$ 行元素为 $0$）]确定待定坐标并求出二级根向量 $arrow(x)$，以及导出这一向量的一级根向量 $arrow(y)$
 
-进一步地，由于求矩阵 $bm(A)-lambda_i bm(I)$ 的过程也需要消元，因此可先取任意向量 $arrow(y)$ 带入增广矩阵 $mat(bm(A)-lambda_i bm(I), arrow(y))$ 消元，然后再带入待定坐标减少计算量。
+进一步地，由于求矩阵 $bm(A)-lambda_i bm(I)$ 的过程也需要消元，因此可先取任意向量 $arrow(y)$ 带入增广矩阵 $mat(bm(A)-lambda_i bm(I), arrow(y))$ 消元，然后再带入待定坐标减少计算量（具体做法建议参见例题）。
 
-=== 矩阵 Jordan 标准型
+=== 矩阵 Jordan 标准型 <sec:jordan_standard>
 
 矩阵的 Jordan 标准型中的子矩阵有
 - 每个特征值对应一个 Jordan 子矩阵，其代数重数即其在 Jordan 标准型中子矩阵的大小 #sym.arrow #hl(2)[*代数重数*决定子矩阵大小]
@@ -541,22 +574,36 @@ $
 
 特征值 $lambda_2=4$ 的代数重数为 $1$，因此几何重数也为 $1$，Jordan 子矩阵即 $mat(4)$。方程 $(bm(A)-lambda_2 bm(I))arrow(x)=arrow(0)$ 有解 $arrow(x)_(2,1)=mat(2,0,1,0)^T$ 可以作为 $lambda_2$ 的一个特征向量。
 
-特征值 $lambda_1=2$ 的代数重数为 $3$。通过对增广矩阵 $mat(bm(A)-lambda_1 bm(I),arrow(y))$ 消元求特征子空间 $N(bm(A)-lambda_1 bm(I))$ 的一组基以及可能的二级根向量：
+特征值 $lambda_1=2$ 的代数重数为 $3$。通过对增广矩阵 $mat(augment:#(vline: 1),bm(A)-lambda_1 bm(I),bm(I))$ 消元求特征子空间 $N(bm(A)-lambda_1 bm(I))$ 的一组基以及可能的二级根向量：
+
+// $
+//   mat(augment:#(vline: 4),
+//     2,3,0,1,y_1;0,0,0,0,y_2;1,3,0,1,y_3;0,0,0,0,y_4
+//   ) arrow 
+//   mat(augment:#(vline: 4),
+//     1,3,0,1,y_3;0,0,0,0,y_2;0,-3,0,-1,y_1-2y_3;0,0,0,0,y_4
+//   ) arrow  \  
+//   mat(augment:#(vline: 4),
+//     1,0,0,0,y_1-y_3;0,1,0,1/3,1/3(2y_3-y_1);0,0,0,0,y_2;0,0,0,0,y_4
+//   ) arrow
+//   bm(N) = mat(
+//     0,0;0,-1/3;1,0;0,1
+//   )
+// $
 
 $
-  mat(augment:#(vline: 4),
-    2,3,0,1,y_1;0,0,0,0,y_2;1,3,0,1,y_3;0,0,0,0,y_4
-  ) arrow 
-  mat(augment:#(vline: 4),
-    1,3,0,1,y_3;0,0,0,0,y_2;0,-3,0,-1,y_1-2y_3;0,0,0,0,y_4
-  ) arrow  \  
-  mat(augment:#(vline: 4),
-    1,0,0,0,y_1-y_3;0,1,0,1/3,1/3(2y_3-y_1);0,0,0,0,y_2;0,0,0,0,y_4
+  mat(augment:#(vline: 1),bm(A)-lambda_1 bm(I),bm(I)) = mat(augment:#(vline: 4),
+    2,3,0,1,1,0,0,0;0,0,0,0,0,1,0,0;1,3,0,1,0,0,1,0;0,0,0,0,0,0,0,1
   ) arrow
+  mat(augment:#(vline: 4),
+    1,0,0,0,1,0,-1,0;0,1,0,1/3,-1/3,0,2/3,0,;0,0,0,0,0,1,0,0;0,0,0,0,0,0,0,1
+  ) = mat(augment:#(vline: 1),bm(R),bm(B)),
   bm(N) = mat(
     0,0;0,-1/3;1,0;0,1
   )
 $
+
+消元结果中，矩阵 $bm(R)$ 为主元列均为 $1$ 的最简阶梯型，而 $bm(B)$ 虽然不是 $bm(A)'=bm(A)-lambda_1 bm(I)$ 的逆，但满足 $bm(B)bm(A)'=bm(R)$ 可用于检查，且对于增广矩阵 $mat(augment:#(vline: 1),bm(A)',arrow(y))$ 的化简结果满足 $mat(augment:#(vline: 1),bm(R),bm(B)arrow(y))$。
 
 根据零空间矩阵 $bm(N)$ 可得特征值 $lambda_1$ 的几何重数为 $2$，特征子空间有一组基 ${mat(0,0,1,0)^T,mat(0,-1,0,3)^T}$。根据 $3=1+2$ 可得，$lambda_1$ 对应的 Jordan 子矩阵包含一个一阶 Jordan 块与一个二阶 Jordan 块。
 
@@ -566,24 +613,20 @@ $
   (bm(A)-lambda_1 bm(I))arrow(x)_(1,3)=arrow(x)_(1,2),arrow(x)_(1,2) in N(bm(A)-lambda_1 bm(I))
 $
 
-设 $arrow(x)_(1,2)$ 在基 ${mat(0,0,1,0)^T,mat(0,-1,0,3)^T}$ 的坐标为 $mat(c_1,c_2)^T$，有 $arrow(x)_(1,2)=mat(0,-c_2/3,c_1,c_2)$。
+设 $arrow(x)_(1,2)$ 在基 ${mat(0,0,1,0)^T,mat(0,-1,0,3)^T}$ 的坐标为 $mat(c_1,c_2)^T$，有 $arrow(x)_(1,2)=mat(0,-c_2/3,c_1,c_2)^T$。
 
-由增广矩阵主元消元结果可知 $arrow(x)_(1,2)$ 在零行的对应元素为 $0$ 可得出坐标 $mat(c_1,c_2)^T$ 满足：
+方程 $bm(A)'arrow(x)_(1,3)=arrow(x)_(1,2)$ 有解时增广矩阵 $mat(augment:#(vline: 1),bm(A)',arrow(x)_(1,2))$ 化简得到的 $mat(augment:#(vline: 1),bm(R),bm(B)arrow(x)_(1,2))$ 中，矩阵 $bm(R)$ 为 $0$ 的行对应向量 $bm(B)arrow(x)_(1,2)$ 的元素，即后两个元素也要为 $0$，因此有
 
 $
-  cases(
-    0=y_2=-c_2/3,
-    0=y_4=c_2    
-  ) arrow 
-  cases(c_2=0,c_1 "取任意值")
+  -c_2/3=0,c_2=0 arrow c_2=0,c_1 "取任意值"
 $
 
 令 $c_1=1$ 即有 $arrow(x)_(1,2)=mat(0,0,1,0)^T$。
 
-由增广矩阵最简消元结果可知 $arrow(x)_(1,3)$ 各个元素对应各个主元列上，主元所在行的 $arrow(y)=arrow(x)_(1,2)$ 的表达式有
+$arrow(x)_(1,3)$ 作为方程的解也将自动满足 $bm(R)arrow(x)_(1,3)=bm(B)arrow(x)_(1,2)$。而最简单的一种解即令 $bm(R)$ 的非主元列对应的元素取 $0$，主元列（其余元素均为 $0$，主元位置为 $1$）对应的元素取 $bm(B)arrow(x)_(1,2)$ 对应值，有
 
 $
-  arrow(x)_(1,3) = mat(y_1-y_3;1/3(2y_3-y_1);0;0)=mat(-1;2/3;0;0)
+  bm(B)arrow(x)_(1,2)=mat(-1,2/3,0,0)^T arrow arrow(x)_(1,3) =mat(-1,2/3,0,0)^T 
 $
 
 最后从 $lambda_1$ 的特征子空间中任取一个与 $arrow(x)_(1,2)$ 线性无关的特征向量作为 $arrow(x)_(1,1)=mat(0,-1,0,3)^T$
@@ -633,10 +676,10 @@ $
 其中系数矩阵 $bm(A)$，向量函数 $f(t)$，初值条件 $arrow(C)$ 均已知，则方程的解满足
 
 $
-  arrow(x)(t)=exp(bm(A))arrow(C)+integral_0^t exp[bm(A) (t-s)] arrow(f)(s) d s
+  arrow(x)(t)=exp(bm(A) t)arrow(C)+integral_0^t exp[bm(A) (t-s)] arrow(f)(s) d s
 $
 
-其中 $exp(bm(A))arrow(C)$ 为与初值有关的通解，$integral_0^t exp[bm(A) (t-s)] arrow(f)(s) d s$ 为与向量函数 $arrow(f)(t)$ 有关的特解。
+其中 $exp(bm(A) t)arrow(C)$ 为与初值有关的通解，$integral_0^t exp[bm(A) (t-s)] arrow(f)(s) d s$ 为与向量函数 $arrow(f)(t)$ 有关的特解。
 
 这类常系数微分方程组求解的关键在于 
 - 利用 Jordan 标准型或相似对角化获取 $exp(bm(A)t)$
@@ -801,6 +844,48 @@ $
 $
 
 以上连加式中，$arrow(q)_k arrow(q)_k^T$ 即标准正交基各列向量的投影矩阵，通过 $arrow(a)_i$ 在各个基向量上的投影相加得到 $arrow(a)_i$
+
+#problem_box(
+  title: [QR 分解例题],
+  problem: [
+    求矩阵 $bm(A)$ 的 QR 分解：
+    $
+      bm(A)=mat(1,0,0;1,1,0;1,1,1;1,1,1)
+    $    
+  ]
+)[
+
+对于第一列有（建议将分母提出作为系数简化运算）
+
+$ arrow(h)_1=arrow(a)_1=mat(1;1;1;1),arrow(h)_1 arrow(h)_1^T=mat(1,1,1,1;1,1,1,1;1,1,1,1;1,1,1,1),arrow(h)_1^T arrow(h)_1=4 $
+
+对于第二列有
+
+$ 
+  arrow(h)_2=arrow(a)_2-(arrow(h)_1 arrow(h)_1^T)/(arrow(h)_1^T arrow(h)_1)arrow(a)_2=mat(0;1;1;1)-1/4 mat(3;3;3;3)=1/4mat(0;4;4;4)-1/4 mat(3;3;3;3)=1/4 mat(-3;1;1;1)\ 
+  arrow(h)_2 arrow(h)_2^T=1/16 mat(9,-3,-3,-3;-3,1,1,1;-3,1,1,1;-3,1,1,1),arrow(h)_2^T arrow(h)_2=3/4
+$
+
+对于第三列有
+
+$ 
+  arrow(h)_3=arrow(a)_3-sum (arrow(h)_i arrow(h)_i^T)/(arrow(h)_i^T arrow(h)_i)arrow(a)_3=mat(0;0;1;1)-1/4 mat(2;2;2;2)-4/3 dot 1/16 mat(-6;2;2;2)=1/12 mat(0;0;12;12)-1/12 mat(6;6;6;6)-1/12 mat(-6;2;2;2)\ 
+  arrow(h)_3 = 1/12 mat(0,-8,4,4)^T=1/3 mat(0,-2,1,1)^T,arrow(h)_3^T arrow(h)_3=2/3
+$
+
+将 $arrow(h)_i$ 除以 $sqrt(arrow(h)_i^T arrow(h)_i)$ 得到 $arrow(q)_i$ 并排列（实际可以忽略最外的系数直接标准化）得到 $bm(Q)$
+
+$ 
+  bm(Q)=mat(1/2,-3/(2 sqrt(3)),0;1/2,1/(2 sqrt(3)),-2/sqrt(6); 1/2,1/(2 sqrt(3)),1/sqrt(6); 1/2,1/(2 sqrt(3)),1/sqrt(6))
+$
+
+计算 $bm(R)$ 记住对角线元素为 $sqrt(arrow(h)_i^T arrow(h)_i)$ 用于还原，上方元素为 $arrow(q)_k^T arrow(a)_i$ 求投影大小
+
+$
+  bm(R)=mat(sqrt(arrow(h)_1^T arrow(h)_1),arrow(q)_1^T arrow(a)_2,arrow(q)_1^T arrow(a)_3;0,sqrt(arrow(h)_2^T arrow(h)_2),arrow(q)_2^T arrow(a)_3;0,0,sqrt(arrow(h)_3^T arrow(h)_3))=mat(2,3/2,1;0,sqrt(3)/2,1/sqrt(3);0,0,sqrt(6)/3)
+$
+
+]
 
 // 上三角矩阵则满足
 
