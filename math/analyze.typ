@@ -697,11 +697,26 @@ $
   arrow integral_(a)^(b) f(x)d x=(b-a)/2 sum_(i=0)^n a_i f[((a+b)+(b-a)t_i)/2]
 $
 
-当权函数不为 $rho(x)=1$ 时，任意区间 $x in [a,b]$ 下积分时依然仅使用 $t in [-1,1]$ 区间的权函数，即直接使用 $rho(t)$，不需要对权函数做额外变量代换，有
+当权函数不为 $rho(x)=1$ 时，任意区间 $x in [a,b]$ 下积分时依然仅使用 $t in [-1,1]$ 区间的权函数，#hl(2)[即直接使用 $rho(t)$，不需要对权函数做额外变量代换]，有
 
 $
   integral_(a)^(b)rho(t) [f(x)/rho(t)] d x=(b-a)/2 sum_(i=0)^n a_i/(rho(t_i)) f[((a+b)+(b-a)t_i)/2]
 $
+
+典型的 Gauss 求积公式有
+
+#table(
+  columns: (auto, auto, auto, 1fr),
+  align: center+horizon,
+  table.header()[*节点个数\ $n+1$*][*多项式根*][*积分系数*][*求积公式*],
+  table.cell(colspan: 4)[*Legendre 求积公式*],
+  [2], [$1/2(3x^2+1)$\ $-1/sqrt(3),1/sqrt(3)$], [$1,1$], [$ f(-1/sqrt(3))+f(1/sqrt(3)) $],
+  [3], [$1/2(5x^3+3x)$\ $plus.minus sqrt(3/5),0$], [$5/9,8/9,5/9$], [$ 5/9f(-sqrt(3/5))+8/9 f(0)+5/9f(sqrt(3/5)) $],
+  table.cell(colspan: 4)[*Chebyshev 求积公式*],
+  [2], [$2x^2+1$\ $-1/sqrt(2),1/sqrt(2)$], [$pi/2$\ $1/sqrt(2),1/sqrt(2)$], [$ pi/2[1/sqrt(2)f(-1/sqrt(2))+1/sqrt(2)f(1/sqrt(2))] $],
+  [3], [$4x^2+3$\ $plus.minus sqrt(3)/2,0$], [$pi/3$\ $1/2,1,1/2$], [$ pi/3[1/2 f(-sqrt(3)/2)+f(0)+1/2f(sqrt(3)/2)] $],
+
+)
 
 #problem_box(
   title: [不同权函数的 Gauss 积分公式问题],
@@ -713,16 +728,21 @@ $
     $
   ]
 )[
-  根据积分区间有 $x=(1+t)/6$，使用 Legendre 正交多项式时有
+  通过变化 $x=(1+t)/6$ 将 $x in [0,1/3]$ 区间上的积分转化为 $t in [-1,1]$ 区间上的积分有
+
+  $ integral_(0)^(1/3)(6x)/sqrt(x(1-3x)) d x=integral_(-1)^(1)(1+t)/sqrt(1/12(1-t^2)) 1/6 d t=integral_(-1)^(1)1/sqrt(3)(1+t)/sqrt((1-t^2))d t $
+  
+  
+  使用 Legendre 正交多项式时有
 
   $
-  integral_(0)^(1/3)(6x)/sqrt(x(1-3x)) d x=1/6[5/9f((1-sqrt(3/5))/6)+8/9f(1/6)+5/9f((1+sqrt(3/5))/6)] approx 1.5275
+  integral_(-1)^(1)1/sqrt(3)(1+t)/sqrt((1-t^2))d t=5/9g(-sqrt(3/5))+8/9 g(0)+5/9g(sqrt(3/5)) approx 1.5275
   $
 
   使用 Chebyshev 正交多项式时有
 
-  $
-  &space integral_(0)^(1/3)(6x)/sqrt(x(1-3x)) d x\ &=1/6 dot pi/3 [ f((1-sqrt(3/4))/6)sqrt(1-(-sqrt(3/4))^2)+f(1/6)sqrt(1-(0)^2) +f((1+sqrt(3/5))/6)sqrt(1-(sqrt(3/4))^2) ]\  &approx 1.8138 ("误差更小")
+  $ 
+  integral_(-1)^(1)1/sqrt(3)(1+t)/sqrt((1-t^2))d t=  pi/3[1/2 f(-sqrt(3)/2)+f(0)+1/2f(sqrt(3)/2)] approx 1.8138 ("误差更小")
   $
 ]
 
