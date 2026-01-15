@@ -108,10 +108,10 @@ Pydantic 中使用 `Field(...)` 函数约束字段取值时
 - 可以像 dataclass 一样使用 `<字段名>:<字段类型> = Field(...)`
 - 还可以使用 Python 官方模块 `typing` 中的带标注类型 `typing.Annotated`
   - 通过 `<字段名>:Annotated[<字段类型>, Field(...)]` 实现与上述相同的效果（FastAPI 中更倾向此类做法，特别是函数参数中）
-  - `Annotated` 本身定义了一种类型，因此可以像 `MyType = Annotated[<字段类型>, Field(...)]` 一样复用带约束的字段类型
+  - `Annotated` 本身定义了一种类型，因此可以复用带约束的字段类型例如：`MyType = Annotated[<字段类型>, Field(...)]`
   - Pydantic 还有其他类型约束 / 修饰器需要在 `Annotated` 中修饰（`Annotated` 第一个参数为主类型，后续均为类型标注可以有任意多个）
 
-=== 查询参数与请求体
+=== 查询参数与请求体 <sec:query_and_body>
 
 FastAPI 中使用类似 Pydantic 中的 `Field(...)` 函数显示地规定参数属于哪个类型
 - `Query(...), Body(...)` 分别表示查询参数与请求体（除此之外还有路径参数、Cookie、Header、表单、文件等后续介绍）
@@ -127,6 +127,10 @@ FastAPI 中使用类似 Pydantic 中的 `Field(...)` 函数显示地规定参数
 除了值约束，FastAPI 还可以通过 `Query(...), Body(...)` 等函数规定字段的名称等元数据，常用的如
 - `title`：字段名称
 - `description`：字段描述
+
+习惯上
+- 查询参数位于 `url` 的 `&` 部分后，在 `POST`，`GET` 两种操作中均可使用，一般就用于说明查询数据的信息，通常多个查询参数均以一般函数参数的形式出现
+- 请求体在请求时作为 `json` 数据传递，习惯上使用函数中的单个参数 `body` 表示，并以一个 Pydantic 模型作为参数类型，表示请求体的具体内容
 
 === 接收文件 <accept_file>
 
@@ -219,8 +223,9 @@ async def lifespan(app: FastAPI):
 
 函数 `response = requests.post(...)` 用于发送 `POST` 请求
 - 参数 `url`：字符串，访问的链接
+- 参数 `params`：字典，用于将其中的键值对传递给 FastAPI 中#link(<sec:query_and_body>)[位于函数参数的多个查询参数]
+- 参数 `json`：字典，将该字典编码为 JSON 字符串作为请求体发送，用于将数据传递给 FastAPI 中#link(<sec:query_and_body>)[位于函数参数的单个请求体参数]
 - 参数 `data`：一般请求体，可以是字符串（视为文本文件）、字典（视为表单）
-- 参数 `json`：字典，将该字典编码为 JSON 字符串作为请求体发送
 - 关键字参数 `file`：字典，用于表示文件请求体
   - 字典的键名为文件参数名称
   - 字典的键值为元组，包含文件名、文件对象（或字节串对象）、文件类型（如一般二进制文件 `application/octet-stream`）
