@@ -199,7 +199,7 @@ PyTorch 中 RNN 以如图所示的方式使用
 
 == 序列到序列学习
 
-=== 编码器解码器架构
+=== 编码器解码器架构 <sec:seq2seq_struct>
 
 #figure(
   image("./res/rt_6.png", height: auto), 
@@ -364,7 +364,7 @@ $
 
 相比 RNN 与 CNN，自注意力模块最大的特性即可以同时且平等地考虑整个序列。
 
-=== 自注意力模块的计算
+=== 自注意力模块的计算 <sec:attention_self_attention>
 
 #figure(
 
@@ -384,7 +384,7 @@ $
 首先将输入映射为 key、query、value：
 
 $
-  bm(K)=[arrow(k)_1 dots arrow(k)_n]=[bm(W)^k  arrow(x)_1 dots bm(W)^k  arrow(x)_n]=bm(W)^k [arrow(x)_1 dots arrow(x)_n]==bm(W)^k bm(I)
+  bm(K)=[arrow(k)_1 dots arrow(k)_n]=[bm(W)^k  arrow(x)_1 dots bm(W)^k  arrow(x)_n]=bm(W)^k [arrow(x)_1 dots arrow(x)_n]=bm(W)^k bm(I)
 $
 
 然后计算查询 $i$ 对应的点乘注意力分数再使用如 $"Softmax"$ 等函数标准化为注意力权重，也可将计算各个元素的注意力权重转化为矩阵形式（其中 $Phi_"col"$ 表示按列标准化函数，例如按列的 Softmax）：
@@ -425,18 +425,18 @@ $
 - 可学习位置编码: 将位置编码作为一个大小为 (1, L, X) 的可学习参数直接加在序列上（多用于序列固定长度的图片）
 - 如果序列之间没有位置关系，则可以不使用位置编码
 
-=== Masked Self-Attention <masked-sa>
+// === Masked Self-Attention <masked-sa>
 
-#figure(
+// #figure(
 
-  image("./res/rt_16.png", height: 15em, width: auto), 
+//   image("./res/rt_16.png", height: 15em, width: auto), 
 
-  caption: [Masked Self-Attention],
-)
+//   caption: [Masked Self-Attention],
+// )
 
-将自注意力模块用于序列输出时，预测序列下一时刻的元素 $arrow(a)_i$ 时，完整的序列还是未知的，因此只有过去的序列 $arrow(a)_(1) dots arrow(a)_(i-1)$ 能用于预测，相当于后续的序列不参与自注意力的计算，因此称为 Masked Self-Attention。
+// 将自注意力模块用于序列输出时，预测序列下一时刻的元素 $arrow(a)_i$ 时，完整的序列还是未知的，因此只有过去的序列 $arrow(a)_(1) dots arrow(a)_(i-1)$ 能用于预测，相当于后续的序列不参与自注意力的计算，因此称为 Masked Self-Attention。
 
-=== 交叉注意力模块 <cross-attention>
+=== 交叉注意力模块 <sec:attention_cross_attention>
 
 #figure(
 
@@ -457,7 +457,7 @@ $
 
 == Transformer
 
-=== Transformer 编码器
+=== Transformer 编码器 <sec:transformer_encoder>
 
 #figure(
 
@@ -475,7 +475,28 @@ Transformer 架构中的编码器由多个 Transformer Block 叠加得到，而�
 - 通过残差链接将输出与输入相加，再经过 Layer Norm。与不同特征同一属性间标准化不同，Layer Norm 为同一特征不同属性间标准化，即分别标准化序列的各个特征向量内的元素。
 - 输出特征再经过类似的过程，只是使用全连接层提取特征后残差连接与标准化。
 
-=== Transformer 解码器
+=== MoE 混合专家模型
+
+#figure(
+
+  image("./res/rt_21.png", height: 15em, width: auto), 
+
+  caption: [MoE 混合专家模型],
+)
+
+参考教程：#link("https://huggingface.co/blog/zh/moe#moes-and-transformers")
+
+MoE（Mixture of Expert）的基本思想为，对于不同类型的特征向量，最能够提取其特征的网络不一定相同，因此相比于用一个大的网络提取所有类型的特征，用几个小的网络提取不同类型的特征，虽然总参数不变但训练能更快收敛。
+
+在 Transformer 中，MoE 一般用于 Transformer 块中，自注意力模块后还有一层全连接层（FFN）上。即如图所示一个 FFN 层中存在多个子全连接层，每个全连接层即称为一个专家，每个专家网络的结构不一定相同。
+
+特征向量会经过门控网络或路由模块选择其需要使用哪一个全连接层提取特征。当特征来自同一模态时，一般就会使用门控网络，利用 Softmax 函数自动选择用哪个专家处理特征向量。
+
+当特征显然来自于不同模态时，还可以将特征种类绑定在特征向量上，通过路由模块自动将特征发送给对应的专家。通过这种方式：
+- 可以让不同模态来源的特征合并在一个序列中，首先进入的自注意力模块保证了不同模态特征间的融合，然后路由给不同专家又保证网络能更好地依据模态本身特性提取其特征
+- 对于一个训练好的能处理语言信息的 Transformer 模型，可以在不改变模型的前提下，为每个 Transformer 块分别添加一个处理新模态（如图片）特征的专家，从而扩展模型处理模态数量（一般还会配合#link(<sec:transformer_cause_attention>)[ Block-Wise 因果注意力]，相比于交叉注意力机制，该方法更加常用）
+
+=== Transformer 解码器 <sec:transformer_decoder>
 
 #figure(
 
@@ -488,13 +509,13 @@ Transformer 架构中的编码器由多个 Transformer Block 叠加得到，而�
   caption: [Transformer 解码器],
 )
 
-RNN 的 seq2seq 中可以直接使用编码器输出的各层隐状态传入解码器。Transformer 编码器输出则是各层的特征向量序列，通过在解码器的自注意力模块与全连接层中间插入#link(<cross-attention>)[交叉注意力模块]，将编码器输出的序列作为 key、value 传入解码器，自注意力模块输出作为 query，实现对编码器输出特征的利用。
+RNN 的 seq2seq 中可以直接使用编码器输出的各层隐状态传入解码器。Transformer 编码器输出则是各层的特征向量序列，通过在解码器的自注意力模块与全连接层中间插入#link(<sec:attention_cross_attention>)[交叉注意力模块]，将编码器输出的序列作为 key、value 传入解码器，自注意力模块输出作为 query，实现对编码器输出特征的利用。
 
 传入解码器的 key、value 不一定要来自对应层的编码器，也可以是编码器最终输出的特征向量，可以参考论文 #link("https://arxiv.org/pdf/2005.08081")。
 
-由于 Transformer 解码器负责输出向量，因此无法知道完整的输出序列作为输入而是之前输出的序列，将这种自注意力模块称为#link(<masked-sa>)[Masked Self-Attention]
+由于 Transformer 解码器负责输出向量，因此无法知道完整的输出序列作为输入而是之前输出的序列，将这种自注意力模块称为#link(<sec:transformer_cause_attention>)[因果注意力]
 
-=== 非渐进式解码器
+=== 非渐进式解码器 <sec:transformer_progress>
 
 #figure(
 
@@ -505,13 +526,70 @@ RNN 的 seq2seq 中可以直接使用编码器输出的各层隐状态传入解�
 
 编码器除了像 RNN 的解码器一样，每次仅预测下一个时间步的向量，每次将旧序列输入经过一次计算效率将非常低，无法发挥注意力机制相比 RNN 并行化运算的优势，因此非渐进式解码器（NAT Non-AutoAggressive）被提出：通过某种方法预测序列输出长度 $n$（如额外神经网络根据编码器输出预测长度），直接输入一个由 $n$ 个占位符如 `<bos>` 组成的伪序列，得到长度为 $n$ 的序列。
 
-// == BERT
+=== 因果注意力 <sec:transformer_cause_attention>
 
-// #bl(2)[以下为草稿]
+#figure(
 
-// - BERT 在序列的第一个元素传入无意义的标记 `<cls>`，再将对应位置的输出特征向量作为整个序列的特征，因为 `<cls>` 一定在第一个位置且本身无意义
+  image("./res/rt_22.png", height: 15em, width: auto), 
+
+  caption: [因果注意力],
+)
+
+将自注意力模块用于序列输出时，预测序列下一时刻的元素 $arrow(a)_i$ 时，完整的序列还是未知的，因此只有过去的序列 $arrow(a)_(1) dots arrow(a)_(i-1)$ 能用于预测，相当于后续的序列不参与自注意力的计算，因果注意力（Cause Attention）。
+
+从训练的角度来看，相当于模型理论应当接收一个完整序列，但序列未来的部分还是未知的实际不可能参与注意力计算，这些元素在计算注意力时需要被屏蔽，在注意力矩阵 $bm(A)$ 中的值被置为 0，因此也称为 Masked Attention 或因果掩码（Cause Mask）。
+
+在#link(<sec:attention_self_attention>)[注意力机制]中，当前被处理的元素会作为 $arrow(q)_i$，序列中的所有元素都会作为 $arrow(k)_j,arrow(v)_j$。同时因果注意力中，序列前元素 $arrow(x)_t$ 提取特征时后续的特征被屏蔽了，也即后续元素 $arrow(x)_(t+1)$ 不会改变 $arrow(q)_t,arrow(k)_t,arrow(v)_t$，因此可以缓存这三个向量避免重复运算。
+
+#figure(
+
+  image("./res/rt_23.png", height: 15em, width: auto), 
+
+  caption: [Block-Wise 因果注意力],
+)
+
+处理文字时由于序列存在时间关系通常按顺序逐个输入或输出，但对于图像则没有时间关系，可以整个序列输入输出。此时相比于基础的因果注意力，每个时间步传入的序列长度可能是 $t_n+1$（预测或输入下一个文字）也可能是 $t_n+k$（预测图片或输入图片、完整的句子等）
+
+更进一步地：
++ 在如基于 Diffusion 的 VLA 模型中：语言指令在动作执行前给出且不会改变；视觉观测与本体感知在每个真实时间步都会改变；动作指令去噪过程在每个真实时间步内都会重复多次。
++ 而这些 VLA 模型在会使用 Block-Wise 因果注意力时：提取语言与视觉特征时，序列的本体感知与动作预测被屏蔽；提取本体感知特征时，动作预测被屏蔽。
++ 因此实际使用中每个时间步仅需提取一次语言、视觉、本体的特征后缓存对应的 $arrow(q)_t,arrow(k)_t,arrow(v)_t$，在动作指令去噪过程使用这些缓存值而不需要重新提取特征
+
+== Transformer 架构分类
+
+参考文章 #link("https://medium.com/@RobuRishabh/types-of-transformer-model-1b52381fa719")
+
+实际使用 Transformer 时，并不会严格采用 seq2seq 的编码器解码器架构，而存在以下三种不同的使用方式
+
+=== Encoder-Decoder
+
+Encoder-Decoder 即标准的 #link(<sec:seq2seq_struct>)[seq2seq 架构]。
+
+Encoder-Decoder 使用的是原始 Transformer 结构，由编码器理解整个输入序列，但序列特征保存在各层 Transformer Block 中的隐状态序列，再通过#link(<sec:attention_cross_attention>)[交叉注意力机制]将特征传递给 Transformer 解码器通过自回归逐个预测下一时间步的向量。实际应用中一般多应用于机器翻译任务。
+
+=== Encoder-Only
+
+#figure(
+
+  image("./res/rt_20.png", height: 15em, width: auto), 
+
+  caption: [Encoder-Only 结构示例],
+)
+
+Encoder-Only 即仅负责看懂序列，但不承担生成序列的任务。
+
+Encoder-Only 仅使用 #link(<sec:transformer_encoder>)[Transformer 编码器]的部分，通过单个编码器提取输入序列的特征。由于 Transformer 的输出一定是一个序列，但我们希望特征可以是一个简单的固定长度隐状态向量，因此通常会传入一个无意义的 `<cls>` Token 以公平地反映整个序列的特征。此位置的输出序列作为特征向量用于后续的任务如句子分类（BERT）、图像识别（ViT）等。
 
 
-// - BERT 只有 Transformer 的编码器部分，输入序列第一个元素为标记 `<cls>`，表明该标记对应的输出为整个序列的特征向量。由于 `<cls>` 一定在第一个位置且本身无意义，保证对应位置作为 query 时，能公平地反映整个序列的特征。
+=== Decoder-Only
 
+#figure(
 
+  image("./res/rt_24.png", height: 15em, width: auto), 
+
+  caption: [Decoder-Only 结构示例],
+)
+
+Decoder-Only 既承担解析给出的已有序列，又承担序列生成任务。
+
+可以认为 Decoder-Only 也仅用了 #link(<sec:transformer_encoder>)[Transformer 编码器]的部分，但模型却承担着 seq2seq 任务，具体来说是要预测形如 `<bos>[问题]<sep>[回答]<eos>` 的序列，在推理时直接给出 `<bos>[问题]<sep>`，然后再像一般的解码器一样渐进式地补全 `[回答]<eos>` 部分，对于渐进式解码器这其中就使用到了#link(<sec:transformer_cause_attention>)[因果注意力]。对于大多数大预言模型均使用 Decoder-Only 的结构。
