@@ -21,13 +21,16 @@
       - #chapter("./math/statistic.typ")[数理统计]
 
     - #chapter(none)[编程]
-      - #chapter("./code/docker.typ")[Docker 笔记]
       - #chapter("./code/pybullet.typ")[Pybullet 笔记]
       - #chapter("./code/mujoco.typ")[mujoco 笔记]
+      - #chapter("./code/maniskill.typ")[ManiSkill 笔记]
       - #chapter("./code/camera.typ")[相机成像原理]
       - #chapter("./code/cmake.typ")[CMake 笔记]
+      - #chapter("./code/cpp.typ")[C++ 面向对象编程]
       - #chapter("./code/vscode.typ")[Vscode 笔记]
+      - #chapter("./code/software.typ")[实用软件笔记]
       - #chapter("./code/fastapi.typ")[FastAPI 笔记]
+      - #chapter("./code/docker.typ")[Docker 笔记]
 
     - #chapter(none)[神经网络]
       - #chapter("./ml/ae.typ")[自编码器]
