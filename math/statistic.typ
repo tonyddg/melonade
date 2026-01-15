@@ -43,7 +43,7 @@ $
   [说明], [密度为常数的连续分布], [有标准化方法\ $Y=(X-E(X))/(sqrt(D(X))) tilde N(0,1)$], [刻画物体一段时间后损坏的概率]
 )
 
-=== 期望与方程
+=== 期望与方差的性质
 
 期望 $E(X)$ 具有以下性质
 - *线性性质*，即对于任意两个随机变量 $X_1,X_2$，其期望满足 #h(1fr) $ E(a X_1 + b X_2 + c) = a E(X_1)+b E(X_2)+c $
@@ -92,8 +92,8 @@ $
 *统计量*即一个关于所有样本的函数，且仅包含已知的参数（可以是已知的总体分布参数、样本数量等），从而集中所有样本信息。由于样本在观察前是随机变量，因此统计量也是随机变量，也满足特定的分布。将样本观察值带入即可得到统计量的观察值。
 
 常用的统计量有
-- 样本均值（反映了总体的均值）#h(1fr) $ overline(X)=1/n sum_(i=1)^n X_i $
-- 样本方差（反映了总体的方差） $ S^2=1/(n-1) sum_(i=1)^n (X_i-overline(X))^2 $
+- 样本均值（总体均值的无偏、有效估计）#h(1fr) $ overline(X)=1/n sum_(i=1)^n X_i $
+- 样本方差（总体方差的无偏估计） $ S^2=1/(n-1) sum_(i=1)^n (X_i-overline(X))^2 $
 - 样本 k 阶原点矩 $ A_k=1/n sum_(i=1)^n X_i^k $
 - 样本 k 阶中心矩 $ B_k=1/n sum_(i=1)^n (X_i-overline(X))^k $
 
@@ -198,7 +198,7 @@ $
 
 矩估计为依据大数定律的点估计方法，认为当样本容量趋于无穷大时，样本的 k 阶矩总是依概率收敛于总体的 k 阶矩。因此矩估计即假定总体的 k 阶矩 $mu_k$ 等于样本的 k 阶矩 $A_k$。
 
-$A_k$ 的统计量可以通过样本得到，$mu_k$ 可以表示为关于分布参数的函数 $mu_k (theta_1,dots,theta_r)$，由此可构造 $r$ 个关于 $1-r$ 阶矩的方程
+原点矩 $A_k$ 的观测值可以通过样本得到，真实原点矩 $mu_k$ 可以表示为关于分布参数的函数 $mu_k (theta_1,dots,theta_r)$，由此可构造 $r$ 个关于 $1-r$ 阶矩的方程
 
 $
   cases(a_1&=mu_1 (theta_1,dots,theta_r), &dots.v,a_r&=mu_r (theta_1,dots,theta_r))
@@ -238,6 +238,24 @@ $
 - 当密度函数简单但不可微时，可以考虑从似然函数 $L(Theta)$ 入手，看如何取值令似然函数尽量大
 
 两种点估计方法没有明显优劣，一般出于便利性，连续性随机变量（密度函数连续可微）多使用极大似然估计；离散型随机变量或密度函数简单但不可微的连续随机变量（如均匀分布）多使用矩估计。
+
+
+#problem_box(
+  title: [参数点估计例题],
+  problem: [
+    假设总体的分布密度函数满足（其中 $theta>-1$） $ f(x)=cases((theta+1)x^(theta)\, &0<x<1, 0\, &"其他") $
+
+    对于样本 $X_1,dots,X_n$ 求 $theta$ 的矩估计与极大似然估计
+  ]
+)[
+  (1) 对于连续分布，使用积分求出总体的原点矩满足 $ mu_1(theta)=integral_(-infinity)^(infinity)x f(x) d x=integral_(0)^(1) (theta+1)x^(theta+1) d x=(theta+1)/(theta+2) x^(theta+2) lr(bar.v, size: #200%)^(1)_0=(theta+1)/(theta+2) $
+
+  令原点矩等于样本原点矩（均值）可得参数 $theta$ 矩估计 $hat(theta)$ 满足 $ mu_1(hat(theta))=overline(X) arrow hat(theta)=1/(1+overline(X))-2 $
+
+  (2) 有对数极大似然函数 $ ln L(theta)=sum_(i=0)^n ln f(x_i)=sum_(i=0)^n ln(theta+1) + theta ln x_i $
+
+  对极大似然函数关于参数 $theta$ 求导，参数极大似然估计 $hat(theta)$ 将使偏导数为 $0$ $ partial/(partial theta) ln L(hat(theta))=sum_(i=0)^n 1/(hat(theta)+1)+ln x_i=n/(hat(theta)+1)+sum_(i=0)^n ln x_i =0 arrow hat(theta)=-n/(sum_(i=0)^n ln x_i)-1 $
+]
 
 === 估计量评价标准
 
@@ -332,7 +350,7 @@ $
 
 === 概率分布的分位点
 
-对于分布 $f(x)$，给定分位 $1alpha in [0,1]$ 有上分位点 $x_alpha$ 满足以下公式。
+对于分布 $f(x)$，给定分位 $alpha in [0,1]$ 有上分位点 $x_alpha$ 满足以下公式。
 
 $
   P(X gt.eq x_alpha)=integral^(infinity)_(x_alpha)f(x)d x=alpha
@@ -455,6 +473,27 @@ $
 比较两个正态总体方差 $sigma_1^2,sigma_2$ 时，假设（$sigma_1^2/sigma_2^2=r_(sigma^2)$），关于两个方差之比的假设检验称为 *$F$ 检验*
 - 利用两个样本方差之比可以构造如下的统计检验量（均值未知），符合 F 分布#h(1fr) $ F=(S_1^2 slash S_2^2)/(r_(sigma^2)) tilde F(n_1-1,n_2-1) $
 - 对于 $sigma_1^2=sigma_2^2,r_(sigma^2)=1$ 的假设（两个总体方差无显著差异），可构造双边拒绝域 $ W={F gt.eq f_(alpha slash 2)(n_1-1,n_2-1)} union {F lt.eq 1/(f_(alpha slash 2)(n_2-1,n_1-1))} $
+
+#problem_box(
+  title: [假设检验例题],
+  problem: [
+    对于正态总体 $X$，抽取 $n=100$ 个样本进行测验得到样本均值 $overline(X)=64$，样本方差 $S^2=256$，求 (1) 在显著性水平 $0.05$ 下均值是否大于 $mu_0=60$ (2) 在显著性水平 $0.05$ 下方差是否相对 $sigma^2_0=225$ 改变。
+  ],
+  [
+    (1) 设原假设 $H_0: mu>mu_0$，备择假设 $H_1: mu lt.eq mu_0$ 有检验统计量 $ t=(overline(X)-mu_0)/(sqrt(S^2 slash n)) tilde t(99) "代入有" t = 2.5 $
+
+    当原假设被拒绝时，反应真实均值的样本均值 $overline(X)$ 会偏小，即检验统计量会偏小，有拒绝域 $ W={t< -t_(0.05)(99)}, t_(0.05)(99) approx 1.6604 $
+
+    由于检验统计量在拒绝域外，接受原假设，在显著性水平 $alpha=0.05$ 下认为均值偏大
+
+    (2) 设原假设 $H_0: sigma^2 eq sigma^2_0$，备择假设 $H_1: sigma^2 eq.not sigma^2_0$ 有检验统计量 $ chi^2=(S^2(n-1))/sigma^2 tilde Chi^2(99) "代入有" chi^2 = 112.64 $
+
+    当原假设被拒绝时，样本方差 $overline(X)$ 会偏小或偏大，即检验统计量会偏小或偏大，有拒绝域 $ W={chi^2_(1-0.025)(99)>chi^2} union {chi^2> chi^2_(0.025)(99)}, chi^2_(1-0.025)(99) approx 73, chi^2_(0.025)(99) approx 128 $
+
+    由于检验统计量在拒绝域外，接受原假设，在显著性水平 $alpha=0.05$ 下认为方差没有改变
+
+  ]
+)
 
 === 总体参数的大样本检验
 

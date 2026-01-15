@@ -12,9 +12,9 @@
 === 线性空间定义
 
 线性空间（也成为向量空间）定义为一个集合 $bold(V)(bb(F))$
-- 向量需要#hl(1)[对线性组合运算封闭（数乘与加法）]，即空间内的任意两个向量的线性组合仍在此空间内
+- 向量需要#hl(2)[对线性组合运算封闭（数乘与加法）]，即空间内的任意两个向量的线性组合仍在此空间内
 - 数乘与加法满足交换律、结合律、分配律
-- 与简答集合不同，线性空间还需要规定数域 $bb(F)$ 为前提（数乘值所在值域），一般为实数域 $bb(R)$ 或复数域 $bb(C)$（默认与集合内向量元素来自同一域，可省略 $bb(F)$）
+- 与简单集合不同，线性空间还需要规定数域 $bb(F)$ 为前提（数乘值所在值域），一般为实数域 $bb(R)$ 或复数域 $bb(C)$（默认与集合内向量元素来自同一域，可省略 $bb(F)$）
   - 即存在线性空间，向量以复数为元素 $bold(V)=bb(C)^n$，但限制数乘只能使用实数 $bb(F)=bb(R)$（依然属于实线性空间）
   - 因此完整的线性空间表示为 $bold(V)(bb(F))$
 
@@ -144,7 +144,7 @@ $ bm(A)=mat(1,-1,2,-1;2,1,-1,-1;1,1,0,3;0,1,1,7) arrow mat(1,0,0,-3/2;0,1,0,9/2;
 
 因此
 - 矩阵 $bm(A)$ 的前三列为主元列，有 $dim[C(bm(A))]=3$，主元列构成一组基 ${arrow(x)_1,arrow(x)_2,arrow(x)_3}$。
-- 依据 $bm(R)$ 可得矩阵 $bm(A)$ 得零空间有一组基 ${mat(-3,9,5,-2)^T}$，有 $dim[N(bm(A))]=3$
+- 依据 $bm(R)$ 可得矩阵 $bm(A)$ 得零空间有一组基 ${mat(-3,9,5,-2)^T}$，有 $dim[N(bm(A))]=1$
 
 由于 $W_1+W_2=C(bm(A))$，因此 $W_1+W_2$ 的维数为 $3$，有一组基 ${arrow(x)_1,arrow(x)_2,arrow(x)_3}$。
 
@@ -235,6 +235,27 @@ $
 - 矩阵 $bm(A)in bold(V)^(m times n)$ 相抵0的矩阵中，最简的是什么
 - 矩阵 $bm(A)in bold(V)^(n times n)$ 相似的矩阵中，最简的是什么
 
+
+#problem_box(
+  title: [基变换与线性变换的矩阵表示例题],
+  problem: [ 
+    三维线性空间 $V$ 上的线性变换 $T$ 在基 ${alpha_i}$ 下的矩阵表示 $bm(X)_a$ 以及与另一组基 ${beta_i}$ 关系 $ bm(X)_a=1/4 mat(4,0,0;1,6,-2;-1,-2,6), space cases(beta_1=2alpha_1-alpha_2,beta_2=alpha_2+alpha_3,beta_3=alpha_2-alpha_3) $
+
+    求 (a) 证明 ${beta_i}$ 是 $V$ 的一组基 (b) 线性变换 $T$ 在 ${beta_i}$ 下的矩阵表示
+  ],[
+    注意基中线性无关的元素按列排列 $bm(B)_(alpha)=mat(alpha_1,alpha_2,alpha_3),bm(B)_(alpha)=mat(beta_1,beta_2,beta_3)$
+
+    根据两组基 ${alpha_i},{beta_i}$ 关系整理可得两组基满足（等式两侧右乘向量为基 ${beta_i}$ 下的坐标）
+
+    $ bm(B)_(beta)=bm(B)_(alpha)bm(M)_(beta arrow alpha) arrow bm(M)_(beta arrow alpha)=mat(2,0,0;-1,1,1;0,1,-1) $ 
+
+    由于 $det(bm(M)_(beta arrow alpha)) eq.not 0$，因此矩阵 $bm(M)_(beta arrow alpha)$ 可逆，${beta_i}$ 有 3 个线性无关的元素，可作为 $V$ 的基
+
+    依据线性变换矩阵表示有 $ bm(T)bm(B)_alpha&=bm(B)_alpha bm(X)_alpha\ bm(T)bm(B)_beta bm(M)_(beta arrow alpha)^(-1)&=bm(B)_beta bm(M)_(beta arrow alpha)^(-1) bm(X)_alpha arrow bm(X)_beta = bm(M)_(beta arrow alpha)^(-1) bm(X)_alpha bm(M)_(beta arrow alpha) $
+
+    因此（可利用等式 $bm(M)_(beta arrow alpha) bm(X)_beta=bm(X)_alpha bm(M)_(beta arrow alpha)$ 检查） $ bm(X)_beta = bm(M)_(beta arrow alpha)^(-1) bm(X)_alpha bm(M)_(beta arrow alpha)=mat(1;,1;,,2) $
+])
+
 === 线性变换的子空间
 
 与基于矩阵的子空间类似，对于从 $bold(V)^n$ 到 $bold(V)^m$ 的线性变换 $T$ 也可以划分为两个子空间：
@@ -248,7 +269,7 @@ $
   - 根据线性组合特性，线性变换中像一组基中的每个向量对应原像的一个向量，且这些向量必然相互独立。因此秩反映了原像自由度中，对线性变换独立起作用部分的维度。
   - $bold(V)^n$ 中其余部分则对于线性变换的像没有帮助，即这些部分的像为零元 $arrow(0)$，这些部分构成的线性空间就是线性变换的核。
   - 因此线性空间的秩与零度有关系 $"rank" T+"null" T = n$
-  - 但是注意，线性变换的值域与核没有直接关系，两者分别来自 $bold(V)^m$ 与 $bold(V)^n$。即使是同一线性空间下的线性变换，一个是变换结果的像一个是特殊的原像；，两者依然没有直接关系 $R(T)+N(T) eq.not bold(V)^n$。
+  - 但是注意，线性变换的值域与核没有直接关系，两者分别来自 $bold(V)^m$ 与 $bold(V)^n$。即使是同一线性空间下的线性变换，一个是变换结果的像一个是特殊的原像，两者依然没有直接关系 $R(T)+N(T) eq.not bold(V)^n$。
 
 对于 $bold(V)^n$ 上的线性变换 $T$，还可以定义*不变子空间* $bold(W)={arrow(a)|arrow(a)=T arrow(b),arrow(b)in bold(W)}$，即不变空间中的元素经过线性变换后依然在不变空间内。显然，线性变换的核（变换结果 $arrow(0)$ 总在线性空间中）与值域（值域已经包含了所有线性变换结果）均为不变子空间。
 
@@ -382,8 +403,6 @@ $
 - 该矩阵一定可以相似对角化
 - 该矩阵所有特征值的几何重数等于代数重数
 - 进一步可以推出，当矩阵有没有重根的零化多项式，则该矩阵可以相似对角化（不一定是最小多项式）
-
-最小多项式因式次数指标 $r_i>1$ 时特征值经具有用于补充特征子空间的 $r_i$ 级#link(<sec:root_space>)[根空间]的性质也证明了这一点
 
 #problem_box(
   title: [最小多项式例题 1],
