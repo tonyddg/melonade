@@ -226,6 +226,7 @@ torch = { index = "pytorch" }
 
 [[tool.uv.index]]
 name = "pytorch"
+# 可以使用南京大学的镜像源如 https://mirrors.nju.edu.cn/pytorch/whl/cu<cuda 版本> 
 url = "https://download.pytorch.org/whl/cu121"
 # 表明仅显示需要该索引仓库时才从中寻找包
 explicit = true

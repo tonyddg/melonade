@@ -30,6 +30,7 @@
       - #chapter("./code/vscode.typ")[Vscode 笔记]
       - #chapter("./code/software.typ")[实用软件笔记]
       - #chapter("./code/fastapi.typ")[FastAPI 笔记]
+      - #chapter("./code/python.typ")[Python 笔记]
       - #chapter("./code/docker.typ")[Docker 笔记]
 
     - #chapter(none)[神经网络]
