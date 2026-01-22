@@ -41,7 +41,7 @@ jobs:
       # 页面编译命令
       - name: Build Book
         run: |
-          shiroa build --font-path ./assert/font/ --path-to-root /melonade/ -w . 
+          shiroa build --font-path ./asset/font/ --path-to-root /melonade/ -w . 
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
