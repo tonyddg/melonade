@@ -1,15 +1,13 @@
 #import "/book.typ": book-page, cross-link, templates
-#show: book-page.with(title: "实用软件笔记")
+#show: book-page.with(title: "Xpra 仅窗口的远程连接")
 
 #import "/utility/include.typ": *
 
-= 实用软件笔记
-
-== Xpra 仅窗口的远程连接 
+= Xpra 仅窗口的远程连接 
 
 Xpra 可通过 SSH 进行远程连接，连接时本质上为共享 `DISPLAY` 环境变量中图形输出到的 xServer 而不是整个屏幕，因此可实现更高效的屏幕共享
 
-=== Xpra 安装
+== Xpra 安装
 
 Xpra 的安装方法如下
 - 对于 Window 可在#link("https://github.com/Xpra-org/xpra/?tab=readme-ov-file#installation")[官方仓库] 下载最新版本
@@ -18,7 +16,7 @@ Xpra 的安装方法如下
 安装好 Xpra 后注意使用 `xpra --version` 检查版本，如果服务端与客户端版本相差过大可能导致连接失败
 - 例如 Ubuntu 20.04 最高仅支持 3.0.x 版本（客户端需要下载相同版本的 Xpra），而笔记使用的版本为 6.4
 
-=== Xpra 服务端共享
+== Xpra 服务端共享
 
 服务端通过命令 `xpra start <display>` 启动共享屏幕服务
 - `display` 共享屏幕的编号（`DISPLAY` 环境变量），不能与已有的屏幕编号重复，通常为 `:数字` 的形式
@@ -33,11 +31,11 @@ Xpra 的安装方法如下
 有以下常用命令
 
 ```sh
-xpra start :100\
-    --daemon=no\
-    --exit-with-windows=yes\
-    --encoding=openh264,webp\
-    --start=xterm
+xpra start :100 \ 
+    --daemon=yes \ 
+    --exit-with-windows=yes \ 
+    --encoding=openh264,webp \ 
+    --start=xfce4-terminal
 ```
 
 服务端还有以下实用命令
@@ -45,7 +43,7 @@ xpra start :100\
 - `xpra attach <display>` 连接到本地的共享窗口，可以用于排除本地问题
 - `xpra stop <display>` 关闭共享屏幕
 
-=== Xpra 客户端连接
+== Xpra 客户端连接
 
 在使用 Xpra 连接前，确保能使用 `ssh` 连接到服务端
 
@@ -55,3 +53,20 @@ xpra start :100\
 - `Server` 字段分别填入 `<用户名>@<ip 地址><SSH 端口>:<连接到的窗口编号>`
 - `Server Password` 字段填入用户密码
 - 可使用下方的 `Save` 与 `Load` 将以上信息保存为文件并加载
+
+== 常见问题
+
+部分无头服务器中，字体库通常不完整、不能正常显示如 tqdm 的进度条等，可运行以下脚本重新启动修复
+
+```sh
+# 修复无头环境的字体问题
+apt update
+
+# 安装字体
+apt install -y fonts-dejavu-core fonts-noto-core fonts-noto-cjk
+
+# 修补字体问题
+apt install -y locales
+locale-gen en_US.UTF-8
+update-locale LANG=en_US.UTF-8
+```

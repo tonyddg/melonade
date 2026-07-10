@@ -13,7 +13,7 @@
 #figure(
 
   grid(
-    columns: 2, column-gutter: 2em,
+    columns: 3, column-gutter: 2em,
     image("./res/diffusion_1.png", height: 15em, width: auto), 
     image("./res/diffusion_2.png", height: 15em, width: auto), 
   ),

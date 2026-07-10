@@ -14,6 +14,7 @@
 - 镜像（Image）：
   - *镜像提供了运行容器所需的程序，资源与配置文件*。
   - 镜像是一个特殊的文件系统，不包含动态数据，且构建好后不会再改变。
+  - 可以基于已有的镜像构建新的镜像，docker 官方提供的镜像可在 #link("https://hub.docker.com/")[Docker Hub] 下载。
 - 容器（Container）：
   - 镜像与容器的关系相当于面向对象中类与对象（实例）的关系。*容器可以被创造销毁，也可以访问镜像的资源，但不能修改镜像*。
   - 容器本质为宿主机的一个进程，但是与之隔离，有自己的文件系统、网络配置等。
@@ -36,7 +37,10 @@
   - `-e/--env` 指定容器的环境变量（部分容器通过该方式获取应用配置，可以多次使用该选项）
   - `--net=<net_type>` 容器的网络模式，常用可选模式有
     - `bridge` 默认模式，安全但需要通过端口映射才能与外部通信（用于生产环境）
-    - `host` 与宿主机共享网络环境，无需端口映射（可用于深度学习模型）
+    - `host` 与宿主机共享网络环境，无需端口映射（可用于深度学习模型 / ROS）
+  - `--ipc=<ipc_type>` 容器是否与宿主机共享内存段
+    - `private` 默认模式，不共享以提高安全性
+    - `host` 与宿主机共享内存段，提供数据交换速度（可用于深度学习模型 / ROS）
   - `-p <source>:<container>` 将容器端口映射到宿主机（用于通过网络访问容器内的应用，可以多次使用该选项）
   - `--rm` 命令退出或容器停止后删除临时创建的容器（默认保存）
   - `--name <name>` 创建一个指定名称的容器（默认随机分配）
@@ -49,6 +53,7 @@
 
 === 镜像与容器管理
 
+- `docker pull <image>` 在 `docker run` 之前，下载镜像保存到本地
 - `docker images` 查询本地的镜像的 ID（IMAGE ID）与名称（REPOSITORY），两者均可在命令中表示镜像
 - `docker ps [-a]` 查询现在正在运行容器的 ID（CONTAINER ID）与名称（NAMES），两者均可在命令中表示镜像
   - 选项 `-a` 可以显示所有容器，包括停止运行的容器
@@ -85,11 +90,15 @@ Dockerfile 即一个名称为 `Dockerfile` 的文件，因此一个文件夹中�
 
 Dockerfile 中常用的指令有
 - `FROM <image>` 指定基础镜像
-- `RUN ['<命令>', '[参数1]', '[参数2 ...]']` 在基础镜像中执行命令（更推荐的使用方法#link(<image_layer>)[参见]）
+- `RUN ['<命令>', '[参数1]', '[参数2 ...]']` 
+  - 在基础镜像中执行命令（更推荐的使用方法#link(<image_layer>)[参见]）
+  - 参数 `--mount` 可以在运行命令时临时挂载目录，具体见文档
 - `WORKDIR <dir>` 设置默认工作目录，不存在时自动创建（与 `cd` 不同）
-- `COPY ['<宿主机路径1>', '[宿主机路径2 ...]', '<当前镜像目录>']` 将宿主机多个文件复制到容器目录中（只能是相对#link(<docker_build>)[上下文目录]的路径）
+- `COPY ['<宿主机路径1>', '[宿主机路径2 ...]', '<当前镜像目录>']` 
+  - 将宿主机多个文件复制到容器目录中（只能是相对#link(<docker_build>)[上下文目录]的路径）
+  - #link(<docker_build>)[上下文目录]中的 `.dockerignore` 文件可以类似 `.gitignore` 设置复制时排除的文件
 - `ENV <key1>=<value1> [<key2>=<value2>]` 设置容器环境变量
-- `EXPOSE <port1> [port2 ...]` 说明容器暴露的端口（在 `docker run -p <host_port>:<container_port>` 中主动开放才有效）
+- `EXPOSE <port1> [port2 ...]` 说明容器暴露的端口（在 `docker run -p` 中主动开放才有效）
 - `CMD ['<命令>', '[参数1]', '[参数2 ...]']` 重置容器的启动命令
 - `SHELL ['<命令>', '[参数1]', '[参数2 ...]']` 设置 `RUN` 命令执行方式，即 `RUN` 命令的内容将接在 `SHELL` 指定的命令后
   - 例如 `SHELL ["/bin/bash", "-c"]` 可将默认的 sh 修改为 bash 执行命令（`-c` 表示执行后续命令）
@@ -148,7 +157,7 @@ RUN <指令 1> && \
 - `context_path` 上下文目录，构建镜像所有文件所在的目录，一般使用当前目录 `.`（即 `COPY` 命令的根目录，且通常无法获取外部的文件）
 - `options` 命令选项，常用的选项有
   - `-t <tag>` 构建自定义镜像的镜像名
-  - `-f <dockerfile>` 构建镜像使用的 Dockerfile 路径（默认在 `context_path` 中搜索）
+  - `-f <dockerfile>` 构建镜像使用的 Dockerfile 路径（默认在 `context_path` 中搜索），通过该方式可实现上下文目录与 Dockerfile 所在目录分离
 
 === 多阶段构建
 
@@ -203,7 +212,7 @@ CMD ["./main"]
 - 使用清华源作为 apt 的软件源：#link(<dockerfile_example>)[参见]
 - 避免大量分段的 `RUN` 命令：#link(<image_layer>)[参见]
 - 完成镜像构建前删除软件列表缓存 `rm -rf /var/lib/apt/lists/*`（用于 `apt-get`）
-- `apt-get` 安装软件时避免无关的软件包安装与阻塞询问 `apt-get install -y --no-install-recommends`
+- `apt-get` 安装软件时避免无关的软件包安装与阻塞询问\ `apt-get install -y --no-install-recommends`
 - `pip3` 安装模块时避免无用的缓存 `pip3 install --no-cache-dir`
 
 构建时编译可能会瞬间占用大量资源导致宿主机崩溃，需要对资源进行限制
@@ -211,11 +220,11 @@ CMD ["./main"]
   - MAX_JOBS=2
   - CMAKE_BUILD_PARALLEL_LEVEL=2
   - NINJA_NUM_CORES=2
-- 除了 CPU，还可以添加交换内存设置，即在 `docker build` 中添加 `--memory=4g --memory-swap=4g`（两个大小需要一样）
+- 除了 CPU，还可以添加交换内存设置，即在 `docker build` 中添加\  `--memory=4g --memory-swap=4g`（两个大小需要一样）
 
 当构建深度学习项目时
 - 各种下载源码编译的包建议使用 `python3 -m pip install -v .` 安装到 pip 中，而不是 `python3 setup.py install`
-- 构建时没有 GPU 环境，需要手动设置环境变量 `FORCE_CUDA=1` 与 `TORCH_CUDA_ARCH_LIST=${CUDA_ARCH}`，其中 `TORCH_CUDA_ARCH_LIST` 与使用的显卡有关，根据宿主机中运行 `print(torch.cuda.get_device_capability())` 获取（格式为 x.x 的字符串）
+- 构建时没有 GPU 环境，需要手动设置环境变量 `TORCH_CUDA_ARCH_LIST=${CUDA_ARCH}` 与 `FORCE_CUDA=1`，其中 `TORCH_CUDA_ARCH_LIST` 与使用的显卡有关，根据宿主机中运行 `print(torch.cuda.get_device_capability())` 获取（格式为 x.x 的字符串）
 - 通常 Pytorch 包已经包含了指定的 cuda 与 cudnn，因此不需要环境本身安装 cuda 与 cudnn（仅部分利用 cuda 从源码编译的项目需要安装）
 
 杂项
@@ -258,20 +267,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends apt-utils ca-ce
 RUN python -m pip install --upgrade pip && \
     # 设置全局 pip
     pip config set global.index-url https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
-```
-
-*uv pip 软件源配置*
-
-使用 uv 时应通过以下方式配置，而不是普通的 pip
-
-```Dockerfile
-RUN mkdir -p ~/.config/uv && \
-    touch -p ~/.config/uv/uv.toml && \
-    echo <<'EOF' > ~/.config/uv/uv.toml
-[[index]]
-url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple/"
-default = true
-EOF
 ```
 
 *miniconda 安装*
@@ -329,25 +324,39 @@ RUN mkdir -p ~/miniconda3 && \
 
 `docker-compose.yml` 文件中，第一级用于分类创建集群所需的数据卷、容器等，第二级键则表示创建数据卷、容器的名称（可以有多个），键值则为其具体配置
 
-此处仅介绍用于定义容器的键 `services`，其常用的配置键有
-- `image` 镜像名称（容器将基于给定镜像创建）
-- `build` 镜像构建上下文及 `Dockerfile` 所在目录（将首先创建镜像，然后在该镜像基础上创建容器）
+此处仅介绍键 `services`，键值为容器组中各个容器配置的键值对 `容器名:镜像配置`，容器配置同样为键值对其中键值为参数，一般在 #link(<docker_run>)[docker run] 中可以找到对应的配置，常用的配置有
+- `build` 
+  - 直接给出时即镜像构建#link(<docker_build>)[上下文目录]，并在该目录下搜索 `Dockerfile` （将首先创建镜像，然后在该镜像基础上创建容器）
+  - 也可以分为 `context`（`./` 为配置所在目录），`dockerfile`（`./` 为上下文目录）两个参数分别给出#link(<docker_build>)[上下文目录]与 `Dockerfile` 路径 
 - `ports` 相当于 `-p` 选项，值为列表，列表中使用字符串 `<source>:<container>` 表示端口的映射
 - `volumes` 相当于 `--mount` 选项，值为列表，列表中使用字符串 `<source>:<container>[:ro]` 表示挂载，可同时表示数据卷与主机目录的挂载，`ro` 即只读
   - `<source>` 中可以使用相对路径，路径起点为 `docker-compose.yml` 文件所在目录
   - `<source>` 表示 Windows 宿主机目录时，使用 `/c/...` 等方式表示磁盘号
 - `environment` 相当于 `-e` 选项，值为字典，即环境变量的名称与值
 - `restart: unless-stopped` 实用配置，表示不断重启直到成功启动，用于依赖于其他容器的容器等待依然容器启动成功
+- `network_mode` 相当于 `--net` 选项，容器网络模式
+- `ipc` 相当于 `--ipc` 选项，共享内存设置
+- `gpus` 相当于 `--gpu` 选项，GPU 设置，详见#link(<ml_usage>)[机器学习项目]
+- `command` 相当于 `<command>` 参数，指定进入容器后执行的命令，替代 Dockerfile 中规定的命令
 
 关于更多配置参见#link("https://www.runoob.com/docker/docker-compose.html")[相关教程]
 
 === docker-compose 命令
 
-通过命令 `docker-compose up [-f <compose_path>] [-d] [--build]` 启动容器集群
-- 选项 `-f` 从指定路径寻找 `docker-compose.yml`，默认从当前目录下寻找（通常 `docker-compose` 都会从当前目录下寻找，只有该子命令可以指定 `docker-compose.yml` 的路径）
+通过命令 `docker-compose [-f <compose_path>] up [-d] [--build] [--rm]` 启动所有容器集群，如果已创建则复用这些容器
+- 选项 `-f` 从指定路径寻找 `docker-compose.yml`
+  - 默认从当前目录下寻找（通常 `docker-compose` 都会从当前目录下寻找，只有该子命令可以指定 `docker-compose.yml` 的路径）
+  - 注意该参数需要在子命令前
   - `compose_path` 文件 `docker-compose.yml` 的路径（可以是任意名称的 `yaml` 文件）
 - 选项 `-d` 从后台启动容器集群（类似 `docker run -d`）
 - 选项 `--build` 强制重新构建镜像
+
+通过命令 `docker-compose [-f <compose_path>] run [options] <image> <command>` 用类似 `docker run` 的方式启动集群中的一个容器，通常用于调试
+- 选项 `-f` 从指定路径寻找 `docker-compose.yml`，与 `up` 子命令相同，都需要在子命令前
+- `options` 来自 #link(<docker_run>)[docker run] 的命令选项，用于覆盖 `docker-compose.yml` 中的配置（`port` 端口映射配置不会生效），通常用于添加部分调试用参数，例如
+  - 建议使用 `--rm` 在运行结束时删除容器
+  - 建议使用 `-it`，并将命令设为 `bash` 用于进入容器的终端以便于调试
+- `image` 此处的镜像为 `docker-compose.yml` 中定义的容器名
 
 通过命令 `docker-compose down` 关闭容器集群
 - 该命令通过当前目录下的 `yml` 文件识别需要关闭的集群
@@ -371,7 +380,8 @@ ls -l /mnt/wslg | grep runtime-dir                   # 有 Wayland/Pulse 目录
 ```bash
 docker run \
 -e DISPLAY=$DISPLAY \
--v /tmp/.X11-unix:/tmp/.X11-unix \
+-e QT_X11_NO_MITSHM=1 \
+-v /tmp/.X11-unix:/tmp/.X11-unix:rw \
 ...
 ```
 
@@ -381,7 +391,7 @@ docker run \
 - 挂载目录与添加环境变量与 WSL 中启动容器相同
 - Linux 可能还需要 `xhost +SI:localuser:<容器用户>` 赋予窗口权限，容器用户一般即 `root`
 
-=== 机器学习项目中使用 Docker
+=== 机器学习项目中使用 Docker <ml_usage>
 
 机器学习项目中使用 Docker 时需要将宿主机的 GPU 暴露给容器使用，容器才能使用 GPU 加速推理。#hl(2)[无论 Windows 还是 Linux 都需要以下操作，且 Windows 中 Docker 的宿主机为 WSL]。
 
@@ -402,8 +412,8 @@ docker run \
   --mount type=bind,src=/mnt/e/dataset,dst=/dataset \
   -e DISPLAY=$DISPLAY \
   -v /tmp/.X11-unix:/tmp/.X11-unix \
-  -net=host \
-  --shm-size 4G \
+  --net=host \
+  --ipc=host \
   <镜像名>
 ```
 
@@ -461,6 +471,6 @@ sudo systemctl enable containerd.service
 - 重新运行命令 `docker login`（登录账号一般为邮箱）
 
 在 Linux 中，最后还需要将当前用户添加到 Docker 用户组，否则只能在管理员权限下运行 Docker
-- 运行命令创建用户组并添加当前用户 `sudo groupadd docker && sudo usermod -aG docker $USER`
+- 运行命令创建用户组并添加当前用户\ `sudo groupadd docker && sudo usermod -aG docker $USER`
 - 重新启动电脑，令修改生效
 - 运行 `docker run hello-world` 进行测试，如果成功表明 Docker Engine 安装成功

@@ -86,7 +86,7 @@ build-backend = "uv_build"
 
 === Monorepo 项目
 
-Monorepo 项目意为使用一个项目（github 仓库）管理多个开发中的，与项目有关的 Python 模块。现有 Monorepo 项目 `my_project`，该项目包含了两个独立模块 `moduleA, moduleB`（这两个模块可以存在依赖关系）与依赖于这两个模块的总模块 `moduleMain`。
+Monorepo 项目意为使用一个项目（github 仓库）管理多个开发中的，与项目有关的 Python 模块。现有 Monorepo 项目 `my_project`，该项目包含了两个独立模块 `moduleA, moduleB`（这两个模块可以存在依赖关系，但不建议）与依赖于这两个模块的总模块 `moduleMain`。
 
 该项目通常具有以下的文件结构，可以发现 `packages` 文件夹中的独立模块本质上也是
 
@@ -150,67 +150,119 @@ members = ["packages/*"]
 - 总模块依然使用 `uv init --package <模块名称>` 创建
 - 在项目目录下创建 `packages` 文件夹并进入该文件夹使用 `uv init --package <模块名称>` 创建子模块，此时子模块将自动加入工作区而不需要修改 `pyproject.toml`（仍需要手动将子模块作为依赖添加到主模块的配置文件中）
 - 进入对应子模块的目录下使用 `uv add/remove` 命令即可管理对应子模块的依赖
+- 在根目录下使用 `uv run --package <模块名称> xxx`（或进入对应子模块的目录使用 `uv run`） 可以在子模块所规定的虚拟环境中执行命令
+- 使用以下命令，可以仅安装子模块，用于如项目本体为服务端，子模块为客户端的场景
+    - `uv add "git+<url>@<branch>#subdirectory=packages/<子模块路径>"` 用于其他 uv 管理的项目
+    - `pip install "<子模块名称> @ git+<url>@<branch>#subdirectory=packages/<子模块路径>"` 用于一般 pip 管理的 Python
 
-=== Docker 集成
+=== Docker 集成 (新)
 
-当项目运行环境为 Ubuntu，而开发环境为 Windows，可在 Docker 中的容器中开发项目。构建开发容器的 DockerFile 参考如下：
+使用 Docker 集成可以通过将项目拷贝到容器中，容器中的 `uv` 依据 `pyproject.toml` 重新构建虚拟环境并运行项目，实现在不同平台下运行与测试项目。
 
-```Dockerfile
-FROM ubuntu:22.04
-COPY --from=ghcr.io/astral-sh/uv:0.9.5 /uv /uvx /bin/
+Docker 集成时通常将项目根目录作为上下文目录，再使用文件夹 `docker` 管理相关文件，此时具有以下目录布局：
 
-# 使用清华源，uv 至少需要 curl 与 ca-certificates（update-ca-certificates 更新整数）两个包
-RUN sed -i 's|http://.*archive.ubuntu.com|http://mirrors.tuna.tsinghua.edu.cn|g' /etc/apt/sources.list && \
-    sed -i 's|http://.*security.ubuntu.com|http://mirrors.tuna.tsinghua.edu.cn|g' /etc/apt/sources.list && \
-    apt-get update && \
-    apt-get install -y \
-    curl \
-    ca-certificates && \
-    update-ca-certificates
-
-# uv 中使用清华源
-RUN mkdir -p ~/.config/uv && \
-    touch ~/.config/uv/uv.toml && \
-    echo <<'EOF' > ~/.config/uv/uv.toml
-[[index]]
-url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple/"
-default = true
-EOF
-
-# 项目文件夹为 /app，虚拟环境文件夹为 /.venv
-WORKDIR /app
-ENV UV_PROJECT_ENVIRONMENT=/.venv
-ENV PATH="/.venv/bin:$PATH"
-# 针对容器的相关优化设置
-ENV UV_LINK_MODE=copy
-ENV UV_COMPILE_BYTECODE=1
-
-# 创建虚拟环境并将项目临时挂载到容器中以安装依赖
-RUN uv venv --python 3.10 $UV_PROJECT_ENVIRONMENT
-RUN --mount=type=cache,target=/root/.cache/uv \
-    --mount=type=bind,source=uv.lock,target=/app/uv.lock,rw \
-    --mount=type=bind,source=.,target=/app,readonly \
-    uv sync --editable
-
-CMD ["/bin/bash"]
+```txt
+<顶层文件夹>
+├─src // 代码
+├─packages // 子包
+├─pyproject.toml // 配置
+├─docker // docker 相关文件
+│     ├─Dockerfile // 构建测试镜像的 Dockerfile
+│     └─docker-compose.yaml // 运行测试容器的 docker-compose.yaml
+└─.dockerignore // 用于排除非代码文件到容器中
 ```
 
-以上 DockerFile 用于构建项目所需环境的镜像，实际使用时还要将项目文件夹挂载到 `/app` 中，通过 Vscode 附加到容器中进行开发，一般即 `--mount type=bind,src=${PWD},dst=/app`。
+`Dockerfile` 通常具有以下内容（上下文为项目根目录）
 
-在容器内（Linux）与容器外（Windows）使用 git 时可能会因为行尾字符不同导致问题，可添加 git 设置忽视行尾解决，一般即在容器内运行以下命令统一行尾策略：\ `printf "* text=auto eol=lf\n" > .gitattributes`
+```Dockerfile
+# 依据镜像选择基础 Linux 版本或 python:3.12-slim 等已经安装好 Python 的镜像
+FROM ubuntu:22.04
 
-在 Docker 容器中安装模块时，建议先使用 `uv add` 等命令在容器中安装并，确定模块可用后重新构建镜像，由于设置已经写入 `pyproject.toml`，因此新镜像能够保留新加入的模块。
+# 安装 uv，可以自行修改版本号
+COPY --from=ghcr.io/astral-sh/uv:0.9.5 /uv /uvx /bin/
+# 容器只能从缓存中复制包文件，避免警告
+ENV UV_LINK_MODE=copy
+
+# 用于没有自带 Python 的镜像
+# 安装基础依赖
+ENV DEBIAN_FRONTEND=noninteractive
+# 可能需要运行命令添加清华源，详见 docker 笔记
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    curl \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# 对于在 Windows 而不是宿主 WSL 环境还需要
+# 用于 Windows 中以非 root 运行防止权限问题
+RUN useradd -m -u 1000 appuser
+USER appuser
+
+# 选择 app 作为项目文件目录
+WORKDIR /app
+
+# 先复制 uv.lock 安装环境所需的包
+COPY pyproject.toml uv.lock ./
+# 把包保存到构建时缓存中 (可在下次构建镜像时复用，避免因代码重写而重新构建)
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --locked --no-install-project
+
+# 把项目文件复制到镜像中 (需要通过 `.dockerignore` 防止复制 `.venv`)
+COPY . .
+# 再次构建
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --locked --no-install-project
+
+# 在虚拟环境中运行代码 (根据需要修改此行)
+CMD ["uv", "run", "python", "-m", "your_app"]
+```
+
+`.dockerignore` 通常具有以下内容（用于排除无用的 `.venv` 与 `__pycache__`）
+
+```exclude
+.venv
+__pycache__
+```
+
+`docker-compose.yaml` 通常具有以下内容（可以根据构建与运行时的需要添加配置，详见 docker 笔记）
+
+```yaml
+version: '3'
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+```
+
+最后使用
+- `docker-compose -f ./docker/docker-compose.yaml up` 即可启动容器，在容器中运行项目程序
+- `docker-compose -f ./docker/docker-compose.yaml run -it --rm app bash` 用于进入容器虚拟终端，手动运行项目程序
 
 === 复杂依赖管理
 
 对于如 `pytest` 等测试模块、`xxx-stub` 等用于提示的模块仅在开发时需要，安装时不需要，即开发时依赖
 - 安装开发时依赖仅需在启用 `uv add` 命令的 `--dev` 选项，如 `uv add --dev pytest`
 - 命令 `uv sync` 同步项目时则需要增加 `--all-packages --group dev` 选项，同步时包含项目中所有模块的开发时依赖
+- 对应 `pyproject.toml` 中的 `dependency-groups`，偏向“这个仓库自己在开发时用的依赖分组”
 
 对于仅在特定子功能使用到的依赖，即可选依赖
 - `uv add` 把某个模块添加到特定的依赖组时，需要使用选项 `--optinal <依赖组>`
 - `uv sync` 同步项目时则需要使用选项 `--extra <依赖组>` 同步安装特定依赖组，选项 `--all-extras` 同步所有依赖组
 - 对于存在依赖组的模块，使用 `uv add` 安装时则需要使用 `--extra <依赖组>`，对应 `pip` 中将依赖组放在模块名后 `[]` 的部分中
+- 对应 `pyproject.toml` 中的 `project.optional-dependencies`，偏向“这个项目对外暴露的可选能力”，即 `pip install 包名[额外功能]` 中所指定的
+
+=== 包内资源
+
+当构建后端（对应配置 `build-system.build-backend`）为 `uv`，使用 `pip install` 安装模块时包含 `src/<module>/` 下的所有文件，可以用此方法将较小的图片等资源附加到包中
+- 可通过 `uv build` 查看生成的 `dist/<module>.tar.gz` 包中是否包含了希望附带的资源
+- 较大的文件不建议使用此方式，以避免包体积过大
+- 对于这类附加资源建议用子模块形式管理，如放在文件夹 `assets` 下，再新建 `assets/__init__.py` 将其变为子模块
+
+加载这类包内资源时，资源均为只读的且不可以使用路径，而是要通过内置模块 `importlib.resources` 下的方法读取，常用有
+- `files("<module>/assets") / "<文件名>"` 以伪路径对象的方式读取资源，通过 `read_bytes()` 方式读取字节流
+- `with as_files(file) as tmp_path` 将伪路径对象指向的资源复制到临时路径并返回临时复制所在的路径对象 (`pathlib.Path`)
+- 对于 Python3.9 之前的版本，需要用额外安装的 `importlib_resources` 代替
 
 === 问题解决
 
@@ -327,7 +379,7 @@ if __name__ == "__main__":
 
 对于使用 `Union` 组合的嵌套数据类同样支持，此时需要使用子命令的形式明确各个属性具体使用的嵌套类，具体格式为 `<属性名>:<嵌套类名>`（嵌套类名也会转为为#link(<sec:tyro_cmd_style>)[命令行格式]）。
 
-例如以下例子需要先使用 `opt:adam-config alg:ppo-policy` 明确使用的嵌套数据类型：
+例如以下例子需要先使用 `opt:adam-config alg:ppo-policy` 明确使用的嵌套数据类型（参数依然通过 `--opt.xxx` 的方式给出）：
 
 ```py
 import dataclasses
@@ -513,4 +565,81 @@ def test_fn(data_fn):
 
 默认情况下 Pytest 会捕获测试中的 `stdout` 和 `stderr`，仅当测试函数出错时，会输出其 `stdout` 和 `stderr`。表现为仅当测试不通过时 `print` 函数的内容会被打印到控制台上（包括 logger）。
 
+== h5py
+
+=== 基本概念
+
+HDF5 （扩展名为 `.h5`）是一种用于存储大型数值数据、实验结果、训练样本、多维数组等的文件，h5py 则是 Python 里用来读写 HDF5 文件的常用库。
+
+一个 HDF5 文件内的数据通常具有以下组织结构
+- `Dataset` 数据集：基础数据对象，类似 Numpy 数组具有固定的形状 `shape` 与数据类型 `dtype`
+- `Group` 组：数据文件夹，类似 Python 的字典，每个 `Group` 下可以包含其他的 `Group` 与 `Dataset`
+- `Attributes` 元数据：附加在 `Dataset` 下，用于保存如数据的说明等小型元数据
+
+=== 文件读取
+
+方法 `f = h5py.File(path, mode)` 用于打开或创建 HDF5 文件，返回 HDF5 文件对象
+- 参数 `mode` 为打开模式，常用的有
+    - `r` 只读，不能修改内容
+    - `w` 读写，不存在时创建，存在时覆盖已有文件
+    - `a` 读写，不存在时创建，存在打开已有文件
+- HDF5 文件的顶层为根组 `/`，文件对象继承自 `Group` 类，因此可以像操作 `Group` 一样操作 HDF5 文件对象
+- 关闭 HDF5 文件需要调用方法 `f.close()`，或使用 `with` 语法通过上下文管理器自动关闭文件
+
+=== Group 常用操作
+
+h5py 中 `Group` 对象有以下常用方法
+
+运算符 `[]`，与字典类似，通过字符串索引对象下的其他 `Group` 或 `Dataset`：
+- h5py 还支持通过 `/` 像文件路径一样访问深层的数据，如 `g["train/image"]`
+
+遍历方法与字典类似：
+- 方法 `keys()`，获取对象下的 `Group` 或 `Dataset` 的字符串键名
+- 方法 `items()`，获取对象下其他 `Group` 或 `Dataset` 的字符串键名与键值（即 `Group` 或 `Dataset` 对象）
+- 可通过 `isinstance(obj, h5py.Group)` 与 `isinstance(obj, h5py.Dataset)` 判断键值为 `Group` 还是 `Dataset`
+
+方法 `visititems(func)` 用于遍历对象下，包括子节点在内所有 `Group` 与 `Dataset`：
+- `func` 为一个 `[[str, obj], None]` 的函数，其中 `str` 为路径名，`obj` 为遍历对象，可配合 `print` 遍历获取整个 H5DF 文件的基本信息
+
+通过 `Group` 对象的以下方法可创建子 `Group` 对象：
+- `create_group(name)` 创建名为 `name` 的子 `Group` 对象
+    - 允许传入如 `train/image` 的名称，从而递归创建子 `Group` 对象
+    - 如果给定键名的子 `Group` 已存在将出错
+- `require_group(name)` 创建子 `Group` 对象，如果键名存在则什么都不做，避免重复创建报错
+
+=== Dataset 常用操作
+
+h5py 中 `Dataset` 对象有以下常用方法
+
+与 Numpy 数组类似，有以下属性用于获取对象的基本信息：`shape` 数据形状；`dtype` 元素类型（一般可直接与 Numpy 的 `dtype` 比较）；`ndim` 数据维度；`size` 元素个数。
+
+`Dataset` 对象也支持与 Numpy 数组相同的切片索引，但要注意：
+- 通过 `group[key][:]` 可以读取全部数据，但该方法将使全部数据加载到内存中，不建议使用
+- 单个标量建议使用 `group[key][()]` 读取
+- 在读写模式下，同样可使用切片索引与 Numpy 数组对特定元素赋值，整体赋值时同样要使用 `[:]` 与 `[()]`
+
+通过 `Group` 对象的以下方法可创建子 `Dataset` 对象：
+- `create_dataset(name, *, data, compression, maxshape)` 基于给定 Numpy 数组 `data` 创建 `Dataset`
+    - `data` 一般为 Numpy 数组（创建 h5 时建议先得到完整的数据一次性保存），也可以是列表，保存字符串列表标签#link(<sec:h5py_attention>)[注意]
+    - `maxshape = ...` 用于逐步保存结果场景下，创建可拓展的 `Dataset`，具体使用方法查找相关资料
+    - 对于图片等较大的数据，建议设置以下参数用于压缩数据
+        - `compression = "gzip"` 压缩算法，通常取 `gzip`，不需要额外依赖
+        - `compression_opts = 1` 压缩级别，默认为 `4`，最大为 `9`，越大压缩程度越高但读取速度越慢，通常取 `1` 即可
+        - `shuffle = True` 允许打乱数据，提高压缩效率与从 `-1` 开始读取的速度
+- `create_dataset(name, *, shape, dtype, ...)` 创建指定形状与类型的 `Dataset`
+    - `dtype` 一般可以直接使用如 `np.float32` 等来自 Numpy 的数据类型（H5DF 还有其他特殊的数据类型，详见资料）
+
+=== Attributes 常用操作
+
+`Group` 与 `Dataset` 对象一定有 `Attributes` 类型的属性 `attrs`，不需要手动创建
+
+`Attributes` 对象与字典类似，通过 `[]` 运算符访问已有的键，赋值时如果键名不存在将自动创建
+
+=== 注意事项拾遗 <sec:h5py_attention>
+
+使用 h5py 处理字符串时注意
+- 保存字符串时建议使用 `dt = h5py.string_dtype(encoding="utf-8")`，创建使用 utf-8 编码的字符串类型
+- 读取字符串时
+    - 对于 `Numpy>=2.0`，可使用 `dataset.astype("T")[:]`，得到 `dtype=StringDType` 的 Numpy 数组，处理速度更快
+    - 一般情况下，可使用 `dataset.asstr()[:]`，得到 `dtype=object`（实际为 Python 字符串对象）的 Numpy 数组
 

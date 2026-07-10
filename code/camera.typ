@@ -15,13 +15,13 @@
   anchor("Z_c", (u(al), 0, 0))
   content("Z_c", [$Z_c$], anchor: "north-west", padding: .1)
 
-  line((0, 0, 0), (0, u(al), 0), mark: (end: ">"))
-  anchor("X_c", (0, u(al), 0))
-  content("X_c", [$X_c$], anchor: "south-east", padding: .1)
+  line((0, 0, 0), (0, -u(al), 0), mark: (end: ">"))
+  anchor("Y_c", (0, -u(al), 0))
+  content("Y_c", [$Y_c$], anchor: "north-west", padding: .1)
 
   line((0, 0, 0), (0, 0, u(al)), mark: (end: ">"))
-  anchor("Y_c", (0, 0, u(al)))
-  content("Y_c", [$Y_c$], anchor: "north", padding: .1)
+  anchor("X_c", (0, 0, u(al)))
+  content("X_c", [$X_c$], anchor: "north", padding: .1)
 
   anchor("O_c", (0, 0, u(0)))
   content("O_c", [$O_c$], anchor: "south-east", padding: .1)
@@ -36,13 +36,13 @@
   line((u(f), u(-h/2), u(-w/2)), (u(f), u(h/2), u(-w/2)))
   line((u(f), u(-h/2), u(-w/2)), (u(f), u(-h/2), u(w/2)))
 
-  line((u(f), 0, 0), (u(f), u(h/2), 0), mark: (end: ">"))
-  anchor("X_p", (u(f), u(h/2), 0))
-  content("X_p", [$X_p$], anchor: "south-east", padding: .1)
+  line((u(f), 0, 0), (u(f), -u(h/2), 0), mark: (end: ">"))
+  anchor("Y_p", (u(f), -u(h/2), 0))
+  content("Y_p", [$Y_p$], anchor: "north-west", padding: .1)
 
   line((u(f), 0, 0), (u(f), 0, u(w/2)), mark: (end: ">"))
-  anchor("Y_p", (u(f), 0, u(w/2)))
-  content("Y_p", [$Y_p$], anchor: "north-east", padding: .1)
+  anchor("X_p", (u(f), 0, u(w/2)))
+  content("X_p", [$X_p$], anchor: "north-east", padding: .1)
 
   anchor("O_p", (u(f), 0, 0))
   content("O_p", [$O_p$], anchor: "north-west", padding: .1)
@@ -80,6 +80,9 @@
   line((u(f), u(h/2)), (u(f), u(offset + inc)))
   line((u(z), u(x)), (u(z), u(offset + gap + inc)))
 
+  line((0, u(0)), (0, u(al)), stroke: (dash: "dashed"))
+  line((u(f), u(0)), (u(f), u(h/2)), stroke: (dash: "dashed"))
+
   anchor("f", (u(f / 2), u(offset)))
   content("f", [$f$], anchor: "north", padding: .1)
   anchor("p_z", (u(z / 2), u(offset + gap)))
@@ -88,32 +91,32 @@
   // 像素坐标系
 
   let ul = 0.8
-  line((u(f), u(-h/2), u(-w/2)), (u(f), u(ul - h/2), u(-w/2)), mark: (end: ">"))
-  line((u(f), u(-h/2), u(-w/2)), (u(f), u(-h/2), u(ul - w/2)), mark: (end: ">"))
+  line((u(f), u(h/2), u(-w/2)), (u(f), u(-ul + h/2), u(-w/2)), mark: (end: ">"))
+  line((u(f), u(h/2), u(-w/2)), (u(f), u(h/2), u(ul - w/2)), mark: (end: ">"))
 
-  anchor("u", (u(f), u(ul - h/2), u(-w/2)))
-  content("u", [$u$], anchor: "south-west", padding: .1)
-  anchor("v", (u(f), u(-h/2), u(ul - w/2)))
-  content("v", [$v$], anchor: "north-west", padding: .1)
-  anchor("o", (u(f), u(-h/2), u(-w/2)))
+  anchor("v", (u(f), u(-ul + h/2), u(-w/2)))
+  content("v", [$u$], anchor: "south-west", padding: .1)
+  anchor("u", (u(f), u(h/2), u(ul - w/2)))
+  content("u", [$v$], anchor: "south-east", padding: .1)
+  anchor("o", (u(f), u(h/2), u(-w/2)))
   content("o", [$o$], anchor: "mid-west", padding: .1)
 
   // 世界坐标系
   let wl = 1.2
-  let wx = -1.6
+  let wx = -1
   let wz = 8
 
   line((u(wz), u(wx), 0), (u(al) + u(wz), u(wx), 0), mark: (end: ">"))
   anchor("Z_w", (u(al) + u(wz), u(wx), 0))
   content("Z_w", [$Z_w$], anchor: "north-west", padding: .1)
 
-  line((u(wz), u(wx), 0), (u(wz), u(al) + u(wx), 0), mark: (end: ">"))
-  anchor("X_w", (u(wz), u(al) + u(wx), 0))
-  content("X_w", [$X_w$], anchor: "south-east", padding: .1)
+  line((u(wz), u(wx), 0), (u(wz), -u(al) + u(wx), 0), mark: (end: ">"))
+  anchor("Y_w", (u(wz), -u(al) + u(wx), 0))
+  content("Y_w", [$Y_w$], anchor: "north-west", padding: .1)
 
   line((u(wz), u(wx), 0), (u(wz), u(wx), u(al)), mark: (end: ">"))
-  anchor("Y_w", (u(wz), u(wx), u(al)))
-  content("Y_w", [$Y_w$], anchor: "north", padding: .1)
+  anchor("X_w", (u(wz), u(wx), u(al)))
+  content("X_w", [$X_w$], anchor: "north", padding: .1)
 
   anchor("O_w", (u(wz), u(wx), u(0)))
   content("O_w", [$O_w$], anchor: "south-east", padding: .1)
