@@ -28,19 +28,23 @@
       - #chapter("./code/cmake.typ")[CMake 笔记]
       - #chapter("./code/cpp.typ")[C++ 面向对象编程]
       - #chapter("./code/vscode.typ")[Vscode 笔记]
-      - #chapter("./code/software.typ")[实用软件笔记]
+      - #chapter("./code/xpra.typ")[Xpra 仅窗口的远程连接]
       - #chapter("./code/fastapi.typ")[FastAPI 笔记]
       - #chapter("./code/python.typ")[Python 笔记]
       - #chapter("./code/docker.typ")[Docker 笔记]
+      - #chapter("./code/ml.typ")[神经网络开发]
+      - #chapter("./code/claude_code.typ")[Claude Code 笔记]
 
     - #chapter(none)[神经网络]
       - #chapter("./ml/ae.typ")[自编码器]
       - #chapter("./ml/rnn_transformer.typ")[RNN 与 Transformer]
       - #chapter("./ml/diffusion.typ")[Diffusion 笔记]
+      - #chapter("./ml/random.typ")[基础知识拾遗]
 
     - #chapter(none)[杂项]
       - #chapter("./random/shiroa.typ")[Shiroa 笔记]
       - #chapter("./random/word.typ")[Word 使用]
+      - #chapter("./random/shotcut.typ")[ShotCut 视频剪辑]
   ]
 )
 
