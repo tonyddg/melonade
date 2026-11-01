@@ -97,7 +97,8 @@ Dockerfile 中常用的指令有
 - `COPY ['<宿主机路径1>', '[宿主机路径2 ...]', '<当前镜像目录>']` 
   - 将宿主机多个文件复制到容器目录中（只能是相对#link(<docker_build>)[上下文目录]的路径）
   - #link(<docker_build>)[上下文目录]中的 `.dockerignore` 文件可以类似 `.gitignore` 设置复制时排除的文件
-- `ENV <key1>=<value1> [<key2>=<value2>]` 设置容器环境变量
+- `ENV <key1>=<value1> [<key2>=<value2>]` 设置容器内环境变量
+- `ARG <key1>=<value1>` 设置 Dockerfile 参数，`build` 时通过 `--build-arg <key1>=<value1>` 从外部修改参数
 - `EXPOSE <port1> [port2 ...]` 说明容器暴露的端口（在 `docker run -p` 中主动开放才有效）
 - `CMD ['<命令>', '[参数1]', '[参数2 ...]']` 重置容器的启动命令
 - `SHELL ['<命令>', '[参数1]', '[参数2 ...]']` 设置 `RUN` 命令执行方式，即 `RUN` 命令的内容将接在 `SHELL` 指定的命令后
@@ -324,20 +325,27 @@ RUN mkdir -p ~/miniconda3 && \
 
 `docker-compose.yml` 文件中，第一级用于分类创建集群所需的数据卷、容器等，第二级键则表示创建数据卷、容器的名称（可以有多个），键值则为其具体配置
 
-此处仅介绍键 `services`，键值为容器组中各个容器配置的键值对 `容器名:镜像配置`，容器配置同样为键值对其中键值为参数，一般在 #link(<docker_run>)[docker run] 中可以找到对应的配置，常用的配置有
+一级键 `services`，键值为容器组中各个容器配置的键值对 `容器名:镜像配置`，容器配置同样为键值对其中键值为参数，一般在 #link(<docker_run>)[docker run] 中可以找到对应的配置，常用的配置有
 - `build` 
   - 直接给出时即镜像构建#link(<docker_build>)[上下文目录]，并在该目录下搜索 `Dockerfile` （将首先创建镜像，然后在该镜像基础上创建容器）
-  - 也可以分为 `context`（`./` 为配置所在目录），`dockerfile`（`./` 为上下文目录）两个参数分别给出#link(<docker_build>)[上下文目录]与 `Dockerfile` 路径 
+  - 也可以通过子参数 `context`（默认为配置所在目录），`dockerfile`（*配置中仅该参数的相对路径基于上下文目录*）分别给出#link(<docker_build>)[上下文目录]与 `Dockerfile` 路径
+  - 子参数 `args` 相当于 `--build-arg` 选项，以参数下的键值对可用于指定 `Dockerfile` 中的参数（配置文件通过 `${...}` 表示的待定参数将通过环境变量确定）
+  - 注意，`context` 指定的上下文目录仅影响 `Dockerfile` 中的内容，除了 `dockerfile` *配置中的相对目录依然基于配置文件所在目录*
 - `ports` 相当于 `-p` 选项，值为列表，列表中使用字符串 `<source>:<container>` 表示端口的映射
 - `volumes` 相当于 `--mount` 选项，值为列表，列表中使用字符串 `<source>:<container>[:ro]` 表示挂载，可同时表示数据卷与主机目录的挂载，`ro` 即只读
-  - `<source>` 中可以使用相对路径，路径起点为 `docker-compose.yml` 文件所在目录
+  - `<source>` 给出完整名称时，将首先从一级键 `volumes` 下定义的存储卷中寻找挂载来源
+  - `<source>` 中可以使用相对路径，路径起点为配置文件所在目录
   - `<source>` 表示 Windows 宿主机目录时，使用 `/c/...` 等方式表示磁盘号
+- `device` 与 `volumes` 类似但是专门用于映射
 - `environment` 相当于 `-e` 选项，值为字典，即环境变量的名称与值
 - `restart: unless-stopped` 实用配置，表示不断重启直到成功启动，用于依赖于其他容器的容器等待依然容器启动成功
 - `network_mode` 相当于 `--net` 选项，容器网络模式
 - `ipc` 相当于 `--ipc` 选项，共享内存设置
 - `gpus` 相当于 `--gpu` 选项，GPU 设置，详见#link(<ml_usage>)[机器学习项目]
 - `command` 相当于 `<command>` 参数，指定进入容器后执行的命令，替代 Dockerfile 中规定的命令
+
+关于其他一级键常用的有
+- `volumes` 定义配置文件中共享的存储卷，类似 `service` 通过 `存储卷名:存储卷配置` 定义多个存储卷，一般存储卷配置取空让 Docker 自动创建与管理存储卷
 
 关于更多配置参见#link("https://www.runoob.com/docker/docker-compose.html")[相关教程]
 
@@ -376,7 +384,7 @@ ls -l /tmp/.X11-unix                                 # 有 X11 套接字
 ls -l /mnt/wslg | grep runtime-dir                   # 有 Wayland/Pulse 目录
 ```
 
-在#hl(2)[宿主 WSL 中启动容器]，并使用以下命令行参数添加环境变量与挂载目录
+在#hl(2)[宿主 WSL 中启动容器]（vscode 可创建 WSL 终端），并使用以下命令行参数添加环境变量与挂载目录
 ```bash
 docker run \
 -e DISPLAY=$DISPLAY \

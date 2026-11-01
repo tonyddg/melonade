@@ -68,6 +68,7 @@ build-backend = "uv_build"
 - 将项目中的模块安装到虚拟环境中 `uv sync`
     - 该命令将以可编辑的方式将当前项目安装到虚拟环境中
     - 该命令用于初次安装项目 / 部署已有项目
+    - 如果希望将模块更新到最新版本，可以使用 `uv sync --upgrade-package <模块名>`
 - 向虚拟环境安装 / 卸载模块 `uv add / remove <模块名>`
     - 模块名同样可通过 `==, >=` 等限制模块版本
     - 对于 PyTorch 等从特殊位置下载的模块（此时 `pip` 命令会带有参数 `--index-url`），可使用 `uv add <模块名> --index <来源组>=<来源链接>`
@@ -81,8 +82,10 @@ build-backend = "uv_build"
     - 不建议直接修改 `pyproject.toml` 的 `dependencies` 字段，而是使用以上命令将智能同步修改 `pyproject.toml` 与虚拟环境
 - 运行虚拟环境中的脚本时 
     - 对于模块中的脚本需要使用 `uv run -m <顶层模块名>.<模块名>` 以类似引用模块的方式运行脚本
-    - 对于一般脚本可使用 `uv run <脚本文件>`
-    - 进入当前虚拟环境的 Python 可使用 `uv run python`
+    - 对于一般脚本可使用 `uv run <脚本路径>`
+    - 使用 `uv run <命令>` 即可运行当前虚拟环境中的 Python 命令
+        - 例如进入当前虚拟环境的 Python 可使用 `uv run python`
+        - 在 `pyproject.toml` 的字段 `[project.scripts]` 下使用 `[命令名] = "模块:入口函数"` 注册后，通过 `uv run` 运行该函数
 
 === Monorepo 项目
 
@@ -155,7 +158,7 @@ members = ["packages/*"]
     - `uv add "git+<url>@<branch>#subdirectory=packages/<子模块路径>"` 用于其他 uv 管理的项目
     - `pip install "<子模块名称> @ git+<url>@<branch>#subdirectory=packages/<子模块路径>"` 用于一般 pip 管理的 Python
 
-=== Docker 集成 (新)
+=== Docker 集成
 
 使用 Docker 集成可以通过将项目拷贝到容器中，容器中的 `uv` 依据 `pyproject.toml` 重新构建虚拟环境并运行项目，实现在不同平台下运行与测试项目。
 
@@ -167,12 +170,13 @@ Docker 集成时通常将项目根目录作为上下文目录，再使用文件�
 ├─packages // 子包
 ├─pyproject.toml // 配置
 ├─docker // docker 相关文件
-│     ├─Dockerfile // 构建测试镜像的 Dockerfile
+│     ├─run.dockerfile // 构建单次运行容器的 Dockerfile
+│     ├─dev.dockerfile // 构建长期开发容器的 Dockerfile
 │     └─docker-compose.yaml // 运行测试容器的 docker-compose.yaml
 └─.dockerignore // 用于排除非代码文件到容器中
 ```
 
-`Dockerfile` 通常具有以下内容（上下文为项目根目录）
+作为*单次运行容器*时，只能通过 `docker compose up` 运行代码，容器内外代码不同步。`Dockerfile` 通常具有以下内容（上下文为项目根目录）：
 
 ```Dockerfile
 # 依据镜像选择基础 Linux 版本或 python:3.12-slim 等已经安装好 Python 的镜像
@@ -217,6 +221,66 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 CMD ["uv", "run", "python", "-m", "your_app"]
 ```
 
+作为*长期开发容器*时，容器内外代码同步，可以通过 vscode 等进入容器中进行开发。`Dockerfile` 通常具有以下内容（上下文为项目根目录）：
+
+```Dockerfile
+# 依据镜像选择基础 Linux 版本或 python:3.12-slim 等已经安装好 Python 的镜像
+FROM ubuntu:22.04
+
+ARG USERNAME=appuser
+ARG USER_UID=1000
+ARG USER_GID=1000
+
+# 安装 uv，可以自行修改版本号
+COPY --from=ghcr.io/astral-sh/uv:0.9.5 /uv /uvx /bin/
+# 容器只能从缓存中复制包文件，避免警告
+ENV UV_LINK_MODE=copy
+
+# 用于没有自带 Python 的镜像
+# 安装基础依赖
+ENV DEBIAN_FRONTEND=noninteractive
+# 可能需要运行命令添加清华源，详见 docker 笔记
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    curl \
+    build-essential \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# 以非 root 运行防止在容器中修改文件时导致的权限问题
+RUN groupadd --gid ${USER_GID} ${USERNAME} \
+    && useradd \
+       --uid ${USER_UID} \
+       --gid ${USER_GID} \
+       --create-home \
+       --shell /bin/bash \
+       ${USERNAME} \
+    && mkdir -p /app \
+    && chown ${USER_UID}:${USER_GID} /app
+
+ENV HOME=/home/${USERNAME}
+ENV PATH="/app/.venv/bin:${PATH}"
+
+# 选择 app 作为项目文件目录
+WORKDIR /app
+USER ${USERNAME}
+
+# 先复制 uv.lock 安装环境所需的包 (复制后设定权限)
+COPY --chown=${USER_UID}:${USER_GID} pyproject.toml uv.lock ./
+# 把包保存到构建时缓存中 (可在下次构建镜像时复用，避免因代码重写而重新构建，运行时设定权限)
+RUN --mount=type=cache,target=/home/appuser/.cache/uv,uid=${USER_UID},gid=${USER_GID} \
+    uv sync --locked --no-install-project
+
+# 把项目文件复制到镜像中 (需要通过 `.dockerignore` 防止复制 `.venv`)
+COPY --chown=${USER_UID}:${USER_GID} . .
+# 再次构建
+RUN --mount=type=cache,target=/root/.cache/uv,uid=${USER_UID},gid=${USER_GID} \
+    uv sync --locked
+
+# 在虚拟环境中运行代码 (根据需要修改此行)
+CMD ["bash"]
+```
+
 `.dockerignore` 通常具有以下内容（用于排除无用的 `.venv` 与 `__pycache__`）
 
 ```exclude
@@ -229,10 +293,47 @@ __pycache__
 ```yaml
 version: '3'
 services:
-  app:
+  app-run:
     build:
       context: ..
-      dockerfile: docker/Dockerfile
+      dockerfile: docker/run.dockerfile
+
+  app-dev:
+    build:
+      context: ..
+      dockerfile: docker/dev.dockerfile
+      args:
+        USERNAME: appuser
+        USER_UID: 1000
+        USER_GID: 1000
+
+    container_name: app-dev
+
+    # 允许查看输入输出流
+    stdin_open: true
+    tty: true
+
+    environment:
+      # 允许窗口显示
+      DISPLAY: ${DISPLAY}
+      QT_X11_NO_MITSHM: "1"
+
+      # 明确指定 HOME
+      HOME: /home/appuser
+
+    volumes:
+      # X11 GUI 允许窗口显示
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      # 将整个项目根目录映射到 /app
+      - ..:/app:rw
+      # 不让宿主机的项目目录覆盖容器里的 .venv, 将 venv 保存到内部 Volumes 中
+      - app-venv:/app/.venv
+
+    working_dir: /app
+    command: bash
+# 创建保存 venv 到 Volumes
+volumes:
+  app-venv:
 ```
 
 最后使用
