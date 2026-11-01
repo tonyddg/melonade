@@ -33,7 +33,7 @@
       - #chapter("./code/python.typ")[Python 笔记]
       - #chapter("./code/docker.typ")[Docker 笔记]
       - #chapter("./code/ml.typ")[神经网络开发]
-      - #chapter("./code/claude_code.typ")[Claude Code 笔记]
+      - #chapter("./code/claude_code.typ")[AI Agent 笔记]
 
     - #chapter(none)[神经网络]
       - #chapter("./ml/ae.typ")[自编码器]

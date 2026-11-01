@@ -1,9 +1,9 @@
 #import "/book.typ": book-page, cross-link, templates
-#show: book-page.with(title: "Claude Code")
+#show: book-page.with(title: "AI Agent")
 
 #import "/utility/include.typ": *
 
-= Claude Code 笔记
+= AI Agent 笔记
 
 参考教程：https://www.bilibili.com/video/BV14rzQB9EJj
 
@@ -124,3 +124,23 @@ description: [agent skill 描述]
 - 快捷键与 Claude Code 保持一致，同样可以按两次 #bl(0)[Esc] 进入回滚、#bl(0)[Shift] + #bl(0)[Tab] 切换输入模式等
 - 左下角的 #bl(0)[+] 按钮可用于上传任意文件；#bl(0)[/] 按钮可查看命令与选择模型以及思考强度
 - 能够自动引用其他编辑页中选中的代码段
+
+== Codex CLI
+
+参考#link("https://learn.chatgpt.com/docs/codex/cli?surface=cli#getting-started")[官方文档]，执行对应的命令安装 Codex CLI 本体
+
+=== 自定义 API
+
+对于 Linux 参考对应的 API 提供商文档在 `~/.codex/` 下创建配置文件 `~/.codex/models.json` 与 `~/.codex/config.toml` 并写入对应的配置
+
+对于 Windows 可以使用 #link("https://github.com/farion1231/cc-switch")[cc-switch] 管理，使用时注意
+- 使用 API 提供商的 `config.toml` 覆盖 cc-switch 下方默认的 `config.toml` 配置
+- 模型映射配置处，先点击右侧 `获取模型列表` 按钮根据提供商名称确定提供的模型，然后点击右侧 `添加模型` 按钮根据 API 提供商 `models.json` 的 `supported_reasoning_levels` 与 `max_context_window` 填写思考等级（可以多选）与上下文窗口等设置
+
+=== vscode 集成 
+
+在 vscode 中安装 Codex CLI 插件后，可在 vscode 页面中使用 Codex CLI
+
+在使用 Docker 容器或 SSH 远程开发时，Codex CLI 插件将使用本地安装的 Codex CLI，但是读取远程 `~/.codex/` 下的配置，还需要手动创建或挂载（Docker）相关配置
+
+`~/.codex/config.toml` 中填写 API Key 时，除了键 `experimental_bearer_token` 直接将值作为 API Key，也可以使用  
