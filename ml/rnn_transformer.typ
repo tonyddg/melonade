@@ -127,15 +127,15 @@ $
   caption: [门控神经网络 GRU],
 )
 
-两个门使用如图所示的方式参与到下一时刻隐藏变量 $h_t$ 的计算中，其中 $ dot.o$ 表示两个向量对应元素相乘
+两个门使用如图所示的方式参与到下一时刻隐藏变量 $h_t$ 的计算中，其中 $ dot.circle$ 表示两个向量对应元素相乘
 
 重置门参与下一时刻的候选隐变量 $ tilde(h)_t$ 的计算，通过重置为 0 丢弃上一时刻隐变量中不需要的状态
 
-$  tilde(h)_t= phi[W_"hh"(r_(t) dot.o h_(t-1))+W_"hx"x_(t-1)+b_h]  $
+$  tilde(h)_t= phi[W_"hh"(r_(t) dot.circle h_(t-1))+W_"hx"x_(t-1)+b_h]  $
 
 更新门参与上一时刻隐变量与候选隐变量的加权求和，从上一时刻隐变量中选择有价值的状态传递到下一时刻
 
-$ h_t=z_(t) dot.o h_(t-1) + (1-z_(t)) dot.o  tilde(h)_(t)  $
+$ h_t=z_(t) dot.circle h_(t-1) + (1-z_(t)) dot.circle  tilde(h)_(t)  $
 
 === 长短期记忆网络 LSTM
 
@@ -154,11 +154,11 @@ $  tilde(c)_t= tanh(W_"ch"h_(t-1)+W_"cx"x_(t-1)+b_c)  $
 
 上一时刻的记忆单元包含过去的信息，候选记忆单元包含现在的信息，与 GRU 的加权求和不同，LSTM 通过遗忘门与输入门混合二者来确定哪些状态需要记录到记忆中
 
-$ c_t=f_t dot.o c_(t-1)+i_t dot.o tilde(c)_t  $
+$ c_t=f_t dot.circle c_(t-1)+i_t dot.circle tilde(c)_t  $
 
 最后使用 $ tanh$ 缩放记忆单元 $c_t$ 到值域 $(-1,1)$ 避免梯度爆炸，以及输出门 $o$ 筛选记忆单元中对当前预测有用的信息，得到输出的隐藏状态
 
-$ h_t=o_t dot.o tanh(c_t)  $
+$ h_t=o_t dot.circle tanh(c_t)  $
 
 === 双向循环神经网络
 
