@@ -45,7 +45,7 @@
 )
 #let code-font = (
   "Fira Code",
-  "Source Han Sans SC",
+  "Noto Sans Mono CJK SC",
   "DejaVu Sans Mono",
 )
 
@@ -214,6 +214,9 @@
   if is-pdf-target {
     show figure: block(breakable: true)
   }
+
+  // 超链接增加下划线
+  show link: underline
 
   // Put your custom CSS here.
   context if shiroa-sys-target() == "html" {
