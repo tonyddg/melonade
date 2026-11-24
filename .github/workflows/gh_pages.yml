@@ -38,34 +38,24 @@ jobs:
       - name: Download & install shiroa
         run: |
           curl --proto '=https' --tlsv1.2 -LsSf https://github.com/Myriad-Dreamin/shiroa/releases/download/v0.3.1-rc2/shiroa-installer.sh | sh
-      # 页面编译命令
+      # 页面编译命令 同时仅编译一个页面避免内存溢出
       - name: Build Book
         shell: bash
+        env:
+          RAYON_NUM_THREADS: "1"
         run: |
           set -euo pipefail
       
-          echo "=== Runner Information ==="
-          uname -a
-          nproc
+          echo "Rayon threads: $RAYON_NUM_THREADS"
           free -h
-      
-          # 每 10 秒记录一次内存使用情况
-          (
-            while true; do
-              echo "=== Memory: $(date -u) ==="
-              free -m
-              sleep 10
-            done
-          ) &
-          monitor_pid=$!
-      
-          trap 'kill "$monitor_pid" 2>/dev/null || true' EXIT
       
           shiroa build \
             --font-path ./asset/font/ \
             --path-to-root /melonade/ \
             -w .
-            
+      
+          echo "Build completed successfully"
+          free -h
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
