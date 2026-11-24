@@ -40,8 +40,32 @@ jobs:
           curl --proto '=https' --tlsv1.2 -LsSf https://github.com/Myriad-Dreamin/shiroa/releases/download/v0.3.1-rc2/shiroa-installer.sh | sh
       # 页面编译命令
       - name: Build Book
+        shell: bash
         run: |
-          shiroa build --font-path ./asset/font/ --path-to-root /melonade/ -w . 
+          set -euo pipefail
+      
+          echo "=== Runner Information ==="
+          uname -a
+          nproc
+          free -h
+      
+          # 每 10 秒记录一次内存使用情况
+          (
+            while true; do
+              echo "=== Memory: $(date -u) ==="
+              free -m
+              sleep 10
+            done
+          ) &
+          monitor_pid=$!
+      
+          trap 'kill "$monitor_pid" 2>/dev/null || true' EXIT
+      
+          shiroa build \
+            --font-path ./asset/font/ \
+            --path-to-root /melonade/ \
+            -w .
+            
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
