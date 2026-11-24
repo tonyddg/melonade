@@ -89,7 +89,7 @@ Linux 的根目录中, 一般有如下目录
     - `src` 被复制文件的路径
     - `dest` 复制目标路径
     - `-d` 当被复制文件为软链接时, 则复制结果也为同一属性的软链接, 而不是复制原始文件
-    - `-p` 同时复制#cross-link("/base.typ", reference: <sec:文件属性>)[文件的属性], 而不是默认属性
+    - `-p` 同时复制#link(<sec:文件属性>)[文件的属性], 而不是默认属性
     - `-R` / `-r` 递归复制目录及其内容；不加此选项通常不能复制目录
     - `-i` 如果 `dest` 存在, 则进行覆盖查询, 否则将直接覆盖
     - `-a` 归档复制（GNU `cp` 大致相当于 `-dR --preserve=all`），尽量保留元数据
@@ -113,7 +113,7 @@ Linux 的根目录中, 一般有如下目录
     - `--pid=<pid>` （GNU `tail`）配合 `-f` 使用，在指定进程结束后退出
     - `file` 读取的文件路径
 
-关于查询文件属性的命令见#cross-link("/base.typ", reference: <sec:查看文件属性>)[文件属性]小节的介绍
+关于查询文件属性的命令见#link(<sec:查看文件属性>)[文件属性]小节的介绍
 
 === 基础目录管理
 
@@ -183,7 +183,7 @@ Linux 的根目录中, 一般有如下目录
         - `-exec rm -i {} \;` 删除查找到的结果
     - `-print[0]` 打印查找结果
         - 默认每个结果间都以换行分割, 加上 `0` 则使用 `\0` 分割
-        - 当文件名过长时可能导致 `-exec` 发生错误, 此时推荐使用该选项配合#cross-link("/shell.typ", reference: <sec:参数传递过滤器>)[管道与 xargs 命令]实现类似效果
+        - 当文件名过长时可能导致 `-exec` 发生错误, 此时推荐使用该选项配合#cross-link("/code/linux/shell.typ", reference: <sec:参数传递过滤器>)[管道与 xargs 命令]实现类似效果
 
 === 内容搜索 <sec:内容搜索>
 
@@ -211,12 +211,12 @@ Linux 的根目录中, 一般有如下目录
 对于命令的 `files` 参数
 - 可以给出多个文件用于搜索
 - 启用 `-r` 后可递归搜索给定目录中的文件
-- 还可以通过#cross-link("/shell.typ", reference: <sec:管道>)[管道], 搜索命令的结果
+- 还可以通过#cross-link("/code/linux/shell.typ", reference: <sec:管道>)[管道], 搜索命令的结果
 
 === 浏览文件内容 <sec:浏览文件内容>
 
 `less [-fNx] <file>`
-- `file` 要浏览的文件名 (除了指定文件名, 也可通过#cross-link("/shell.typ", reference: <sec:管道>)[管道]接收并浏览命令的输出)
+- `file` 要浏览的文件名 (除了指定文件名, 也可通过#cross-link("/code/linux/shell.typ", reference: <sec:管道>)[管道]接收并浏览命令的输出)
 - `-f` 强制打开目录或非普通文件；并不意味着适合阅读任意二进制内容
 - `-N` 显示行号
 - `-x<数字>` 设置制表符宽度为指定列数
@@ -291,7 +291,7 @@ Linux 的根目录中, 一般有如下目录
 - `:w [file]` 另存为 `file`
 - `:q!` 强制退出 vim 而不保存
 - `:wq` 保存并退出 vim
-- `:set <设置>` 临时更改 Vim 选项，详见#cross-link("/base.typ", reference: <sec:vim配置>)[vim 配置]
+- `:set <设置>` 临时更改 Vim 选项，详见#link(<sec:vim配置>)[vim 配置]
 
 ==== vim 配置 <sec:vim配置>
 
@@ -379,8 +379,8 @@ set encoding=utf-8
 - `-R` 将递归显示文件夹下的文件信息
 - `-a` 显示隐藏文件 (即以 `.` 开头的文件)
 
-对于查看复杂目录结构, 更推荐使用 #cross-link("/base.typ", reference: <sec:查看文件结构>)[tree] 命令
-该命令可配合 #cross-link("/base.typ", reference: <sec:内容搜索>)[grep] 筛选信息
+对于查看复杂目录结构, 更推荐使用 #link(<sec:查看文件结构>)[tree] 命令
+该命令可配合 #link(<sec:内容搜索>)[grep] 筛选信息
 
 === 通过权限数字修改文件权限
 
@@ -452,7 +452,7 @@ set encoding=utf-8
 - `dpkg -i <file>` 安装软件包 `file` (一般有后缀 `.deb`)
 - `dpkg -r <pkg>` 卸载名称为 `pkg` 的软件包
 - `dpkg -P <pkg>` 卸载软件包 `pkg`, 并清除配置文件
-- `dpkg -l` 列出所有软件包, 可通过类似 #cross-link("/base.typ", reference: <sec:浏览文件内容>)[less] 命令的方式浏览内容
+- `dpkg -l` 列出所有软件包, 可通过类似 #link(<sec:浏览文件内容>)[less] 命令的方式浏览内容
 - `dpkg -s <pkg>` 显示软件包的详细信息
 - `dpkg -L <pkg>` 列出已经安装的软件包所包含的文件
 
@@ -463,7 +463,7 @@ set encoding=utf-8
 使用命令 `wget` 用于下载文件, 常用的使用方式有
 - `wget [options] <url>`
     - `-c` 从上次中断的位置继续下载
-    - `-b` 在后台进行下载, 可配合命令 #cross-link("/base.typ", reference: <sec:基础文件管理>)[tail] 查看后台下载日志 (此时默认为 `./wget-log`) 实现观察下载进度的效果
+    - `-b` 在后台进行下载, 可配合命令 #link(<sec:基础文件管理>)[tail] 查看后台下载日志 (此时默认为 `./wget-log`) 实现观察下载进度的效果
     - `-r` 根据网页链接递归下载，受深度、域名、robots 规则等限制
     - `--spider` 仅测试 `url` 是否有效
     - `-o <log>` 把日志写到指定文件（小写字母 o）
@@ -484,7 +484,7 @@ set encoding=utf-8
     - `-c` 创建归档文件（是否压缩取决于其他选项）
     - `-x` 提取归档内容
     - `-t` 列出压缩文档内的内容
-    该动作仅需要 `-f` 指定压缩文档, 可配合 #cross-link("/base.typ", reference: <sec:内容搜索>)[grep] 进一步筛选
+    该动作仅需要 `-f` 指定压缩文档, 可配合 #link(<sec:内容搜索>)[grep] 进一步筛选
 - `method` 压缩方法 (以下选项相互排斥)
     - `-a` 创建归档时可依据扩展名选择压缩算法（GNU tar）
     - 不指定压缩方法
@@ -578,7 +578,7 @@ set encoding=utf-8
 === 环境变量设置 <sec:环境变量设置>
 
 - `export <变量名>=<变量值>` 设置 / 创建当前终端的环境变量
-    - 变量定义可参考 #cross-link("/shell.typ", reference: <sec:变量定义>)[Shell 变量定义]
+    - 变量定义可参考 #cross-link("/code/linux/shell.typ", reference: <sec:变量定义>)[Shell 变量定义]
     - 在原变量上增加内容如 `PATH` 可使用 `PATH=$PATH:<新内容>`, 其中 `:` 为 Linux 下 `PATH` 的路径分隔符
 - `unset <变量名>` 删除环境变量
 - `env [-0]` 打印所有环境变量
@@ -586,13 +586,13 @@ set encoding=utf-8
 - `reset` 重置终端显示状态，不会清除 Shell 中所有环境变量
 
 注意, 以上设置仅在当前终端生效
-如果希望设置全局环境变量, 可通过设置 Shell #cross-link("/shell.typ", reference: <sec:启动时执行>)[启动时执行脚本]实现
+如果希望设置全局环境变量, 可通过设置 Shell #cross-link("/code/linux/shell.typ", reference: <sec:启动时执行>)[启动时执行脚本]实现
 - 配置全局的环境变量, 则应在文件 `/etc/profile` 中使用 `export` 命令定义
 - 用户级登录 Shell 通常读取 `~/.profile` 或其他登录配置文件；Bash 的交互环境常在 `~/.bashrc` 中配置
 
 === 系统进程管理
 
-- `ps aux` 或 `ps -ef` 查看进程状态（可配合 #cross-link("/base.typ", reference: <sec:内容搜索>)[grep] 筛选）
+- `ps aux` 或 `ps -ef` 查看进程状态（可配合 #link(<sec:内容搜索>)[grep] 筛选）
     - `ps -e` 表示显示所有进程；`ps aux` 是常见的 BSD 风格选项组合
     - `ps` 不同风格的选项语义有所差异，请以 `ps --help` 为准
 - `pstree [-ap]` 显示系统进程树
@@ -651,7 +651,7 @@ set encoding=utf-8
         - `PATH` 服务配置文件路径, 关于服务配置文件见创建服务的介绍
     - `systemctl disable <NAME>` 取消服务开机自启；不会立即停止正在运行的服务
 - 创建服务
-通过创建服务, 可实现开机自动启动的效果, 但更推荐使用 #cross-link("/base.typ", reference: <sec:定期执行任务>)[crontab] 实现开机与定期执行任务
+通过创建服务, 可实现开机自动启动的效果, 但更推荐使用 #link(<sec:定期执行任务>)[crontab] 实现开机与定期执行任务
 关于这部分内容, 可参考 #link("https://www.kancloud.cn/lengyueguang/linux/2042523")[kancloud.cn]
 
 == 其他实用命令
@@ -673,12 +673,12 @@ set encoding=utf-8
 
 定期任务通常由 `cron`（或 `cronie`）服务提供，`crontab` 是用户任务配置工具。
 + 安装发行版提供的 `cron` 或 `cronie` 软件包
-+ 检查服务 `cron` 或 `crond` #cross-link("/base.typ", reference: <sec:系统服务管理>)[是否安装]
++ 检查服务 `cron` 或 `crond` #link(<sec:系统服务管理>)[是否安装]
 
 使用以下命令进入配置文件
 `crontab [-u <user>] [-e | -l | -r]`
 - `-e` 进入配置文件编辑
-- `-l` 打印配置文件, 可配合#cross-link("/shell.typ", reference: <sec:重定向>)[重定向]以备份配置
+- `-l` 打印配置文件, 可配合#cross-link("/code/linux/shell.typ", reference: <sec:重定向>)[重定向]以备份配置
 - `-u <user>` 指定需要管理的用户任务；默认管理当前用户的 crontab
 
 配置文件的基本格式为
@@ -706,17 +706,17 @@ MAILTO=""
 - `command` 待执行的命令, 注意
     - 在 crontab 命令字段中，未转义的 `%` 会转为换行并影响标准输入；字面百分号需写 `\%`
     - 推荐使用 shell 脚本组织复杂的操作
-    - 为了防止环境变量导致的问题, 推荐命令中使用完整的绝对路径, 并且在脚本开始时使用 #cross-link("/shell.typ", reference: <sec:运行脚本>)[source] 命令导入 `/etc/profile`, `~/.profile`, `~/.bashrc` 等#cross-link("/base.typ", reference: <sec:环境变量设置>)[环境变量]文件
+    - 为了防止环境变量导致的问题, 推荐命令中使用完整的绝对路径, 并且在脚本开始时使用 #cross-link("/code/linux/shell.typ", reference: <sec:运行脚本>)[source] 命令导入 `/etc/profile`, `~/.profile`, `~/.bashrc` 等#link(<sec:环境变量设置>)[环境变量]文件
         - 更推荐的方法是在脚本目录下定义一个设置环境变量的脚本文件, 每次只需要引入该文件即可
         - 对有网络与服务依赖的开机任务，优先使用 systemd 的依赖关系，避免只靠固定 `sleep`
-    - 可通过#cross-link("/shell.typ", reference: <sec:重定向>)[重定向]的方式获取自动执行任务的输出
+    - 可通过#cross-link("/code/linux/shell.typ", reference: <sec:重定向>)[重定向]的方式获取自动执行任务的输出
 
 === 远程连接 SSH
 
 参考 #link("https://www.bilibili.com/video/BV1Sx4y1y7B2")[bilibili.com]
 
 基础知识
-- 在使用 ssh 连接前, 确保 Linux 中#cross-link("/base.typ", reference: <sec:系统服务管理>)[服务] `sshd` 已正常启动
+- 在使用 ssh 连接前, 确保 Linux 中#link(<sec:系统服务管理>)[服务] `sshd` 已正常启动
 - SSH 用户级配置常位于 Linux 的 `~/.ssh` 或 Windows 的 `C:\Users\<用户名>\.ssh`；常用文件有
     - `known_hosts` 已知远程服务器的主机公钥
     - `authorized_keys` 允许登录当前账户的公钥列表
@@ -835,7 +835,7 @@ MAILTO=""
 === 其他实用查询命令 <sec:其他实用查询命令>
 
 - `man <命令名称>` 获取命令的详细帮助, 一般情况下使用该命令可获得比 `--help` 更详细的信息
-查看文档的方式与 #cross-link("/base.typ", reference: <sec:浏览文件内容>)[less] 相同
+查看文档的方式与 #link(<sec:浏览文件内容>)[less] 相同
 - `whereis <命令>` 查询命令对应的应用程序与库所在地址
 - `free [-ht] [-s]` 查看当前内存状态
     - `-h` 以易于阅读的方式显示信息 (主要为使用 `数字 + 大小单位` 的方式显示, 默认以 `kb` 为单位)
