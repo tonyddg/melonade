@@ -38,6 +38,30 @@ jobs:
       - name: Download & install shiroa
         run: |
           curl --proto '=https' --tlsv1.2 -LsSf https://github.com/Myriad-Dreamin/shiroa/releases/download/v0.3.1-rc2/shiroa-installer.sh | sh
+
+      - name: Increase Swap
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          echo "=== Disk space ==="
+          df -h /
+
+          # 至少保留 4 GiB 磁盘空间用于构建
+          available=$(df -B1 --output=avail / | tail -1)
+          if [ "$available" -lt $((12 * 1024 * 1024 * 1024)) ]; then
+            echo "Not enough disk space for 8 GiB swap"
+            exit 1
+          fi
+
+          sudo install -m 600 /dev/null /swapfile-shiroa
+          sudo dd if=/dev/zero of=/swapfile-shiroa bs=1M count=8192 status=progress
+          sudo mkswap /swapfile-shiroa
+          sudo swapon /swapfile-shiroa
+
+          echo "=== Swap Information ==="
+          swapon --show
+          free -h
       # 页面编译命令 同时仅编译一个页面避免内存溢出
       - name: Build Book
         shell: bash
@@ -45,16 +69,42 @@ jobs:
           RAYON_NUM_THREADS: "1"
         run: |
           set -euo pipefail
-      
-          echo "Rayon threads: $RAYON_NUM_THREADS"
+
+          echo "=== Initial Memory ==="
           free -h
-      
+
+          # 每10秒记录系统和Shiroa的内存使用情况
+          (
+            while true; do
+              echo "=== Memory: $(date -u) ==="
+
+              free -m
+
+              echo "=== Shiroa Process ==="
+              ps -C shiroa \
+                -o pid,rss,vsz,%mem,etime,args || true
+
+              echo "=== OOM Events ==="
+              if [ -r /sys/fs/cgroup/memory.events ]; then
+                cat /sys/fs/cgroup/memory.events
+              fi
+
+              sleep 10
+            done
+          ) &
+          monitor_pid=$!
+
+          # 编译完成或失败时关闭监控
+          trap 'kill "$monitor_pid" 2>/dev/null || true' EXIT
+
+          echo "=== Start Shiroa Build ==="
+
           shiroa build \
             --font-path ./asset/font/ \
             --path-to-root /melonade/ \
             -w .
-      
-          echo "Build completed successfully"
+
+          echo "=== Build Success ==="
           free -h
       - name: Setup Pages
         uses: actions/configure-pages@v5
